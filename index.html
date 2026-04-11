@@ -381,14 +381,16 @@ html, body {
   50%     { transform: translate(0,-14px) rotate(0.6deg); }
 }
 
-/* Constellation positions — 7 circles, varied sizes/depths */
-.cc-1 { width: 168px; height: 168px; right: 30%;  top: 14%; --dur: 16s; --del: 0s;    z-index: 3; }
-.cc-2 { width: 124px; height: 124px; right: 8%;   top: 12%; --dur: 14s; --del: -2s;   z-index: 4; }
-.cc-3 { width: 232px; height: 232px; right: 14%;  top: 36%; --dur: 18s; --del: -4s;   z-index: 5; }
-.cc-4 { width: 104px; height: 104px; right: 42%;  top: 9%;  --dur: 13s; --del: -5s;   z-index: 2; }
-.cc-5 { width: 116px; height: 116px; right: 36%;  bottom: 30%; --dur: 15s; --del: -3s; z-index: 4; }
-.cc-6 { width: 148px; height: 148px; right: 5%;   bottom: 16%; --dur: 17s; --del: -6s; z-index: 3; }
-.cc-7 { width: 96px;  height: 96px;  right: 24%;  bottom: 10%; --dur: 12s; --del: -1s; z-index: 2; }
+/* Constellation positions — 7 circles, varied sizes/depths.
+   Vertical band kept inside 12% – 76% so the footer (byline + scroll cue)
+   and the bottom marquee never collide with circles. */
+.cc-1 { width: 156px; height: 156px; right: 32%;  top: 13%;    --dur: 16s; --del: 0s;    z-index: 3; }
+.cc-2 { width: 116px; height: 116px; right: 9%;   top: 11%;    --dur: 14s; --del: -2s;   z-index: 4; }
+.cc-3 { width: 220px; height: 220px; right: 16%;  top: 33%;    --dur: 18s; --del: -4s;   z-index: 5; }
+.cc-4 { width: 96px;  height: 96px;  right: 44%;  top: 8%;     --dur: 13s; --del: -5s;   z-index: 2; }
+.cc-5 { width: 108px; height: 108px; right: 38%;  bottom: 30%; --dur: 15s; --del: -3s;  z-index: 4; }
+.cc-6 { width: 132px; height: 132px; right: 5%;   bottom: 28%; --dur: 17s; --del: -6s;  z-index: 3; }
+.cc-7 { width: 92px;  height: 92px;  right: 26%;  bottom: 23%; --dur: 12s; --del: -1s;  z-index: 2; }
 
 /* Hairline arcs connecting the constellation */
 .cc-arc {
