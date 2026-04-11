@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Media Performance · 3-Year Overview</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0d1117;
+      color: #e6edf3;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      padding: 48px 40px;
+      min-height: 100vh;
+    }
+
+    .container { max-width: 1280px; margin: 0 auto; }
+
+    /* Header */
+    .header { margin-bottom: 40px; }
+    .header h1 {
+      font-size: 30px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+    }
+    .header p {
+      color: #8b949e;
+      font-size: 15px;
+      margin-top: 6px;
+    }
+
+    /* Yearly stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 22px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .stat-card.y2023::before { background: #8b949e; }
+    .stat-card.y2024::before { background: #3fb950; }
+    .stat-card.y2025::before { background: #58a6ff; }
+    .stat-card.y2026::before { background: #bc8cff; }
+
+    .stat-year {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #8b949e;
+      margin-bottom: 14px;
+    }
+    .stat-row { margin-bottom: 10px; }
+    .stat-label { font-size: 11px; color: #6e7681; margin-bottom: 2px; }
+    .stat-value-imp {
+      font-size: 26px;
+      font-weight: 700;
+      color: #58a6ff;
+      line-height: 1.1;
+    }
+    .stat-value-eng {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f78166;
+      line-height: 1.1;
+    }
+    .stat-growth {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #3fb950;
+      font-weight: 500;
+    }
+    .stat-growth.negative { color: #8b949e; }
+
+    /* Chart */
+    .chart-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 32px 32px 24px;
+      margin-bottom: 28px;
+    }
+    .chart-card h2 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #e6edf3;
+      margin-bottom: 4px;
+    }
+    .chart-card p {
+      font-size: 13px;
+      color: #8b949e;
+      margin-bottom: 28px;
+    }
+    .chart-wrapper {
+      position: relative;
+      height: 500px;
+    }
+
+    /* Milestones */
+    .milestones-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 24px 28px;
+    }
+    .milestones-card h2 {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #8b949e;
+      margin-bottom: 18px;
+    }
+    .milestones-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+    .milestone-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .milestone-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #000;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .milestone-info {}
+    .milestone-date { font-size: 11px; color: #8b949e; margin-bottom: 3px; }
+    .milestone-label { font-size: 13px; color: #c9d1d9; line-height: 1.4; }
+
+    .yoy-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 20px;
+      white-space: nowrap;
+      margin-bottom: 4px;
+    }
+    .yoy-imp { background: rgba(88,166,255,0.15); color: #58a6ff; }
+    .yoy-eng { background: rgba(247,129,102,0.15); color: #f87171; }
+
+    .milestone-divider {
+      border: none;
+      border-top: 1px solid #30363d;
+      margin: 18px 0;
+    }
+    .milestone-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #484f58;
+      margin-bottom: 14px;
+    }
+    .milestone-section-title.planned { color: #6e7681; }
+    .future-badge {
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+      color: #6e7681;
+      border: 1.5px solid #6e7681;
+      background: transparent;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .milestone-item.future .milestone-date { color: #484f58; }
+    .milestone-item.future .milestone-label { color: #6e7681; font-style: italic; }
+
+    .section-divider {
+      margin: 48px 0 28px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #30363d;
+    }
+    .section-divider h2 {
+      font-size: 22px; font-weight: 700; color: #ffffff; margin-bottom: 4px;
+    }
+    .section-divider p { color: #8b949e; font-size: 14px; }
+
+    .footnote {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #484f58;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>Social Media Performance</h1>
+    <p>Total Impressions &amp; Engagements · July 2023 – March 2026</p>
+  </div>
+
+  <!-- Year Cards -->
+  <div class="stats-grid">
+    <div class="stat-card y2024">
+      <div class="stat-year">2024 &nbsp;(Full Year)</div>
+      <div class="stat-row">
+        <div class="stat-label">TOTAL IMPRESSIONS</div>
+        <div class="stat-value-imp">1.00M</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-label">TOTAL ENGAGEMENTS</div>
+        <div class="stat-value-eng">7,626</div>
+      </div>
+      <div class="stat-growth negative">2023 data incomplete — no YoY comparison</div>
+    </div>
+    <div class="stat-card y2025">
+      <div class="stat-year">2025 &nbsp;(Full Year)</div>
+      <div class="stat-row">
+        <div class="stat-label">TOTAL IMPRESSIONS</div>
+        <div class="stat-value-imp">2.73M</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-label">TOTAL ENGAGEMENTS</div>
+        <div class="stat-value-eng">57,494</div>
+      </div>
+      <div class="stat-growth">↑ 173% impressions · ↑ 654% engagements YoY</div>
+    </div>
+    <div class="stat-card y2026">
+      <div class="stat-year">2026 &nbsp;(Jan–Mar only)</div>
+      <div class="stat-row" style="display:flex;align-items:baseline;gap:10px;">
+        <div>
+          <div class="stat-label">TOTAL IMPRESSIONS</div>
+          <div class="stat-value-imp">1.39M</div>
+        </div>
+        <div class="yoy-badge yoy-imp">↑ 495% YoY</div>
+      </div>
+      <div class="stat-row" style="display:flex;align-items:baseline;gap:10px;">
+        <div>
+          <div class="stat-label">TOTAL ENGAGEMENTS</div>
+          <div class="stat-value-eng">67,517</div>
+        </div>
+        <div class="yoy-badge yoy-eng">↑ 4,969% YoY</div>
+      </div>
+      <div class="stat-growth">↑ On pace for biggest year yet · Full year target: 7.27M impressions &amp; 329K engagements</div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="chart-card">
+    <h2>Month-by-Month Breakdown</h2>
+    <p>Blue = Impressions (left axis) &nbsp;·&nbsp; Red = Engagements (right axis) &nbsp;·&nbsp; Numbered markers = milestones &nbsp;·&nbsp; FY quarters: Q1 Jul–Sep · Q2 Oct–Dec · Q3 Jan–Mar · Q4 Apr–Jun</p>
+    <div class="chart-wrapper">
+      <canvas id="mainChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Milestones -->
+  <div class="milestones-card">
+    <div class="milestone-section-title">Past milestones</div>
+    <div class="milestones-grid">
+      <div class="milestone-item">
+        <div class="milestone-badge" style="background:#8b949e">1</div>
+        <div class="milestone-info">
+          <div class="milestone-date">Jul 2023</div>
+          <div class="milestone-label">Comprehensive tracking begins (2 months after launch)</div>
+        </div>
+      </div>
+      <div class="milestone-item">
+        <div class="milestone-badge" style="background:#3fb950">2</div>
+        <div class="milestone-info">
+          <div class="milestone-date">Feb 2024</div>
+          <div class="milestone-label">Global Brand Manager role taken on · Agency partnership begins</div>
+        </div>
+      </div>
+      <div class="milestone-item">
+        <div class="milestone-badge" style="background:#d29922">3</div>
+        <div class="milestone-info">
+          <div class="milestone-date">Feb 2025</div>
+          <div class="milestone-label">Last month with Prominence</div>
+        </div>
+      </div>
+      <div class="milestone-item">
+        <div class="milestone-badge" style="background:#58a6ff">4</div>
+        <div class="milestone-info">
+          <div class="milestone-date">Mar 2026</div>
+          <div class="milestone-label">Marketing Assistant hired</div>
+        </div>
+      </div>
+      <div class="milestone-item">
+        <div class="milestone-badge" style="background:#bc8cff">5</div>
+        <div class="milestone-info">
+          <div class="milestone-date">May 2025</div>
+          <div class="milestone-label">Podcast launched</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="milestone-divider">
+    <div class="milestone-section-title planned">Planned</div>
+    <div class="milestones-grid">
+      <div class="milestone-item future">
+        <div class="future-badge">A</div>
+        <div class="milestone-info">
+          <div class="milestone-date">Apr 2026</div>
+          <div class="milestone-label">Podcast revamped &amp; optimised for maximum reach</div>
+        </div>
+      </div>
+      <div class="milestone-item future">
+        <div class="future-badge">B</div>
+        <div class="milestone-info">
+          <div class="milestone-date">Jul 2026</div>
+          <div class="milestone-label">Rebrand</div>
+        </div>
+      </div>
+      <div class="milestone-item future">
+        <div class="future-badge">C</div>
+        <div class="milestone-info">
+          <div class="milestone-date">Oct 2026</div>
+          <div class="milestone-label">Podcast 2 launched / moved to weekly AUS &amp; US in-person focus</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Job Applications ──────────────────────────────────────────────── -->
+  <div class="section-divider">
+    <h2>Job Applications Performance</h2>
+    <p>Total Applications · Jan 2025 – Mar 2026 · Quarterly (AUS Financial Year: Q1 Jul–Sep · Q2 Oct–Dec · Q3 Jan–Mar · Q4 Apr–Jun)</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card" style="border-top-color:#fb923c;">
+      <div class="stat-year">Q3 FY25 &nbsp;(Jan–Mar 2025)</div>
+      <div class="stat-row">
+        <div class="stat-label">TOTAL APPLICATIONS</div>
+        <div class="stat-value-imp" style="color:#fb923c;">2,488</div>
+      </div>
+      <div class="stat-growth negative">Prior year baseline</div>
+    </div>
+    <div class="stat-card" style="border-top-color:#fb923c;">
+      <div class="stat-year">Q3 FY26 &nbsp;(Jan–Mar 2026)</div>
+      <div class="stat-row">
+        <div class="stat-label">TOTAL APPLICATIONS</div>
+        <div class="stat-value-imp" style="color:#fb923c;">3,964</div>
+      </div>
+      <div class="stat-growth">↑ 59% YoY</div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <h2>Job Applications — Quarter by Quarter</h2>
+    <p>Jan 2025 – Mar 2026</p>
+    <div class="chart-wrapper">
+      <canvas id="jobChart"></canvas>
+    </div>
+  </div>
+
+  <!-- ── Salary Guide ─────────────────────────────────────────────────────── -->
+  <div class="section-divider">
+    <h2>Salary Guide Downloads</h2>
+    <p>Total Downloads · 2023 – 2026</p>
+  </div>
+
+  <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="stat-card" style="border-top-color:#bc8cff;">
+      <div class="stat-year">2023</div>
+      <div class="stat-row">
+        <div class="stat-label">TOTAL DOWNLOADS</div>
+        <div class="stat-value-imp" style="color:#bc8cff;">950</div>
+      </div>
+      <div class="stat-growth negative">Baseline year</div>
+    </div>
+    <div class="stat-card" style="border-top-color:#bc8cff;">
+      <div class="stat-year">2024</div>
+      <div class="stat-row">
+        <div class="stat-label">TOTAL DOWNLOADS</div>
+        <div class="stat-value-imp" style="color:#bc8cff;">2,657</div>
+      </div>
+      <div class="stat-growth">↑ 180% YoY</div>
+    </div>
+    <div class="stat-card" style="border-top-color:#bc8cff;">
+      <div class="stat-year">2025</div>
+      <div class="stat-row">
+        <div class="stat-label">TOTAL DOWNLOADS</div>
+        <div class="stat-value-imp" style="color:#bc8cff;">7,123</div>
+      </div>
+      <div class="stat-growth">↑ 168% YoY</div>
+    </div>
+    <div class="stat-card" style="border-top-color:#bc8cff;">
+      <div class="stat-year">2026 &nbsp;(1 month)</div>
+      <div class="stat-row">
+        <div class="stat-label">TOTAL DOWNLOADS</div>
+        <div class="stat-value-imp" style="color:#bc8cff;">3,450</div>
+      </div>
+      <div class="stat-growth">→ ~10,000 projected full year</div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <h2>Salary Guide Downloads — Year by Year</h2>
+    <p>2026 bar shows current downloads · dashed line shows full-year projection</p>
+    <div class="chart-wrapper" style="height:380px;">
+      <canvas id="podcastChart"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const labels = [
+  "Q1 FY24","Q2 FY24","Q3 FY24","Q4 FY24",
+  "Q1 FY25","Q2 FY25","Q3 FY25","Q4 FY25",
+  "Q1 FY26","Q2 FY26","Q3 FY26*",
+  "Q4 FY26","Q1 FY27","Q2 FY27"
+];
+
+const tooltipDates = [
+  "Jul–Sep 2023","Oct–Dec 2023","Jan–Mar 2024","Apr–Jun 2024",
+  "Jul–Sep 2024","Oct–Dec 2024","Jan–Mar 2025","Apr–Jun 2025",
+  "Jul–Sep 2025","Oct–Dec 2025","Jan–Mar 2026",
+  "Apr–Jun 2026","Jul–Sep 2026","Oct–Dec 2026"
+];
+
+// Quarterly actuals — aggregated by FY quarter
+const impressions = [
+  214730, 153590, 142329, 250835,   // FY24: Q1–Q4
+  373312, 233180, 234397, 671151,   // FY25: Q1–Q4
+  751684, 1075804, 1394246,          // FY26: Q1–Q3 actual
+  null, null, null                   // FY26 Q4 + FY27 Q1–Q2 projected
+];
+
+const engagements = [
+  2386, 1545, 1366, 2497,
+  2702, 1039, 1332, 13046,
+  22828, 20288, 67517,
+  null, null, null
+];
+
+// Quarterly targets: 2M impressions / 90K engagements per quarter
+const IMP_TARGET = 2000000;
+const ENG_TARGET = 90000;
+const nullPad = new Array(11).fill(null);
+const impTarget = [...nullPad, IMP_TARGET, IMP_TARGET, IMP_TARGET];
+const engTarget = [...nullPad, ENG_TARGET, ENG_TARGET, ENG_TARGET];
+
+const FUTURE_START = 11; // Q4 FY26 onwards
+
+// Past milestones — remapped to quarterly indices
+const milestones = [
+  { index: 0,  label: '1', color: '#8b949e' },  // Q1 FY24 — tracking setup
+  { index: 2,  label: '2', color: '#3fb950' },  // Q3 FY24 — Global Brand Manager + agency
+  { index: 6,  label: '3', color: '#d29922' },  // Q3 FY25 — last month with Prominence
+  { index: 7,  label: '5', color: '#bc8cff' },  // Q4 FY25 — podcast launched
+  { index: 10, label: '4', color: '#58a6ff' },  // Q3 FY26 — marketing assistant hired
+];
+
+// Planned milestones
+const futureMilestones = [
+  { index: 11, label: 'A', text: 'Podcast revamped & optimised for maximum reach' },
+  { index: 12, label: 'B', text: 'Rebrand' },
+  { index: 13, label: 'C', text: 'Podcast 2 launched / Weekly AUS & US focus' },
+];
+
+// FY separators — drawn between last Q of one FY and first Q of next
+const yearSeparators = [
+  { pos: 3.5, labelPos: 4.0, label: 'FY2025' },
+  { pos: 7.5, labelPos: 8.0, label: 'FY2026' },
+];
+
+const annotationPlugin = {
+  id: 'annotations',
+  afterDraw(chart) {
+    const { ctx, chartArea, scales } = chart;
+    if (!chartArea) return;
+
+    // FY watermark labels centred in each band
+    [{ c: 1.5, t: 'FY2024' }, { c: 5.5, t: 'FY2025' }, { c: 9.0, t: 'FY2026' }].forEach(fy => {
+      ctx.save();
+      ctx.fillStyle = 'rgba(255,255,255,0.06)';
+      ctx.font = '700 26px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(fy.t, scales.x.getPixelForValue(fy.c), chartArea.bottom - 28);
+      ctx.restore();
+    });
+
+    // Grey future region
+    const xFut = scales.x.getPixelForValue(FUTURE_START - 0.5);
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.025)';
+    ctx.fillRect(xFut, chartArea.top, chartArea.right - xFut, chartArea.bottom - chartArea.top);
+    ctx.fillStyle = 'rgba(255,255,255,0.10)';
+    ctx.font = '700 12px -apple-system, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('PROJECTED', xFut + 8, chartArea.top + 6);
+    ctx.restore();
+
+    // Future boundary line
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(xFut, chartArea.top);
+    ctx.lineTo(xFut, chartArea.bottom);
+    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 3]);
+    ctx.stroke();
+    ctx.restore();
+
+    // FY year separators
+    yearSeparators.forEach(sep => {
+      const xSep = scales.x.getPixelForValue(sep.pos);
+      const xLbl = scales.x.getPixelForValue(sep.labelPos);
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(xSep, chartArea.top);
+      ctx.lineTo(xSep, chartArea.bottom);
+      ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([]);
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
+      ctx.font = '600 11px -apple-system, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText(sep.label, xLbl + 4, chartArea.top + 4);
+      ctx.restore();
+    });
+
+    // Past milestone lines + filled badges
+    milestones.forEach(m => {
+      const x = scales.x.getPixelForValue(m.index);
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(x, chartArea.top);
+      ctx.lineTo(x, chartArea.bottom);
+      ctx.strokeStyle = m.color + 'cc';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.stroke();
+      const cy = chartArea.top - 16;
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.arc(x, cy, 10, 0, Math.PI * 2);
+      ctx.fillStyle = m.color;
+      ctx.fill();
+      ctx.fillStyle = '#000';
+      ctx.font = 'bold 10px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(m.label, x, cy);
+      ctx.restore();
+    });
+
+    // Future milestones — outline badges
+    futureMilestones.forEach(m => {
+      const x = scales.x.getPixelForValue(m.index);
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(x, chartArea.top + 20);
+      ctx.lineTo(x, chartArea.bottom);
+      ctx.strokeStyle = 'rgba(110,118,129,0.6)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 4]);
+      ctx.stroke();
+      const cy = chartArea.top + 10;
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.arc(x, cy, 10, 0, Math.PI * 2);
+      ctx.strokeStyle = '#6e7681';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.fillStyle = '#6e7681';
+      ctx.font = 'bold 10px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(m.label, x, cy);
+      ctx.restore();
+    });
+  }
+};
+
+const ctx = document.getElementById('mainChart').getContext('2d');
+
+new Chart(ctx, {
+  type: 'line',
+  plugins: [annotationPlugin],
+  data: {
+    labels: labels,
+    datasets: [
+      {
+        label: 'Total Impressions',
+        data: impressions,
+        borderColor: '#58a6ff',
+        backgroundColor: 'rgba(88,166,255,0.07)',
+        borderWidth: 2.5,
+        fill: true,
+        tension: 0.35,
+        pointRadius: 3,
+        pointBackgroundColor: '#58a6ff',
+        pointHoverRadius: 7,
+        yAxisID: 'y',
+        order: 1,
+        spanGaps: false,
+      },
+      {
+        label: 'Total Engagements',
+        data: engagements,
+        borderColor: '#f78166',
+        backgroundColor: 'rgba(247,129,102,0.07)',
+        borderWidth: 2.5,
+        fill: true,
+        tension: 0.35,
+        pointRadius: 3,
+        pointBackgroundColor: '#f78166',
+        pointHoverRadius: 7,
+        yAxisID: 'y2',
+        order: 2,
+        spanGaps: false,
+      },
+      {
+        label: 'Impression Target',
+        data: impTarget,
+        borderColor: 'rgba(88,166,255,0.35)',
+        backgroundColor: 'transparent',
+        borderWidth: 1.5,
+        borderDash: [6, 4],
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        yAxisID: 'y',
+        order: 3,
+        spanGaps: false,
+        tension: 0,
+      },
+      {
+        label: 'Engagement Target',
+        data: engTarget,
+        borderColor: 'rgba(247,129,102,0.35)',
+        backgroundColor: 'transparent',
+        borderWidth: 1.5,
+        borderDash: [6, 4],
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        yAxisID: 'y2',
+        order: 4,
+        spanGaps: false,
+        tension: 0,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: {
+      padding: { top: 40, right: 20, bottom: 10, left: 10 }
+    },
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+        align: 'end',
+        labels: {
+          color: '#8b949e',
+          usePointStyle: true,
+          pointStyleWidth: 10,
+          font: { size: 12 },
+          padding: 20,
+          filter: item => !item.text.includes('Target') // hide target from main legend
+        }
+      },
+      tooltip: {
+        backgroundColor: '#1c2128',
+        borderColor: '#30363d',
+        borderWidth: 1,
+        titleColor: '#e6edf3',
+        titleFont: { size: 13, weight: '600' },
+        bodyColor: '#8b949e',
+        bodyFont: { size: 12 },
+        padding: 12,
+        callbacks: {
+          title: function(items) {
+            const idx = items[0].dataIndex;
+            const pm = milestones.find(m => m.index === idx);
+            const fm = futureMilestones.find(m => m.index === idx);
+            const out = [items[0].label + '  (' + tooltipDates[idx] + ')'];
+            if (pm) {
+              const msLabels = {'1':'Tracking setup begins','2':'Global Brand Manager + Agency partnership','3':'Last month with Prominence','4':'Marketing Assistant hired','5':'Podcast launched'};
+              out.push('⬤ ' + msLabels[pm.label]);
+            }
+            if (fm) out.push('◎ Planned: ' + fm.text);
+            return out;
+          },
+          label: function(context) {
+            if (context.raw === null) return null;
+            const v = context.raw;
+            const formatted = v >= 1000000 ? (v/1000000).toFixed(2)+'M' : v >= 1000 ? (v/1000).toFixed(1)+'K' : v.toLocaleString();
+            const isTarget = context.dataset.label.includes('Target');
+            return (isTarget ? '  ◎ ' : '  ') + context.dataset.label + ': ' + formatted;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: '#21262d', drawBorder: false },
+        ticks: { color: '#6e7681', maxRotation: 0, minRotation: 0, font: { size: 11 }, padding: 8 }
+      },
+      y: {
+        position: 'left',
+        grid: { color: '#21262d', drawBorder: false },
+        ticks: {
+          color: '#58a6ff', font: { size: 11 }, padding: 8,
+          callback: v => v >= 1000000 ? (v/1000000).toFixed(1)+'M' : v >= 1000 ? (v/1000).toFixed(0)+'K' : v
+        },
+        suggestedMax: 2200000,
+        title: { display: true, text: 'Impressions', color: '#58a6ff', font: { size: 12, weight: '500' }, padding: { bottom: 10 } }
+      },
+      y2: {
+        position: 'right',
+        grid: { drawOnChartArea: false },
+        suggestedMax: 100000,
+        ticks: {
+          color: '#f78166', font: { size: 11 }, padding: 8,
+          callback: v => v >= 1000 ? (v/1000).toFixed(0)+'K' : v
+        },
+        title: { display: true, text: 'Engagements', color: '#f78166', font: { size: 12, weight: '500' }, padding: { bottom: 10 } }
+      }
+    }
+  }
+});
+
+// ── Job Applications Chart ─────────────────────────────────────────────────
+const jobLabels = ["Q3 FY25","Q4 FY25","Q1 FY26","Q2 FY26","Q3 FY26"];
+const jobTooltipDates = ["Jan–Mar 2025","Apr–Jun 2025","Jul–Sep 2025","Oct–Dec 2025","Jan–Mar 2026"];
+const jobApps = [2488, 2130, 3498, 2237, 3964];
+const APPS_C  = '#fb923c';
+
+const jobLabelsPlugin = {
+  id: 'jobLabels',
+  afterDatasetsDraw(chart) {
+    const { ctx, data, scales } = chart;
+    const meta = chart.getDatasetMeta(0);
+    meta.data.forEach((bar, i) => {
+      const value = data.datasets[0].data[i];
+      const formatted = value.toLocaleString();
+      const barTop = bar.y;
+      const barBottom = scales.y.getPixelForValue(0);
+      const barHeight = barBottom - barTop;
+      ctx.save();
+      ctx.font = 'bold 13px -apple-system, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      // Only draw inside if bar is tall enough
+      if (barHeight > 28) {
+        ctx.fillText(formatted, bar.x, barTop + barHeight / 2);
+      } else {
+        // Draw above bar if too short
+        ctx.fillStyle = '#fb923c';
+        ctx.fillText(formatted, bar.x, barTop - 10);
+      }
+      ctx.restore();
+    });
+  }
+};
+
+const jobSepPlugin = {
+  id: 'jobSep',
+  afterDraw(chart) {
+    const { ctx, chartArea, scales } = chart;
+    if (!chartArea) return;
+    // FY separator between Q4 FY25 and Q1 FY26
+    const xSep = scales.x.getPixelForValue(1.5);
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(xSep, chartArea.top); ctx.lineTo(xSep, chartArea.bottom);
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 1; ctx.setLineDash([4,3]); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    ctx.font = '600 11px -apple-system, sans-serif';
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText('FY2026', xSep + 5, chartArea.top + 4);
+    ctx.restore();
+    // Watermarks
+    [{c:0.5,t:'FY2025'},{c:3.0,t:'FY2026'}].forEach(fy => {
+      ctx.save();
+      ctx.fillStyle = 'rgba(255,255,255,0.06)';
+      ctx.font = '700 20px -apple-system, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(fy.t, scales.x.getPixelForValue(fy.c), chartArea.bottom - 22);
+      ctx.restore();
+    });
+  }
+};
+
+const jobCtx = document.getElementById('jobChart').getContext('2d');
+new Chart(jobCtx, {
+  type: 'bar',
+  plugins: [jobSepPlugin, jobLabelsPlugin],
+  data: {
+    labels: jobLabels,
+    datasets: [{
+      label: 'Total Applications',
+      data: jobApps,
+      backgroundColor: ['rgba(251,146,60,0.5)','rgba(251,146,60,0.5)','rgba(251,146,60,0.75)','rgba(251,146,60,0.75)','rgba(251,146,60,0.85)'],
+      borderColor: APPS_C,
+      borderWidth: 2,
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    layout: { padding: { top: 20, right: 20, bottom: 10, left: 10 } },
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1c2128', borderColor: '#30363d', borderWidth: 1,
+        titleColor: '#e6edf3', titleFont: { size: 13, weight: '600' },
+        bodyColor: '#8b949e', bodyFont: { size: 12 }, padding: 12,
+        callbacks: {
+          title: (items) => [items[0].label + '  (' + jobTooltipDates[items[0].dataIndex] + ')'],
+          label: (context) => '  Applications: ' + context.raw.toLocaleString()
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: '#21262d', drawBorder: false },
+        ticks: { color: '#6e7681', font: { size: 12 }, padding: 8 }
+      },
+      y: {
+        grid: { color: '#21262d', drawBorder: false },
+        ticks: { color: APPS_C, font: { size: 11 }, padding: 8 },
+        title: { display: true, text: 'Total Applications', color: APPS_C, font: { size: 12, weight: '500' }, padding: { bottom: 10 } }
+      }
+    }
+  }
+});
+
+// ── Podcast Chart ──────────────────────────────────────────────────────────
+const POD_C = '#bc8cff';
+const podcastYears = ['2023', '2024', '2025', '2026'];
+const podcastActual = [950, 2657, 7123, 3450];
+const podcastProjected = [null, null, null, 10000];
+
+const podcastLabelsPlugin = {
+  id: 'podcastLabels',
+  afterDatasetsDraw(chart) {
+    const { ctx, data, scales } = chart;
+    // Draw actual values inside/above bars (dataset 0)
+    const meta0 = chart.getDatasetMeta(0);
+    meta0.data.forEach((bar, i) => {
+      const value = data.datasets[0].data[i];
+      if (value === null) return;
+      const barTop = bar.y;
+      const barBottom = scales.y.getPixelForValue(0);
+      const barHeight = barBottom - barTop;
+      ctx.save();
+      ctx.font = 'bold 13px -apple-system, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(value.toLocaleString(), bar.x, barTop + barHeight / 2);
+      ctx.restore();
+    });
+    // Draw YoY growth above bars
+    const growthLabels = [null, '↑ 180%', '↑ 168%', null];
+    meta0.data.forEach((bar, i) => {
+      if (!growthLabels[i]) return;
+      ctx.save();
+      ctx.font = 'bold 11px -apple-system, sans-serif';
+      ctx.fillStyle = '#3fb950';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(growthLabels[i], bar.x, bar.y - 6);
+      ctx.restore();
+    });
+  }
+};
+
+const podCtx = document.getElementById('podcastChart').getContext('2d');
+new Chart(podCtx, {
+  type: 'bar',
+  plugins: [podcastLabelsPlugin],
+  data: {
+    labels: podcastYears,
+    datasets: [
+      {
+        label: 'Downloads',
+        data: podcastActual,
+        backgroundColor: ['rgba(188,140,255,0.45)','rgba(188,140,255,0.55)','rgba(188,140,255,0.75)','rgba(188,140,255,0.35)'],
+        borderColor: [POD_C, POD_C, POD_C, POD_C],
+        borderWidth: 2,
+        borderRadius: 6,
+        order: 1,
+      },
+      {
+        label: '2026 Projected',
+        data: podcastProjected,
+        backgroundColor: 'transparent',
+        borderColor: 'rgba(188,140,255,0.5)',
+        borderWidth: 2,
+        borderDash: [6, 4],
+        borderRadius: 6,
+        type: 'bar',
+        order: 2,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: { padding: { top: 30, right: 20, bottom: 10, left: 10 } },
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1c2128', borderColor: '#30363d', borderWidth: 1,
+        titleColor: '#e6edf3', titleFont: { size: 13, weight: '600' },
+        bodyColor: '#8b949e', bodyFont: { size: 12 }, padding: 12,
+        callbacks: {
+          label: ctx => {
+            if (ctx.raw === null) return null;
+            const suffix = ctx.datasetIndex === 1 ? ' (projected full year)' : '';
+            return '  Downloads: ' + ctx.raw.toLocaleString() + suffix;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: '#21262d', drawBorder: false },
+        ticks: { color: '#6e7681', font: { size: 13 }, padding: 8 }
+      },
+      y: {
+        grid: { color: '#21262d', drawBorder: false },
+        ticks: { color: POD_C, font: { size: 11 }, padding: 8 },
+        title: { display: true, text: 'Total Downloads', color: POD_C, font: { size: 12, weight: '500' }, padding: { bottom: 10 } },
+        suggestedMax: 11000
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>

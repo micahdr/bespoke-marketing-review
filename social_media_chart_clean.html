@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Media Performance · FY24–FY26</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f0f2eb;
+      color: #111827;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 56px 48px;
+      min-height: 100vh;
+    }
+
+    .container { max-width: 1240px; margin: 0 auto; }
+
+    /* ── Header ── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 48px;
+      align-items: end;
+      margin-bottom: 48px;
+      padding-bottom: 40px;
+      border-bottom: 2px solid #97d422;
+    }
+    .hero-left h1 {
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -1.5px;
+      color: #111827;
+    }
+    .hero-left h1 span { color: #97d422; }
+    .hero-left p {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .hero-stat {
+      background: #fff;
+      padding: 24px 28px;
+      position: relative;
+    }
+    .hero-stat:first-child { border-radius: 12px 0 0 12px; }
+    .hero-stat:last-child  { border-radius: 0 12px 12px 0; }
+    .hero-stat-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+    .hero-stat-year {
+      font-size: 11px;
+      font-weight: 600;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+    .hero-stat-num {
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      color: #97d422;
+      line-height: 1;
+    }
+    .hero-stat-num.dark { color: #1f2937; }
+    .hero-stat-sub {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 6px;
+      font-weight: 500;
+    }
+    .hero-stat-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: rgba(151,212,34,0.15);
+      color: #5a8010;
+      margin-top: 6px;
+    }
+    .hero-stat-badge.eng {
+      background: rgba(31,41,55,0.08);
+      color: #1f2937;
+    }
+    .hero-stat-muted {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 6px;
+      font-weight: 400;
+    }
+
+    /* ── Chart card ── */
+    .chart-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 36px 36px 28px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    }
+    .chart-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .chart-title {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+    .chart-subtitle {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    .chart-legend {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: #6b7280;
+      font-weight: 500;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .chart-wrapper {
+      position: relative;
+      height: 500px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-left">
+      <h1>Social<br>Media<br><span>Performance</span></h1>
+      <p>Q1 FY24 – Q3 FY26 &nbsp;·&nbsp; AUS Financial Year</p>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-label">Full Year</div>
+        <div class="hero-stat-year">2024</div>
+        <div class="hero-stat-num">1.00M</div>
+        <div class="hero-stat-sub">impressions</div>
+        <div class="hero-stat-num dark" style="font-size:24px;margin-top:10px;">7,626</div>
+        <div class="hero-stat-sub">engagements</div>
+        <div class="hero-stat-muted">2023 data incomplete</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-label">Full Year</div>
+        <div class="hero-stat-year">2025</div>
+        <div class="hero-stat-num">2.73M</div>
+        <div class="hero-stat-sub">impressions</div>
+        <div class="hero-stat-num dark" style="font-size:24px;margin-top:10px;">57,494</div>
+        <div class="hero-stat-sub">engagements</div>
+        <div class="hero-stat-badge">↑ 173% imp &nbsp;·&nbsp; ↑ 654% eng YoY</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-label">Jan–Mar only</div>
+        <div class="hero-stat-year">2026</div>
+        <div class="hero-stat-num">1.39M</div>
+        <div class="hero-stat-sub">impressions</div>
+        <div class="hero-stat-badge">↑ 495% YoY</div>
+        <div class="hero-stat-num dark" style="font-size:24px;margin-top:10px;">67,517</div>
+        <div class="hero-stat-sub">engagements</div>
+        <div class="hero-stat-badge eng">↑ 4,969% YoY</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">Quarter by Quarter</div>
+        <div class="chart-subtitle">AUS FY: Q1 Jul–Sep · Q2 Oct–Dec · Q3 Jan–Mar · Q4 Apr–Jun</div>
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item">
+          <span class="legend-dot" style="background:#97d422;"></span>
+          Impressions
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot" style="background:#1f2937;"></span>
+          Engagements
+        </div>
+      </div>
+    </div>
+    <div class="chart-wrapper">
+      <canvas id="mainChart"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const labels = [
+  "Q1 FY24","Q2 FY24","Q3 FY24","Q4 FY24",
+  "Q1 FY25","Q2 FY25","Q3 FY25","Q4 FY25",
+  "Q1 FY26","Q2 FY26","Q3 FY26"
+];
+
+const tooltipDates = [
+  "Jul–Sep 2023","Oct–Dec 2023","Jan–Mar 2024","Apr–Jun 2024",
+  "Jul–Sep 2024","Oct–Dec 2024","Jan–Mar 2025","Apr–Jun 2025",
+  "Jul–Sep 2025","Oct–Dec 2025","Jan–Mar 2026"
+];
+
+const impressions = [
+  214730, 153590, 142329, 250835,
+  373312, 233180, 234397, 671151,
+  751684, 1075804, 1394246
+];
+
+const engagements = [
+  2386, 1545, 1366, 2497,
+  2702, 1039, 1332, 13046,
+  22828, 20288, 67517
+];
+
+// Milestone annotations — row 0 = upper, row 1 = lower
+const milestones = [
+  { index: 0,  label: '1', color: '#6b7280', text: 'Tracking setup begins',                           row: 0 },
+  { index: 2,  label: '2', color: '#059669', text: 'Promoted to Global Brand Manager · Prominence onboarded', row: 1 },
+  { index: 5,  label: '3', color: '#0891b2', text: 'New website launched',                            row: 0 },
+  { index: 6,  label: '4', color: '#d97706', text: 'Prominence partnership ends (£72,000 p/y saving)', row: 1 },
+  { index: 7,  label: '5', color: '#7c3aed', text: 'Podcast launched',                                row: 0 },
+  { index: 10, label: '6', color: '#97d422', text: 'Marketing Assistant hired',                       row: 1 },
+];
+
+const yearSeparators = [
+  { pos: 3.5, labelPos: 4.0, label: 'FY2025' },
+  { pos: 7.5, labelPos: 8.0, label: 'FY2026' },
+];
+
+function roundedRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+const annotationPlugin = {
+  id: 'annotations',
+  afterDraw(chart) {
+    const { ctx, chartArea, scales } = chart;
+    if (!chartArea) return;
+
+    // FY watermarks
+    [{c:1.5,t:'FY2024'},{c:5.5,t:'FY2025'},{c:9.0,t:'FY2026'}].forEach(fy => {
+      ctx.save();
+      ctx.fillStyle = 'rgba(0,0,0,0.04)';
+      ctx.font = '800 24px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(fy.t, scales.x.getPixelForValue(fy.c), chartArea.bottom - 26);
+      ctx.restore();
+    });
+
+    // FY separators
+    yearSeparators.forEach(sep => {
+      const xSep = scales.x.getPixelForValue(sep.pos);
+      const xLbl = scales.x.getPixelForValue(sep.labelPos);
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(xSep, chartArea.top);
+      ctx.lineTo(xSep, chartArea.bottom);
+      ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([]);
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(0,0,0,0.3)';
+      ctx.font = '600 10px Inter, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText(sep.label, xLbl + 4, chartArea.top + 4);
+      ctx.restore();
+    });
+
+    // Milestone annotations
+    const ROW0_Y = chartArea.top - 54;
+    const ROW1_Y = chartArea.top - 28;
+    const PILL_H = 22;
+    const BADGE_W = 20;
+    const FONT_SIZE = 10.5;
+    const PILL_PAD = 7;
+
+    milestones.forEach(m => {
+      const x = scales.x.getPixelForValue(m.index);
+      const labelY = m.row === 0 ? ROW0_Y : ROW1_Y;
+
+      ctx.save();
+      ctx.font = `600 ${FONT_SIZE}px Inter, sans-serif`;
+      const labelTextW = ctx.measureText(m.text).width;
+      const pillW = BADGE_W + 6 + labelTextW + PILL_PAD * 2;
+
+      let pillX = x - pillW / 2;
+      pillX = Math.max(chartArea.left, Math.min(pillX, chartArea.right - pillW));
+
+      // Pill
+      roundedRect(ctx, pillX, labelY - PILL_H / 2, pillW, PILL_H, 5);
+      ctx.fillStyle = m.color + '18';
+      ctx.fill();
+      roundedRect(ctx, pillX, labelY - PILL_H / 2, pillW, PILL_H, 5);
+      ctx.strokeStyle = m.color + '60';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Badge
+      const badgeCX = pillX + PILL_PAD + BADGE_W / 2;
+      ctx.beginPath();
+      ctx.arc(badgeCX, labelY, BADGE_W / 2 - 1, 0, Math.PI * 2);
+      ctx.fillStyle = m.color;
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.font = `bold ${FONT_SIZE}px Inter, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(m.label, badgeCX, labelY);
+
+      // Text
+      ctx.fillStyle = m.color + 'dd';
+      ctx.font = `500 ${FONT_SIZE}px Inter, sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(m.text, pillX + PILL_PAD + BADGE_W + 6, labelY);
+      ctx.restore();
+
+      // Connector
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(x, labelY + PILL_H / 2 + 1);
+      ctx.lineTo(x, chartArea.top);
+      ctx.strokeStyle = m.color + '40';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
+      ctx.stroke();
+      ctx.restore();
+
+      // Vertical milestone line
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(x, chartArea.top);
+      ctx.lineTo(x, chartArea.bottom);
+      ctx.strokeStyle = m.color + '55';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.stroke();
+      ctx.restore();
+    });
+  }
+};
+
+const ctx = document.getElementById('mainChart').getContext('2d');
+
+new Chart(ctx, {
+  type: 'line',
+  plugins: [annotationPlugin],
+  data: {
+    labels,
+    datasets: [
+      {
+        label: 'Impressions',
+        data: impressions,
+        borderColor: '#97d422',
+        backgroundColor: 'rgba(151,212,34,0.06)',
+        borderWidth: 3,
+        fill: true,
+        tension: 0.35,
+        pointRadius: 5,
+        pointBackgroundColor: '#97d422',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointHoverRadius: 8,
+        yAxisID: 'y',
+        order: 1,
+      },
+      {
+        label: 'Engagements',
+        data: engagements,
+        borderColor: '#1f2937',
+        backgroundColor: 'rgba(31,41,55,0.04)',
+        borderWidth: 3,
+        fill: true,
+        tension: 0.35,
+        pointRadius: 5,
+        pointBackgroundColor: '#1f2937',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointHoverRadius: 8,
+        yAxisID: 'y2',
+        order: 2,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: {
+      padding: { top: 90, right: 20, bottom: 10, left: 10 }
+    },
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#111827',
+        borderColor: '#374151',
+        borderWidth: 1,
+        titleColor: '#f9fafb',
+        titleFont: { size: 13, weight: '600', family: 'Inter' },
+        bodyColor: '#9ca3af',
+        bodyFont: { size: 12, family: 'Inter' },
+        padding: 14,
+        cornerRadius: 8,
+        callbacks: {
+          title(items) {
+            const idx = items[0].dataIndex;
+            const ms = milestones.filter(m => m.index === idx);
+            const out = [items[0].label + '  (' + tooltipDates[idx] + ')'];
+            ms.forEach(m => out.push('● ' + m.label + '. ' + m.text));
+            return out;
+          },
+          label(context) {
+            const v = context.raw;
+            const f = v >= 1000000 ? (v/1000000).toFixed(2)+'M' : v >= 1000 ? (v/1000).toFixed(1)+'K' : v.toLocaleString();
+            return '  ' + context.dataset.label + ': ' + f;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: '#f3f4f6', drawBorder: false },
+        border: { display: false },
+        ticks: { color: '#9ca3af', maxRotation: 0, font: { size: 11, family: 'Inter' }, padding: 8 }
+      },
+      y: {
+        position: 'left',
+        grid: { color: '#f3f4f6', drawBorder: false },
+        border: { display: false },
+        ticks: {
+          color: '#97d422', font: { size: 11, family: 'Inter' }, padding: 8,
+          callback: v => v >= 1000000 ? (v/1000000).toFixed(1)+'M' : v >= 1000 ? (v/1000).toFixed(0)+'K' : v
+        },
+        title: {
+          display: true, text: 'Impressions',
+          color: '#97d422', font: { size: 12, weight: '600', family: 'Inter' }, padding: { bottom: 10 }
+        }
+      },
+      y2: {
+        position: 'right',
+        grid: { drawOnChartArea: false, display: false },
+        border: { display: false },
+        ticks: {
+          color: '#1f2937', font: { size: 11, family: 'Inter' }, padding: 8,
+          callback: v => v >= 1000 ? (v/1000).toFixed(0)+'K' : v
+        },
+        title: {
+          display: true, text: 'Engagements',
+          color: '#1f2937', font: { size: 12, weight: '600', family: 'Inter' }, padding: { bottom: 10 }
+        }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
