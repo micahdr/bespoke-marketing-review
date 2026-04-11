@@ -166,37 +166,18 @@ html, body {
 /* ─ Top brand lockup (centered) ─ */
 .cover-topbar {
   position: absolute;
-  top: 38px; left: 0; right: 0;
+  top: 48px; left: 0; right: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 6;
   pointer-events: none;
 }
-.cover-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
+.cover-brand-logo {
+  height: 36px;
+  width: auto;
+  display: block;
 }
-.cover-brand-mark {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  background: var(--c-ink);
-  color: var(--c-cream);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 900;
-}
-.cover-brand-name {
-  font-size: 12px;
-  letter-spacing: 2.4px;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: var(--c-ink);
-}
-.cover-brand-name span { color: var(--c-acc); }
 
 /* ─ Top-right circular badge ─ */
 .cover-badge {
@@ -331,15 +312,15 @@ html, body {
   pointer-events: none;
 }
 .cover-rise.left {
-  width: 360px; height: 360px;
-  left: 16%;
-  bottom: -160px;
+  width: 380px; height: 380px;
+  left: 14%;
+  bottom: -170px;
   animation: covRiseL 7s ease-in-out infinite;
 }
 .cover-rise.right {
-  width: 360px; height: 360px;
-  right: 16%;
-  bottom: -160px;
+  width: 380px; height: 380px;
+  right: 14%;
+  bottom: -170px;
   animation: covRiseR 7s ease-in-out infinite;
 }
 @keyframes covRiseL {
@@ -1719,12 +1700,9 @@ html, body {
   <!-- Grain texture overlay -->
   <div class="cover-grain"></div>
 
-  <!-- Top bar: brand left, badge right -->
+  <!-- Top bar: centered brand logo -->
   <header class="cover-topbar">
-    <div class="cover-brand">
-      <span class="cover-brand-mark">B</span>
-      <span class="cover-brand-name">Bespoke <span>Careers</span></span>
-    </div>
+    <img class="cover-brand-logo" src="bespoke-logo.png" alt="Bespoke Careers">
   </header>
 
   <!-- Top-right rotating badge -->
@@ -1744,8 +1722,8 @@ html, body {
   <div class="cover-spark s8" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 L14 10 L24 12 L14 14 L12 24 L10 14 L0 12 L10 10 Z"/></svg></div>
 
   <!-- Two visual elements rising from bottom corners -->
-  <div class="cover-rise left" style="background-image:url('micah.jpg')" aria-hidden="true"></div>
-  <div class="cover-rise right" style="background-image:url('rebrand.png')" aria-hidden="true"></div>
+  <div class="cover-rise left"  style="background-image:url('micah-cover.jpg'); background-position: center 25%;" aria-hidden="true"></div>
+  <div class="cover-rise right" style="background-image:url('podcast-ep1.jpg'); background-position: 15% center;" aria-hidden="true"></div>
 
   <!-- Hero typography -->
   <main class="cover-hero">
