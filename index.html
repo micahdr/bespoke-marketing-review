@@ -130,184 +130,373 @@ html, body {
   text-align: center;
 }
 
-/* ─── SLIDE 1: COVER ─────────────────────────────── */
+/* ─── SLIDE 1: COVER (editorial constellation) ───── */
 #slide-1 {
-  background: var(--dark);
-  display: flex;
-  align-items: stretch;
-}
-
-.cover-left {
-  width: 52%;
-  padding: 80px 64px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
-  z-index: 2;
-}
-
-.cover-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.cover-logo-mark {
-  width: 36px;
-  height: 36px;
-  background: var(--green);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  font-weight: 900;
-  color: var(--dark);
-}
-
-.cover-logo-text {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--white);
-  letter-spacing: -0.3px;
-}
-
-.cover-logo-text span {
-  color: var(--green);
-}
-
-.cover-main {}
-
-.cover-eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--green);
-  margin-bottom: 20px;
-}
-
-.cover-title {
-  font-size: 72px;
-  font-weight: 900;
-  line-height: 0.95;
-  letter-spacing: -3px;
-  color: var(--white);
-  margin-bottom: 28px;
-}
-
-.cover-title em {
-  font-style: normal;
-  color: var(--green);
-}
-
-.cover-desc {
-  font-size: 16px;
-  color: rgba(255,255,255,0.45);
-  line-height: 1.6;
-  max-width: 360px;
-  margin-bottom: 40px;
-}
-
-.cover-meta {
-  display: flex;
-  gap: 32px;
-}
-
-.cover-meta-item {}
-
-.cover-meta-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.25);
-  margin-bottom: 4px;
-}
-
-.cover-meta-val {
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(255,255,255,0.7);
-}
-
-.cover-date {
-  font-size: 13px;
-  color: rgba(255,255,255,0.3);
-}
-
-.cover-right {
-  flex: 1;
+  /* Cream parchment matching Year That Was for seamless flow */
+  --c-cream:   #f2ede0;
+  --c-cream-2: #ece5d3;
+  --c-ink:     #0e0e0c;
+  --c-ink-mid: rgba(14,14,12,0.62);
+  --c-ink-dim: rgba(14,14,12,0.38);
+  --c-ink-hair:rgba(14,14,12,0.10);
+  --c-acc:     #5a8010;
+  background: var(--c-cream);
+  color: var(--c-ink);
+  display: block;
   position: relative;
   overflow: hidden;
 }
 
-/* Stacked photo cards */
-.photo-cards {
+/* Layered ambient background */
+.cover-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(70vw 50vh at 78% 22%, rgba(151,212,34,0.10), transparent 60%),
+    radial-gradient(60vw 55vh at 18% 88%, rgba(14,14,12,0.07), transparent 65%);
+  z-index: 0;
+}
+.cover-grain {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>");
+  opacity: 0.08;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Diagonal hairline in the corner — editorial accent */
+.cover-rule-h, .cover-rule-v {
+  position: absolute;
+  background: var(--c-ink);
+  z-index: 2;
+}
+.cover-rule-h { left: 56px; right: 56px; height: 1px; }
+.cover-rule-v { top: 56px;  bottom: 56px; width: 1px; }
+.cover-rule-h.top    { top: 86px; }
+.cover-rule-h.bottom { bottom: 86px; }
+.cover-rule-v.left   { left: 56px; }
+.cover-rule-v.right  { right: 56px; }
+
+/* ─── Top bar ─── */
+.cover-topbar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  padding: 36px 56px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 5;
+}
+.cover-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cover-brand-mark {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--c-ink);
+  color: var(--c-cream);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+.cover-brand-name {
+  font-size: 11px;
+  letter-spacing: 2.4px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--c-ink);
+}
+.cover-brand-name span { color: var(--c-acc); }
+
+.cover-topbar-meta {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  font-size: 10.5px;
+  letter-spacing: 1.6px;
+  font-weight: 700;
+  color: var(--c-ink-mid);
+  text-transform: uppercase;
+}
+.cover-topbar-meta .ct-dot {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--c-ink-dim);
+}
+.cover-topbar-meta .ct-tag {
+  border: 1px solid var(--c-ink);
+  border-radius: 100px;
+  padding: 5px 11px 4px;
+  color: var(--c-ink);
+  font-weight: 800;
+}
+
+/* ─── Hero typography (left side) ─── */
+.cover-hero {
+  position: absolute;
+  left: 56px;
+  top: 50%;
+  transform: translateY(-52%);
+  z-index: 6;
+  max-width: 720px;
+  padding-right: 24px;
+}
+
+.cover-eyebrow-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 11px;
+  letter-spacing: 2.6px;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--c-ink);
+  margin-bottom: 26px;
+}
+.cover-eyebrow-row::before {
+  content: "";
+  width: 38px;
+  height: 1px;
+  background: var(--c-ink);
+}
+
+.cover-h1 {
+  font-size: clamp(80px, 11.5vw, 168px);
+  font-weight: 900;
+  line-height: 0.84;
+  letter-spacing: -0.055em;
+  color: var(--c-ink);
+  margin: 0;
+}
+.cover-h1 .ch1-row {
+  display: block;
+  position: relative;
+}
+.cover-h1 em {
+  font-style: normal;
+  color: var(--c-acc);
+  position: relative;
+}
+.cover-h1 em::after {
+  /* underline accent under "Marketing" */
+  content: "";
+  position: absolute;
+  left: 2%;
+  right: 2%;
+  bottom: -0.04em;
+  height: 0.08em;
+  background: var(--c-acc);
+  opacity: 0.18;
+  border-radius: 2px;
+}
+
+.cover-yearrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 26px;
+  font-size: 13px;
+  letter-spacing: 2.5px;
+  font-weight: 800;
+  color: var(--c-ink);
+  text-transform: uppercase;
+}
+.cover-yearrow::before {
+  content: "";
+  width: 38px;
+  height: 1px;
+  background: var(--c-ink);
+}
+.cover-yearrow .cy-year {
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.cover-lead {
+  font-size: 15.5px;
+  line-height: 1.62;
+  color: var(--c-ink-mid);
+  max-width: 460px;
+  margin-top: 22px;
+}
+.cover-lead strong {
+  color: var(--c-ink);
+  font-weight: 800;
+}
+
+/* ─── Constellation of floating circles (right side) ─── */
+.cover-constellation {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  z-index: 3;
+  pointer-events: none;
 }
-
-.photo-cards-caption {
+.cc-stage {
   position: absolute;
-  bottom: 48px;
+  right: 0;
+  top: 0;
+  width: 56vw;
+  height: 100%;
+}
+.cc-circle {
+  position: absolute;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  box-shadow:
+    0 36px 72px -28px rgba(14,14,12,0.40),
+    0 10px 24px -12px rgba(14,14,12,0.20);
+  animation: ccFloat var(--dur, 14s) ease-in-out infinite;
+  animation-delay: var(--del, 0s);
+  will-change: transform;
+}
+.cc-circle::after {
+  /* subtle inner ring to lift the circle from cream */
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.18);
+  pointer-events: none;
+}
+.cc-label {
+  position: absolute;
+  bottom: -22px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 15px;
-  font-style: italic;
-  font-weight: 400;
-  color: rgba(255,255,255,0.55);
-  letter-spacing: 0.2px;
-  z-index: 10;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
   white-space: nowrap;
+  color: var(--c-ink-mid);
+  text-transform: uppercase;
 }
 
-.photo-card {
+@keyframes ccFloat {
+  0%,100% { transform: translate(0,0)    rotate(0deg); }
+  50%     { transform: translate(0,-14px) rotate(0.6deg); }
+}
+
+/* Constellation positions — 7 circles, varied sizes/depths */
+.cc-1 { width: 168px; height: 168px; right: 30%;  top: 14%; --dur: 16s; --del: 0s;    z-index: 3; }
+.cc-2 { width: 124px; height: 124px; right: 8%;   top: 12%; --dur: 14s; --del: -2s;   z-index: 4; }
+.cc-3 { width: 232px; height: 232px; right: 14%;  top: 36%; --dur: 18s; --del: -4s;   z-index: 5; }
+.cc-4 { width: 104px; height: 104px; right: 42%;  top: 9%;  --dur: 13s; --del: -5s;   z-index: 2; }
+.cc-5 { width: 116px; height: 116px; right: 36%;  bottom: 30%; --dur: 15s; --del: -3s; z-index: 4; }
+.cc-6 { width: 148px; height: 148px; right: 5%;   bottom: 16%; --dur: 17s; --del: -6s; z-index: 3; }
+.cc-7 { width: 96px;  height: 96px;  right: 24%;  bottom: 10%; --dur: 12s; --del: -1s; z-index: 2; }
+
+/* Hairline arcs connecting the constellation */
+.cc-arc {
   position: absolute;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.35;
+}
+.cc-arc circle, .cc-arc path {
+  fill: none;
+  stroke: var(--c-ink);
+  stroke-width: 0.7;
+  stroke-dasharray: 2 6;
 }
 
-/* Scattered pile — all 6 cards overlap organically */
-/* Back layer */
-.photo-card:nth-child(1) { width: 190px; height: 252px; left: 50%; top: 50%; margin-left: -265px; margin-top: -225px; transform: rotate(-7deg); }
-.photo-card:nth-child(2) { width: 186px; height: 246px; left: 50%; top: 50%; margin-left: -80px;  margin-top: -232px; transform: rotate(3deg); }
-.photo-card:nth-child(3) { width: 188px; height: 250px; left: 50%; top: 50%; margin-left: 90px;   margin-top: -218px; transform: rotate(9deg); }
-/* Front layer — overlapping and bigger */
-.photo-card:nth-child(4) { width: 198px; height: 262px; left: 50%; top: 50%; margin-left: -260px; margin-top: -40px; transform: rotate(-4deg); }
-.photo-card:nth-child(5) { width: 204px; height: 270px; left: 50%; top: 50%; margin-left: -75px;  margin-top: -25px; transform: rotate(1deg); }
-.photo-card:nth-child(6) { width: 200px; height: 266px; left: 50%; top: 50%; margin-left: 110px;  margin-top: -50px; transform: rotate(6deg); }
+/* ─── Footer (byline + scroll cue) ─── */
+.cover-footer {
+  position: absolute;
+  left: 56px;
+  right: 56px;
+  bottom: 60px;
+  display: flex;
+  gap: 56px;
+  align-items: flex-end;
+  z-index: 6;
+}
+.cover-byline {
+  min-width: 0;
+}
+.cover-byline-label {
+  font-size: 9px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--c-ink-dim);
+  margin-bottom: 6px;
+}
+.cover-byline-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--c-ink);
+  letter-spacing: -0.2px;
+}
+.cover-byline-role {
+  font-size: 12px;
+  color: var(--c-ink-mid);
+  margin-top: 2px;
+}
 
-.photo-card-inner {
-  width: 100%;
-  height: 100%;
+.cover-cue {
+  margin-left: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 40px;
-  position: relative;
+  align-items: flex-end;
+  gap: 12px;
+  font-size: 10.5px;
+  letter-spacing: 2.4px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--c-ink);
+}
+.cover-cue-line {
+  width: 1px;
+  height: 64px;
+  background: linear-gradient(180deg, var(--c-ink), transparent);
+  animation: ccCue 1.8s ease-in-out infinite;
+}
+@keyframes ccCue {
+  0%,100% { transform: translateY(0); opacity: 1; }
+  50%     { transform: translateY(14px); opacity: 0.25; }
 }
 
-.photo-card-caption {
+/* ─── Bottom marquee ticker ─── */
+.cover-marquee {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 10px 12px 14px;
-  background: linear-gradient(rgba(0,0,0,0.85), transparent);
+  left: 0; right: 0;
+  bottom: 0;
+  height: 30px;
+  overflow: hidden;
+  z-index: 4;
+  pointer-events: none;
+  border-top: 1px solid var(--c-ink-hair);
+  background: rgba(14,14,12,0.025);
+}
+.cover-marquee-track {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  white-space: nowrap;
   font-size: 10px;
-  font-weight: 700;
-  color: white;
-  text-align: center;
-  letter-spacing: 0.3px;
+  font-weight: 800;
+  letter-spacing: 2.2px;
+  color: var(--c-ink-mid);
   text-transform: uppercase;
-  z-index: 2;
+  animation: ccMarquee 80s linear infinite;
+  padding-left: 0;
+}
+.cover-marquee-track span { display: inline-block; padding: 0 22px; }
+.cover-marquee-track .cm-dot {
+  width: 3px; height: 3px; border-radius: 50%;
+  background: var(--c-ink-dim);
+  padding: 0;
+  margin: 0 2px;
+}
+@keyframes ccMarquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
 /* ─── SLIDE 2: NUMBERS ───────────────────────────── */
@@ -1590,66 +1779,120 @@ html, body {
      SLIDE 1 · COVER
 ══════════════════════════════════════════════════ -->
 <div class="slide active" id="slide-1">
-  <div class="cover-left">
-    <div class="cover-logo">
-      <div class="cover-logo-mark">B</div>
-      <div class="cover-logo-text">Bespoke <span>Careers</span></div>
-    </div>
 
-    <div class="cover-main">
-      <div class="cover-eyebrow">Marketing Performance Review</div>
-      <div class="cover-title">A Year<br>in <em>Marketing</em><br>2026</div>
-      <div class="cover-desc">From a brand-new function to a performance engine. Here's how marketing moved the needle.</div>
-      <div class="cover-meta">
-        <div class="cover-meta-item">
-          <div class="cover-meta-label">Period</div>
-          <div class="cover-meta-val">FY2024 – Q3 FY2026</div>
-        </div>
-        <div class="cover-meta-item">
-          <div class="cover-meta-label">Prepared by</div>
-          <div class="cover-meta-val">Micah Davis Rae</div>
-        </div>
-        <div class="cover-meta-item">
-          <div class="cover-meta-label">Date</div>
-          <div class="cover-meta-val">April 2026</div>
-        </div>
+  <!-- Ambient layers -->
+  <div class="cover-bg"></div>
+  <div class="cover-grain"></div>
+
+  <!-- Editorial frame rules -->
+  <div class="cover-rule-h top"></div>
+  <div class="cover-rule-h bottom"></div>
+
+  <!-- Top bar -->
+  <header class="cover-topbar">
+    <div class="cover-brand">
+      <span class="cover-brand-mark">B</span>
+      <span class="cover-brand-name">Bespoke <span>Careers</span></span>
+    </div>
+    <div class="cover-topbar-meta">
+      <span>FY24 → Q3 FY26</span>
+      <span class="ct-dot"></span>
+      <span class="ct-tag">Internal · CEO Review</span>
+      <span class="ct-dot"></span>
+      <span>April 2026</span>
+    </div>
+  </header>
+
+  <!-- Constellation of floating circles (right side) -->
+  <div class="cover-constellation" aria-hidden="true">
+    <div class="cc-stage">
+
+      <!-- Hairline arcs in the background -->
+      <svg class="cc-arc" viewBox="0 0 800 800" preserveAspectRatio="none">
+        <circle cx="430" cy="400" r="280"/>
+        <circle cx="430" cy="400" r="190"/>
+        <circle cx="430" cy="400" r="110"/>
+      </svg>
+
+      <div class="cc-circle cc-1" style="background-image:url('viral-moments.png')">
+        <span class="cc-label">Viral Moments</span>
+      </div>
+      <div class="cc-circle cc-2" style="background-image:url('podcast-launched.png')">
+        <span class="cc-label">Podcast</span>
+      </div>
+      <div class="cc-circle cc-3" style="background-image:url('website.jpg'); background-position: center top">
+        <span class="cc-label">New Website</span>
+      </div>
+      <div class="cc-circle cc-4" style="background-image:url('archiboo.jpg'); background-position: center 25%">
+        <span class="cc-label">Archiboo Nom.</span>
+      </div>
+      <div class="cc-circle cc-5" style="background-image:url('market-report.jpg')">
+        <span class="cc-label">Market Reports</span>
+      </div>
+      <div class="cc-circle cc-6" style="background-image:url('salary-guide.jpg'); background-position: center 30%">
+        <span class="cc-label">Salary Guide</span>
+      </div>
+      <div class="cc-circle cc-7" style="background-image:url('rebrand.png')">
+        <span class="cc-label">Rebrand</span>
       </div>
     </div>
-
-    <div class="cover-date">Internal · For CEO Review</div>
   </div>
 
-  <div class="cover-right">
-    <div class="photo-cards">
-      <div class="photo-card">
-        <div class="photo-card-inner" style="background: url('viral-moments.png') center center / cover no-repeat;"></div>
-        <div class="photo-card-caption">Viral Moments</div>
-      </div>
-      <div class="photo-card">
-        <div class="photo-card-inner" style="background: url('podcast-launched.png') center center / cover no-repeat;"></div>
-        <div class="photo-card-caption">Podcast Launch</div>
-      </div>
-      <div class="photo-card">
-        <div class="photo-card-inner" style="background: url('website.jpg') center top / cover no-repeat;"></div>
-        <div class="photo-card-caption">New Website</div>
-      </div>
-      <div class="photo-card">
-        <div class="photo-card-inner" style="background: url('archiboo.jpg') center 20% / cover no-repeat;"></div>
-        <div class="photo-card-caption">Archiboo Nom.</div>
-      </div>
-      <!-- Bottom row — neat -->
-      <div class="photo-card">
-        <div class="photo-card-inner" style="background: url('market-report.jpg') center center / cover no-repeat;"></div>
-        <div class="photo-card-caption">Market Reports</div>
-      </div>
-      <div class="photo-card">
-        <div class="photo-card-inner" style="background: url('salary-guide.jpg') center 30% / cover no-repeat;"></div>
-        <div class="photo-card-caption">Salary Guide</div>
-      </div>
+  <!-- Hero typography -->
+  <main class="cover-hero">
+    <div class="cover-eyebrow-row">Marketing Performance Review</div>
+    <h1 class="cover-h1">
+      <span class="ch1-row">A&nbsp;Year</span>
+      <span class="ch1-row">in&nbsp;<em>Marketing</em></span>
+    </h1>
+    <div class="cover-yearrow">
+      <span>The Year</span>
+      <span class="cy-year">2026</span>
     </div>
+    <p class="cover-lead">
+      Eighteen months ago, marketing didn't exist as a discipline at Bespoke Careers. This is the story of what it became — <strong>and where we go next</strong>.
+    </p>
+  </main>
 
-    <div class="photo-cards-caption">…and so much more</div>
+  <!-- Footer: byline + scroll cue -->
+  <footer class="cover-footer">
+    <div class="cover-byline">
+      <div class="cover-byline-label">Prepared by</div>
+      <div class="cover-byline-name">Micah Davis-Rae</div>
+      <div class="cover-byline-role">Global Brand Manager</div>
+    </div>
+    <div class="cover-byline">
+      <div class="cover-byline-label">For</div>
+      <div class="cover-byline-name">Lindsay Belford</div>
+      <div class="cover-byline-role">CEO &amp; Senior Leadership</div>
+    </div>
+    <div class="cover-cue">
+      <span>Scroll · The year that was</span>
+      <span class="cover-cue-line"></span>
+    </div>
+  </footer>
 
+  <!-- Marquee ticker -->
+  <div class="cover-marquee" aria-hidden="true">
+    <div class="cover-marquee-track">
+      <span>Viral Moments</span><span class="cm-dot"></span>
+      <span>Bespoke Podcast Launched</span><span class="cm-dot"></span>
+      <span>New Website</span><span class="cm-dot"></span>
+      <span>Archiboo Nomination</span><span class="cm-dot"></span>
+      <span>AUS &amp; UK Market Reports</span><span class="cm-dot"></span>
+      <span>Salary Guide &amp; Calculator</span><span class="cm-dot"></span>
+      <span>From Home to Office</span><span class="cm-dot"></span>
+      <span>The Rebrand</span><span class="cm-dot"></span>
+      <!-- duplicate for seamless loop -->
+      <span>Viral Moments</span><span class="cm-dot"></span>
+      <span>Bespoke Podcast Launched</span><span class="cm-dot"></span>
+      <span>New Website</span><span class="cm-dot"></span>
+      <span>Archiboo Nomination</span><span class="cm-dot"></span>
+      <span>AUS &amp; UK Market Reports</span><span class="cm-dot"></span>
+      <span>Salary Guide &amp; Calculator</span><span class="cm-dot"></span>
+      <span>From Home to Office</span><span class="cm-dot"></span>
+      <span>The Rebrand</span><span class="cm-dot"></span>
+    </div>
   </div>
 </div>
 
