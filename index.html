@@ -88,6 +88,29 @@ html, body {
 .s4-explosion-flash.active {
   opacity: 0.35;
 }
+/* Full-screen dissolve curtain: white → black crossfade */
+.s4-dissolve {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  background: white;
+  transition: opacity 0.35s ease;
+}
+.s4-dissolve.flash-white {
+  opacity: 1;
+}
+.s4-dissolve.to-black {
+  background: #0a0f05;
+  transition: opacity 0.7s ease, background 0.6s ease;
+  opacity: 1;
+}
+.s4-dissolve.fade-out {
+  background: #0a0f05;
+  transition: opacity 0.8s ease;
+  opacity: 0;
+}
 /* While exploding, the text fades quickly */
 #slide-4.s4-exploding .s4-texts,
 #slide-4.s4-exploding .s4-hud,
@@ -335,15 +358,7 @@ body.nav-wake .nav { opacity: 1; }
   position: relative;
 }
 .cover-h1 em::after {
-  content: "";
-  position: absolute;
-  left: 2%;
-  right: 2%;
-  bottom: -0.03em;
-  height: 0.10em;
-  background: #97d422;
-  opacity: 0.18;
-  border-radius: 4px;
+  display: none;
 }
 .cover-sub {
   margin-top: 28px;
@@ -2391,6 +2406,7 @@ body.nav-wake .nav { opacity: 1; }
 
 
 <!-- ─── NAV ──────────────────────────────────────── -->
+<div class="s4-dissolve" id="s4Dissolve"></div>
 <div class="nav">
   <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">&#8592;</button>
   <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">&#8594;</button>
@@ -2492,29 +2508,14 @@ function _doGoTo(n, opts) {
   const prev = current;
   current = Math.max(0, Math.min(n, slides.length - 1));
 
-  // If coming from explosion, give incoming slide the scale-up entrance
-  const fromExplosion = prev === 1 && _s4JustExploded;
   _s4JustExploded = false;
 
   slides.forEach((s, i) => {
-    s.classList.remove('active', 'prev', 's4-enter-from-explosion');
+    s.classList.remove('active', 'prev');
     if (i === prev && i !== current) s.classList.add('prev');
   });
 
-  if (fromExplosion) {
-    slides[current].classList.add('s4-enter-from-explosion');
-    // Force reflow so the initial transform applies before .active triggers transition
-    void slides[current].offsetHeight;
-  }
-
   slides[current].classList.add('active');
-
-  if (fromExplosion) {
-    // Clean up the class after the transition completes
-    setTimeout(() => {
-      slides[current].classList.remove('s4-enter-from-explosion');
-    }, 1600);
-  }
 
   document.querySelectorAll('.nav-dot').forEach((d, i) => {
     d.classList.toggle('active', i === current);
@@ -2544,15 +2545,14 @@ let _s4JustExploded = false;
 function triggerS4Explosion(onComplete) {
   const s4 = document.getElementById('slide-4');
   const flash = document.getElementById('s4Flash');
+  const dissolve = document.getElementById('s4Dissolve');
   const circles = document.querySelectorAll('#s4Orbit .s4-orbit-circle');
   if (!s4 || !circles.length) { onComplete(); return; }
 
   s4.classList.add('s4-exploding');
-
-  // Enable free-spin so the rAF loop uses _s4RotSpeed even in moment view
   _s4ExplodeFreeSpin = true;
 
-  // Phase 1: Slow build-up — start gentle, accelerate exponentially (0-1200ms)
+  // Phase 1: Slow build-up (0-1200ms) — accelerate ring spin
   _s4RotSpeed = 1.5;
   setTimeout(() => { _s4RotSpeed = 3; }, 150);
   setTimeout(() => { _s4RotSpeed = 6; }, 300);
@@ -2562,10 +2562,10 @@ function triggerS4Explosion(onComplete) {
   setTimeout(() => { _s4RotSpeed = 60; }, 900);
   setTimeout(() => { _s4RotSpeed = 90; }, 1050);
 
-  // Phase 2: At 1200ms — BANG. Scatter circles outward.
+  // Phase 2 (1200ms): BANG — scatter circles + green flash + WHITE dissolve curtain
   setTimeout(() => {
-    // Green flash
     if (flash) flash.classList.add('active');
+    if (dissolve) { dissolve.className = 's4-dissolve'; void dissolve.offsetHeight; dissolve.classList.add('flash-white'); }
 
     circles.forEach((c, i) => {
       c.classList.add('explode');
@@ -2575,28 +2575,27 @@ function triggerS4Explosion(onComplete) {
       const dy = Math.sin(angle) * dist;
       const scale = 0.2 + Math.random() * 1.6;
       const spin = (Math.random() - 0.5) * 720;
-
       c.style.transform = `translate(${dx.toFixed(0)}px, ${dy.toFixed(0)}px) scale(${scale.toFixed(2)}) rotate(${spin.toFixed(0)}deg)`;
       c.style.opacity = '0';
     });
   }, 1200);
 
-  // Phase 3: Fade flash
+  // Phase 3 (1550ms): White dissolve → crossfade to dark
   setTimeout(() => {
     if (flash) flash.classList.remove('active');
-  }, 1600);
+    if (dissolve) { dissolve.className = 's4-dissolve to-black'; }
+  }, 1550);
 
-  // Phase 4: Complete — hide slide-4 BEFORE resetting, then hand off
+  // Phase 4 (1900ms): Behind the dark curtain, silently switch slides
   setTimeout(() => {
     _s4JustExploded = true;
     _s4ExplodeFreeSpin = false;
 
-    // Force slide-4 invisible before resetting scroll/circles
-    // so the intro screen doesn't flash back
+    // Hide slide-4 silently (curtain covers everything)
     s4.style.opacity = '0';
     s4.style.transition = 'none';
 
-    // Now safe to reset everything
+    // Reset explosion state
     s4.classList.remove('s4-exploding');
     circles.forEach(c => {
       c.classList.remove('explode');
@@ -2605,16 +2604,24 @@ function triggerS4Explosion(onComplete) {
     });
     _s4RotSpeed = _S4_BASE_ROT;
 
-    // Hand off to the slide transition
+    // Perform slide switch (hidden behind curtain)
     onComplete();
 
-    // After the slide transition starts, restore slide-4's
-    // transition and let normal CSS handle its opacity
     requestAnimationFrame(() => {
       s4.style.transition = '';
       s4.style.opacity = '';
     });
-  }, 1800);
+  }, 1900);
+
+  // Phase 5 (2200ms): Fade curtain away, revealing the new slide
+  setTimeout(() => {
+    if (dissolve) { dissolve.className = 's4-dissolve fade-out'; }
+  }, 2200);
+
+  // Phase 6 (3200ms): Clean up dissolve completely
+  setTimeout(() => {
+    if (dissolve) { dissolve.className = 's4-dissolve'; dissolve.style.opacity = ''; }
+  }, 3200);
 }
 
 function changeSlide(dir) {
@@ -2885,13 +2892,8 @@ function initSocialChart() {
       layout:{ padding:{ top:80, right:20, bottom:10, left:10 } },
       interaction:{ mode:'index', intersect:false },
       animation:{
-        x:{ type:'number', easing:'easeOutCubic', duration:1800,
-            from: NaN, delay(ctx){ return ctx.type==='data' ? ctx.dataIndex * 180 : 0; } },
-        y:{ type:'number', easing:'easeOutCubic', duration:1800,
-            from(ctx){ return ctx.type==='data' ? ctx.chart.scales.y.getPixelForValue(0) : undefined; },
-            delay(ctx){ return ctx.type==='data' ? ctx.dataIndex * 180 : 0; } },
-        opacity:{ duration:600, easing:'linear',
-            from:0, delay(ctx){ return ctx.type==='data' ? ctx.dataIndex * 180 : 0; } }
+        duration: 2000,
+        easing: 'easeOutQuart'
       },
       plugins:{
         legend:{display:false},
