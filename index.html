@@ -214,15 +214,51 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════════
-   ORBIT RING FLY-IN
+   ORBIT RING — STELLAR BIRTH ENTRANCE
+   Each circle materialises one-by-one from scale 0.
+   The CSS `scale` property is independent of the rAF
+   `transform: translate(--dx, --dy)` so we can spring
+   it in without fighting the positioning system.
 ═══════════════════════════════════════════════════════ */
-.s4-orbit-circle.fly-in {
-  transition: none !important;
+
+/* While waiting to be born: scale 0, position already correct */
+.s4-orbit-circle.s4-unborn {
+  scale: 0 !important;
   opacity: 0 !important;
 }
-.s4-orbit-circle.fly-in-active {
-  transition: transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1),
-              opacity 0.5s ease !important;
+
+/* Active during the spring-pop transition (added momentarily) */
+.s4-orbit-circle.s4-born {
+  transition: scale 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* Shockwave ripple ring — expands outward from the circle */
+.s4-orbit-circle.s4-born::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 100%; height: 100%;
+  transform: translate(-50%, -50%) scale(0.6);
+  border-radius: 50%;
+  border: 2px solid rgba(151, 212, 34, 0.95);
+  animation: s4BirthRipple 0.85s cubic-bezier(0.2, 0.6, 0.4, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes s4BirthRipple {
+  0%   { transform: translate(-50%, -50%) scale(0.6);  opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(2.8);  opacity: 0; }
+}
+
+/* Inner glow pulse when the circle snaps into place */
+.s4-oc-inner.s4-birth-glow {
+  animation: s4InnerGlow 0.75s ease-out forwards;
+}
+
+@keyframes s4InnerGlow {
+  0%   { box-shadow: 0 0 0   0   rgba(151, 212, 34, 0);   }
+  25%  { box-shadow: 0 0 22px 8px rgba(151, 212, 34, 0.7); }
+  100% { box-shadow: 0 0 0   0   rgba(151, 212, 34, 0);   }
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -1048,9 +1084,12 @@ body.nav-wake .nav { opacity: 1; }
   margin-left: calc(var(--size, 84px) / -2);
   margin-top:  calc(var(--size, 84px) / -2);
   transform: translate(var(--dx, 0px), var(--dy, 0px));
+  /* CSS individual `scale` property — composes on top of transform,
+     independent of rAF. Used by the stellar birth entrance. */
+  scale: 1;
   opacity: var(--oc-opacity, 1);
   z-index: var(--oc-z, 1);
-  will-change: transform, width, height, opacity;
+  will-change: transform, scale, width, height, opacity;
 }
 .s4-oc-inner {
   position: absolute;
@@ -3093,6 +3132,7 @@ function initJobChart() {
       }
     }
   });
+  _runCountsForSlide(3);
 }
 
 // ── Inbound Demand ──
@@ -3163,6 +3203,7 @@ function initInboundChart() {
       }
     }
   });
+  _runCountsForSlide(4);
 }
 
 // ── Contact Form ──
@@ -3230,6 +3271,7 @@ function initContactChart() {
       }
     }
   });
+  _runCountsForSlide(5);
 }
 
 // ── Salary Guide ──
@@ -3864,6 +3906,10 @@ function buildSlide4() {
     });
   }
   document.getElementById('s4HudTot').textContent = String(N).padStart(2, '0');
+
+  // Trigger the stellar birth entrance — circles pop in one-by-one
+  // 300ms after the orbit DOM is fully built and rAF has started.
+  setTimeout(triggerS4FlyIn, 300);
 }
 
 // smoothstep easing
@@ -4174,71 +4220,29 @@ window.addEventListener('popstate', () => _applyURLState(true));
 // ═══════════════════════════════════════════════════════
 // COUNTING NUMBERS
 // ═══════════════════════════════════════════════════════
-function animateCount(el, target, duration, prefix, suffix, decimals) {
-  if (!el) return;
-  decimals = decimals || 0;
-  prefix = prefix || '';
-  suffix = suffix || '';
+function animateCount(el, target, duration) {
+  if (!el || el._counting) return;
+  el._counting = true;
   const start = performance.now();
-  const startVal = 0;
   function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
   function step(now) {
-    const elapsed = now - start;
-    const progress = Math.min(1, elapsed / duration);
-    const val = startVal + (target - startVal) * easeOutQuart(progress);
-    const formatted = decimals > 0
-      ? val.toFixed(decimals)
-      : Math.round(val).toLocaleString();
-    el.textContent = prefix + formatted + suffix;
+    const progress = Math.min(1, (now - start) / duration);
+    const val = Math.round(target * easeOutQuart(progress));
+    el.textContent = val.toLocaleString();
     if (progress < 1) requestAnimationFrame(step);
-    else el.textContent = prefix + (decimals > 0 ? target.toFixed(decimals) : target.toLocaleString()) + suffix;
+    else el.textContent = target.toLocaleString();
   }
   requestAnimationFrame(step);
 }
 
-// Map of slide index → numbers to count
-// Each entry: { selector, target, prefix, suffix, decimals, duration }
-const COUNT_TARGETS = {
-  // Slide 3 (social): triggered after chart appears
-  3: [
-    { selector: '.s5-big-num', target: 1308, duration: 1800 },
-  ],
-  4: [
-    { selector: '#slide-5b .s5-big-num', target: 41, duration: 1400 },
-  ],
-  5: [
-    { selector: '#slide-5c .s5-big-num', target: 681, duration: 1600 },
-  ],
-};
-
-const _countedSlides = {};
-function triggerCountsForSlide(idx) {
-  if (_countedSlides[idx]) return;
-  const targets = COUNT_TARGETS[idx];
-  if (!targets) return;
-  _countedSlides[idx] = true;
+// Called from chart init functions directly (no override needed)
+function _runCountsForSlide(idx) {
   setTimeout(() => {
-    targets.forEach(t => {
-      const el = document.querySelector(t.selector);
-      animateCount(el, t.target, t.duration, t.prefix || '', t.suffix || '', t.decimals || 0);
-    });
-  }, 400);
+    if (idx === 3) animateCount(document.querySelector('#slide-5 .s5-big-num'), 1308, 1800);
+    if (idx === 4) animateCount(document.querySelector('#slide-5b .s5-big-num'), 41, 1400);
+    if (idx === 5) animateCount(document.querySelector('#slide-5c .s5-big-num'), 681, 1600);
+  }, 350);
 }
-
-// Hook into goTo to trigger counts
-const _origGoTo = _doGoTo;
-
-// Also trigger on initial slide changes — patch initChartsForSlide
-const _origInitCharts = initChartsForSlide;
-function initChartsForSlide(idx) {
-  _origInitCharts(idx);
-  triggerCountsForSlide(idx);
-}
-
-// Re-run count triggers when navigating
-document.addEventListener('_slideChanged', e => {
-  triggerCountsForSlide(e.detail.idx);
-});
 
 // ═══════════════════════════════════════════════════════
 // WHAT'S NEXT PANEL PARALLAX
@@ -4246,68 +4250,82 @@ document.addEventListener('_slideChanged', e => {
 (function initS7Parallax() {
   const carousel = document.querySelector('.s7-carousel');
   if (!carousel) return;
-
   carousel.addEventListener('mousemove', e => {
     const rect = carousel.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const dx = (e.clientX - cx) / rect.width;   // -0.5 to 0.5
-    const dy = (e.clientY - cy) / rect.height;  // -0.5 to 0.5
-
+    const dx = (e.clientX - (rect.left + rect.width / 2)) / rect.width;
+    const dy = (e.clientY - (rect.top + rect.height / 2)) / rect.height;
     const activePanel = carousel.querySelector('.s7-panel.active');
     if (!activePanel) return;
     const img = activePanel.querySelector('.s7-panel-img');
     if (!img) return;
-
-    const tx = dx * 18;  // max 18px shift
-    const ty = dy * 12;
-    img.style.transform = `scale(1) translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px)`;
+    img.style.transform = `scale(1) translate(${(dx * 18).toFixed(1)}px, ${(dy * 12).toFixed(1)}px)`;
   });
-
   carousel.addEventListener('mouseleave', () => {
-    const img = document.querySelector('.s7-panel.active .s7-panel-img');
+    const img = carousel.querySelector('.s7-panel.active .s7-panel-img');
     if (img) img.style.transform = 'scale(1)';
   });
 })();
 
 // ═══════════════════════════════════════════════════════
-// ORBIT RING FLY-IN (runs once when slide-4 first shows)
+// ORBIT RING — STELLAR BIRTH ENTRANCE
+// Each of the 19 circles materialises one-by-one.
+// Strategy: CSS individual `scale` property transitions
+// independently from the rAF-driven `transform: translate()`,
+// so the rAF keeps positioning while we spring in scale.
 // ═══════════════════════════════════════════════════════
 let _s4FlyInDone = false;
 function triggerS4FlyIn() {
   if (_s4FlyInDone) return;
   _s4FlyInDone = true;
-  const circles = document.querySelectorAll('#s4Orbit .s4-orbit-circle');
+
+  const circles = Array.from(document.querySelectorAll('#s4Orbit .s4-orbit-circle'));
   if (!circles.length) return;
 
-  // Start all circles off-screen (fly-in class removes position transition)
-  circles.forEach((c, i) => {
-    c.classList.add('fly-in');
-    // Each circle bursts from the center outward with a stagger
-    const angle = (Math.PI * 2 * i / circles.length) - Math.PI / 2;
-    const startDist = 0; // from center
-    c.style.setProperty('--dx', '0px');
-    c.style.setProperty('--dy', '0px');
-    c.style.setProperty('--size', '20px');
-  });
+  // ── Phase 0: hide all circles at their correct orbit positions ──
+  // We use CSS class s4-unborn (scale 0, opacity 0) so the rAF
+  // can still update --dx/--dy every frame (positions stay correct).
+  circles.forEach(c => c.classList.add('s4-unborn'));
 
-  // Stagger each circle flying into its orbit position
+  // ── Phase 1: stagger each circle's birth ──
+  // 200ms initial pause, then 72ms between each circle.
+  // Total constellation forms over ~1.55s.
   circles.forEach((c, i) => {
-    const delay = 80 + i * 55;
+    const delay = 200 + i * 72;
+
     setTimeout(() => {
-      c.classList.remove('fly-in');
-      c.classList.add('fly-in-active');
-      c.style.opacity = ''; // let updateSlide4 control opacity
-      setTimeout(() => c.classList.remove('fly-in-active'), 1200);
+      // Remove hidden state — rAF's --oc-opacity now drives visibility
+      c.classList.remove('s4-unborn');
+
+      // Add the transition class so `scale` springs with overshoot
+      c.classList.add('s4-born');
+
+      // Double-rAF ensures the browser has rendered scale=0 before
+      // we flip to scale=1 (needed for the transition to fire).
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          c.style.scale = '1';
+        });
+      });
+
+      // Inner glow pulse — brief green flash on arrival
+      const inner = c.querySelector('.s4-oc-inner');
+      if (inner) {
+        inner.classList.remove('s4-birth-glow');
+        // Force reflow to restart animation if circle is revisited
+        void inner.offsetWidth;
+        inner.classList.add('s4-birth-glow');
+        setTimeout(() => inner.classList.remove('s4-birth-glow'), 800);
+      }
+
+      // Clean up: remove s4-born after spring settles (ripple stays
+      // for its own animation duration via the ::after keyframe).
+      // Leave scale:1 via inline style so it doesn't snap back.
+      setTimeout(() => {
+        c.classList.remove('s4-born');
+      }, 950);
+
     }, delay);
   });
-}
-
-// Hook into initSlide4 — run fly-in after build
-const _origInitSlide4 = initSlide4;
-function initSlide4() {
-  _origInitSlide4();
-  setTimeout(triggerS4FlyIn, 200);
 }
 </script>
 </body>
