@@ -271,6 +271,47 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════════
+   HERO SELECTION RING
+   Fires each time a circle becomes the active hero.
+   Two layers: a one-shot burst ring on arrival, plus a
+   soft breathing ring that persists while it is active.
+═══════════════════════════════════════════════════════ */
+
+/* One-shot shockwave burst — same language as birth ripple */
+.s4-orbit-circle.s4-hero-burst::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 100%; height: 100%;
+  transform: translate(-50%, -50%) scale(0.92);
+  border-radius: 50%;
+  border: 3px solid rgba(151, 212, 34, 1.0);
+  animation: s4HeroBurst 1.1s cubic-bezier(0.2, 0.55, 0.3, 1) forwards;
+  pointer-events: none;
+}
+@keyframes s4HeroBurst {
+  0%   { transform: translate(-50%, -50%) scale(0.92); opacity: 1.0; }
+  100% { transform: translate(-50%, -50%) scale(1.55); opacity: 0; }
+}
+
+/* Persistent breathing ring — shows while circle is the active hero */
+.s4-orbit-circle.s4-hero-active::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: calc(100% + 12px); height: calc(100% + 12px);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px solid rgba(151, 212, 34, 0.55);
+  animation: s4HeroPulse 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes s4HeroPulse {
+  0%, 100% { opacity: 0.35; transform: translate(-50%, -50%) scale(1.00); }
+  50%      { opacity: 0.75; transform: translate(-50%, -50%) scale(1.07); }
+}
+
+/* ═══════════════════════════════════════════════════════
    COUNTING NUMBERS
 ═══════════════════════════════════════════════════════ */
 .count-num { display: inline; }
@@ -491,7 +532,7 @@ body.nav-wake .nav { opacity: 1; }
 .cover-h1 {
   font-size: clamp(96px, 14vw, 232px);
   font-weight: 900;
-  line-height: 0.86;
+  line-height: 0.78;
   letter-spacing: -0.06em;
   color: var(--c-ink);
   margin: 0;
@@ -2121,7 +2162,7 @@ body.nav-wake .nav { opacity: 1; }
 
     <div>
       <div class="s3-period-label">Q3 FY26 · Jan–Mar 2026</div>
-      <div class="s3-big-num">1.39M</div>
+      <div class="s3-big-num">0.00M</div>
       <div class="s3-big-label">impressions in a single quarter</div>
       <div class="s3-yoy">↑ 495% &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">vs Q3 FY25 (234K)</span></div>
 
@@ -3073,6 +3114,7 @@ function initSocialChart() {
       }
     }
   });
+  _runCountsForSlide(2);
 }
 
 // ── Job Applications ──
@@ -3933,6 +3975,7 @@ function _smooth(t) { return t * t * (3 - 2 * t); }
 let _s4RotAngle = 0;
 let _s4RotSpeed = 0.12;              // current angular velocity (rad/s)
 let _s4LastFrame = null;             // rAF timestamp of prior frame
+let _s4ActiveRingI = -1;            // which circle currently has the hero ring
 const _S4_BASE_ROT  = 0.12;          // rest rate (slow)
 const _S4_BURST_ROT = 4.8;           // kick applied on scroll / click
 const _S4_DECAY = 1.6;               // rate at which burst decays
@@ -4117,6 +4160,39 @@ function updateSlide4() {
   document.querySelectorAll('#s4HudTicks .s4-hud-tick').forEach((t, j) => {
     t.classList.toggle('active', j <= curIdx);
   });
+
+  // ─ Hero selection ring ─────────────────────────────────
+  // Fires when the active circle changes in moment view.
+  // Two effects: a one-shot burst ring on arrival, plus a
+  // persistent breathing ring while the circle is the hero.
+  const inMomentView = activeIdx > -0.3;
+  const heroI = Math.round(Math.max(0, Math.min(N - 1, activeIdx)));
+
+  if (inMomentView && heroI !== _s4ActiveRingI) {
+    // Remove ring from previously active circle
+    if (_s4ActiveRingI >= 0) {
+      const prev = circles[_s4ActiveRingI];
+      if (prev) prev.classList.remove('s4-hero-active', 's4-hero-burst');
+    }
+    const heroCircle = circles[heroI];
+    if (heroCircle) {
+      heroCircle.classList.add('s4-hero-active');
+      // Delay burst 350 ms so it fires once the circle is mostly centred
+      setTimeout(() => {
+        if (!heroCircle.classList.contains('s4-hero-active')) return;
+        heroCircle.classList.remove('s4-hero-burst');
+        void heroCircle.offsetWidth; // reflow to restart animation
+        heroCircle.classList.add('s4-hero-burst');
+        setTimeout(() => heroCircle.classList.remove('s4-hero-burst'), 1150);
+      }, 350);
+    }
+    _s4ActiveRingI = heroI;
+  } else if (!inMomentView && _s4ActiveRingI !== -1) {
+    // Scrolled back to intro — clean up ring
+    const prev = circles[_s4ActiveRingI];
+    if (prev) prev.classList.remove('s4-hero-active', 's4-hero-burst');
+    _s4ActiveRingI = -1;
+  }
 }
 
 function initSlide4() {
@@ -4251,11 +4327,30 @@ function _runCountsForSlide(idx) {
   // Zero immediately — prevents any flash of the final value before the
   // count-up animation starts. HTML already starts at "0" but this
   // guards against re-render edge cases.
-  const _sel = { 3:'#slide-5 .s5-big-num', 4:'#slide-5b .s5-big-num', 5:'#slide-5c .s5-big-num' };
+  const _sel = {
+    2: '#slide-3 .s3-big-num',
+    3: '#slide-5 .s5-big-num',
+    4: '#slide-5b .s5-big-num',
+    5: '#slide-5c .s5-big-num'
+  };
   const el = _sel[idx] ? document.querySelector(_sel[idx]) : null;
-  if (el && !el._counting) el.textContent = '0';
+  if (el && !el._counting) el.textContent = idx === 2 ? '0.00M' : '0';
 
   setTimeout(() => {
+    if (idx === 2) {
+      // Social media: "1.39M" impressions — formatted with M suffix
+      const elM = document.querySelector('#slide-3 .s3-big-num');
+      if (!elM || elM._counting) return;
+      elM._counting = true;
+      const dur = 1800, target = 1.39, t0 = performance.now();
+      function easeOutQ(t) { return 1 - Math.pow(1 - t, 4); }
+      (function step(now) {
+        const p = Math.min(1, (now - t0) / dur);
+        elM.textContent = (target * easeOutQ(p)).toFixed(2) + 'M';
+        if (p < 1) requestAnimationFrame(step);
+        else elM.textContent = '1.39M';
+      })(performance.now());
+    }
     if (idx === 3) animateCount(document.querySelector('#slide-5 .s5-big-num'), 1308, 1800);
     if (idx === 4) animateCount(document.querySelector('#slide-5b .s5-big-num'), 41, 1400);
     if (idx === 5) animateCount(document.querySelector('#slide-5c .s5-big-num'), 681, 1600);
