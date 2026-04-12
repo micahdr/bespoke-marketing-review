@@ -2497,6 +2497,84 @@ body.nav-wake .nav { opacity: 1; }
   margin-bottom: 4px;
 }
 
+/* ─── SLIDE CS5: CASE STUDY — GSR ANDRADE (SALARY GUIDE) ── */
+#slide-cs5 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
+}
+
+.scs5-left {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(145deg, #1c1028 0%, #12141a 50%, var(--dark2) 100%);
+}
+
+.scs5-bg {
+  position: absolute;
+  inset: 0;
+  background: url('salary-guide-launch.jpg') center 30% / cover no-repeat;
+  opacity: 0.18;
+}
+
+.scs5-funnel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  z-index: 2;
+}
+
+.scs5-funnel-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  width: 220px;
+}
+
+.scs5-funnel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.scs5-funnel-dot.step-guide  { background: #7c3aed; box-shadow: 0 0 8px rgba(124,58,237,0.5); }
+.scs5-funnel-dot.step-call   { background: var(--green); opacity: 0.6; }
+.scs5-funnel-dot.step-meet   { background: var(--green); opacity: 0.8; }
+.scs5-funnel-dot.step-placed { background: var(--green); box-shadow: 0 0 10px rgba(151,212,34,0.5); }
+
+.scs5-funnel-line {
+  width: 2px;
+  height: 14px;
+  margin-left: 22px;
+  background: linear-gradient(to bottom, rgba(124,58,237,0.4), rgba(151,212,34,0.3));
+}
+
+.scs5-funnel-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: -0.2px;
+}
+
+.scs5-funnel-label.step-final {
+  color: var(--green);
+}
+
+.scs5-funnel-time {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.25);
+  margin-top: 1px;
+}
+
 /* ─── SLIDE 7: WHAT'S NEXT (4-panel carousel) ─────── */
 #slide-7 {
   background: #0a0d07;
@@ -2856,7 +2934,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE 3 · SOCIAL MEDIA
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-3">
-  <span class="page-tag">03 / 15</span>
+  <span class="page-tag">03 / 16</span>
 
   <div class="s3-left">
     <div>
@@ -2964,7 +3042,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE 5 · JOB APPLICATIONS
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-5">
-  <span class="page-tag">04 / 15</span>
+  <span class="page-tag">04 / 16</span>
 
   <div class="s5-left">
     <div>
@@ -3008,7 +3086,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE CSA1 · CANDIDATE CASE — MANALI SONI
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-csa1">
-  <span class="page-tag">05 / 15</span>
+  <span class="page-tag">05 / 16</span>
 
   <div class="scs-photo-wrap">
     <img src="https://assets.isu.pub/document-structure/241009001635-64ede05f822ba181787ce236f2506819/v1/d0153af5b006eb4c1995747e6f2ed5a9.jpeg" alt="Manali Soni · Architectural Technician" />
@@ -3097,7 +3175,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE CSA2 · CANDIDATE CASE — MONTGOMERY DAWSON
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-csa2">
-  <span class="page-tag">06 / 15</span>
+  <span class="page-tag">06 / 16</span>
 
   <!-- Left: Photo panel -->
   <div class="scs-photo-wrap">
@@ -3206,7 +3284,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE CSA3 · CANDIDATE CASE — GABRIELLE GONZALEZ
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-csa3">
-  <span class="page-tag">07 / 15</span>
+  <span class="page-tag">07 / 16</span>
 
   <!-- Left: Photo panel -->
   <div class="scs-photo-wrap">
@@ -3307,7 +3385,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE 5B · INBOUND CLIENT DEMAND
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-5b">
-  <span class="page-tag">08 / 15</span>
+  <span class="page-tag">08 / 16</span>
 
   <div class="s5-left">
     <div>
@@ -3358,7 +3436,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE CS1 · CASE STUDY — LINDSAY NUNES
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-cs1">
-  <span class="page-tag">09 / 15</span>
+  <span class="page-tag">09 / 16</span>
 
   <div class="scs-photo-wrap">
     <img src="https://images.squarespace-cdn.com/content/v1/639127618a24a2207cd0c88f/c6fc1c6e-e225-42cf-ad91-b5e334379739/lindsay+2A_desat+bg.jpg" alt="Lindsay Nunes · Principal, Punch Design" />
@@ -3442,7 +3520,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE CS2 · CASE STUDY — AMY ELSHAFEI
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-cs2">
-  <span class="page-tag">10 / 15</span>
+  <span class="page-tag">10 / 16</span>
 
   <div class="scs-photo-wrap">
     <img src="https://amyelshafei.com/wp-content/uploads/2025/02/People_Amy-1.jpg" alt="Amy Elshafei · Amy Elshafei + Associates" />
@@ -3530,7 +3608,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE CS3 · CASE STUDY — GREGOIRE HENRIOUD
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-cs3">
-  <span class="page-tag">11 / 15</span>
+  <span class="page-tag">11 / 16</span>
 
   <div class="scs-photo-wrap">
     <img src="https://media.licdn.com/dms/image/v2/C4D03AQFq0-0-5XCYbA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1541632077429?e=1777507200&v=beta&t=HvOK2NQCIP931mpV1rp4tZWXlYuk2hFfuRcF8zqHlm4" alt="Gregoire Henrioud · henrioud-architectes" />
@@ -3615,7 +3693,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE CS4 · CASE STUDY — LINDSAY BRIGGS
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-cs4">
-  <span class="page-tag">12 / 15</span>
+  <span class="page-tag">12 / 16</span>
 
   <div class="scs4-photo-wrap">
     <img class="scs4-bg-img" src="https://dallashomesforsaleandsoldphotos.dougnewby.com/4428-livingston-avenue-highland-park-texas/mls-20577551-1.jpg" alt="Briggs Architecture &amp; Design — Highland Park project" />
@@ -3720,7 +3798,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE 5C · CONTACT FORM SUBMISSIONS
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-5c">
-  <span class="page-tag">13 / 15</span>
+  <span class="page-tag">13 / 16</span>
 
   <div class="s5-left">
     <div>
@@ -3772,7 +3850,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE 6 · SALARY GUIDE
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-6">
-  <span class="page-tag dark">14 / 15</span>
+  <span class="page-tag dark">14 / 16</span>
 
   <div class="s6-top">
     <div>
@@ -3832,10 +3910,134 @@ body.nav-wake .nav { opacity: 1; }
 
 
 <!-- ══════════════════════════════════════════════════
+     SLIDE CS5 · CASE STUDY — GSR ANDRADE (SALARY GUIDE)
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-cs5">
+  <span class="page-tag">15 / 16</span>
+
+  <!-- Left: Conversion funnel visual -->
+  <div class="scs5-left">
+    <div class="scs5-bg"></div>
+    <div class="scs-photo-overlay"></div>
+
+    <!-- Funnel pipeline -->
+    <div class="scs5-funnel">
+      <div class="scs5-funnel-step">
+        <div class="scs5-funnel-dot step-guide"></div>
+        <div>
+          <div class="scs5-funnel-label">Salary Guide Downloaded</div>
+          <div class="scs5-funnel-time">5 Mar · 5:01 AM</div>
+        </div>
+      </div>
+      <div class="scs5-funnel-line"></div>
+      <div class="scs5-funnel-step">
+        <div class="scs5-funnel-dot step-call"></div>
+        <div>
+          <div class="scs5-funnel-label">Claire Reaches Out</div>
+          <div class="scs5-funnel-time">Same day · Candidate profile sent</div>
+        </div>
+      </div>
+      <div class="scs5-funnel-line"></div>
+      <div class="scs5-funnel-step">
+        <div class="scs5-funnel-dot step-meet"></div>
+        <div>
+          <div class="scs5-funnel-label">Intro Call + Client Meeting</div>
+          <div class="scs5-funnel-time">Same day · Full brief captured</div>
+        </div>
+      </div>
+      <div class="scs5-funnel-line"></div>
+      <div class="scs5-funnel-step">
+        <div class="scs5-funnel-dot step-placed"></div>
+        <div>
+          <div class="scs5-funnel-label step-final">Placement ✓</div>
+          <div class="scs5-funnel-time">3 Apr · Paola Chirinos De Lima</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom badge -->
+    <div class="scs-photo-tag">
+      <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;">
+        <span style="display:inline-block;background:#7c3aed;color:#fff;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:3px 8px;border-radius:4px;">Salary Guide Lead</span>
+      </div>
+      <div class="scs-photo-name" style="font-size:18px;font-weight:900;letter-spacing:-0.5px;">GSR Andrade<br>Architects</div>
+      <div class="scs-photo-title" style="font-size:12px;margin-top:4px;">Dallas · 2024 AIA Dallas Firm of the Year</div>
+    </div>
+  </div>
+
+  <!-- Right: Story panel -->
+  <div class="scs-right">
+    <div>
+      <div class="scs-eyebrow" style="color:#7c3aed;">Salary Guide → New Client → Placement · Dallas</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num">30</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">days</div>
+          <div class="scs-hero-sub">outreach → placement</div>
+        </div>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:0.5px;margin-top:6px;">Guide download triggered same-day outreach by Claire Mizell</div>
+    </div>
+
+    <!-- Quote from LuWanna -->
+    <div class="scs-quote" style="border-left-color:#7c3aed;">
+      "Your timing is excellent — we are <strong>actively looking to add to our team</strong>, and the candidate profile you shared is very promising."
+      <div style="font-size:11px;font-weight:600;color:rgba(124,58,237,0.7);margin-top:10px;">— LuWanna May, HR · GSR Andrade Architects</div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="scs-timeline">
+      <div class="scs-timeline-track" style="background:rgba(255,255,255,0.06);"></div>
+      <div style="position:absolute;top:9px;left:10px;right:10px;height:2px;background:linear-gradient(to right, #7c3aed 0%, var(--green) 100%);border-radius:1px;"></div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot" style="background:#7c3aed;border-color:#7c3aed;box-shadow:0 0 0 2px #7c3aed, 0 0 8px rgba(124,58,237,0.4);"></div>
+        <div class="scs-tnode-date" style="color:#7c3aed;">4 Mar</div>
+        <div class="scs-tnode-event">Claire<br>outreach</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">5 Mar</div>
+        <div class="scs-tnode-event">Client<br>meeting</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">Mar–Apr</div>
+        <div class="scs-tnode-event">Candidate<br>process</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot scs-dot-final"></div>
+        <div class="scs-tnode-date scs-date-final">3 Apr</div>
+        <div class="scs-tnode-event scs-event-final">Placed ✓</div>
+      </div>
+    </div>
+
+    <!-- Meta pills -->
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placed At</div>
+        <div class="scs-meta-value" style="font-size:12px;line-height:1.3;">GSR Andrade<br>Architects</div>
+        <div class="scs-meta-sub">Dallas · ~40 staff</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Candidate Placed</div>
+        <div class="scs-meta-value" style="font-size:12px;line-height:1.3;">Paola Chirinos<br>De Lima</div>
+        <div class="scs-meta-sub">Arch. Project Coordinator</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Source</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Salary Guide<br>Download</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10px;font-weight:700;color:rgba(124,58,237,0.85);">↑ inbound lead</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
      SLIDE 7 · WHAT'S NEXT
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-7">
-  <span class="page-tag">15 / 15</span>
+  <span class="page-tag">16 / 16</span>
 
   <div class="s7-header">
     <div class="s7-eyebrow">Looking ahead · FY27</div>
@@ -3979,7 +4181,7 @@ body.nav-wake .nav { opacity: 1; }
 <div class="nav">
   <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">&#8592;</button>
   <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">&#8594;</button>
-  <div class="slide-counter" id="slideCounter">01 / 15</div>
+  <div class="slide-counter" id="slideCounter">01 / 16</div>
   <div class="nav-dots" id="navDots"></div>
 </div>
 <script>
