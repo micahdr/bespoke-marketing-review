@@ -442,7 +442,7 @@ body.nav-wake .nav { opacity: 1; }
 /* ─── SLIDE 2: NUMBERS ───────────────────────────── */
 #slide-2 {
   background: var(--light);
-  padding: 64px 80px;
+  padding: 64px 80px 80px;
   display: flex;
   flex-direction: column;
 }
@@ -1203,7 +1203,7 @@ body.nav-wake .nav { opacity: 1; }
 }
 
 .s5-left {
-  padding: 64px 56px;
+  padding: 64px 56px 80px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1297,7 +1297,7 @@ body.nav-wake .nav { opacity: 1; }
 }
 
 .s5-right {
-  padding: 64px 48px;
+  padding: 64px 48px 80px;
   display: flex;
   flex-direction: column;
 }
@@ -2526,6 +2526,24 @@ function stepYearThatWas(dir) {
   s4.scrollTo({ top: nextStep * vh, behavior: 'smooth' });
   return true;
 }
+
+// ─── MOUSE / TRACKPAD SCROLL NAV ──────────────────
+(function() {
+  let scrollCooldown = false;
+  window.addEventListener('wheel', function(e) {
+    // Don't intercept scroll inside the Year That Was inner scroll container
+    const s4 = document.getElementById('slide-4');
+    if (current === 1 && s4 && s4.contains(e.target)) return;
+
+    e.preventDefault();
+    if (scrollCooldown) return;
+    scrollCooldown = true;
+    setTimeout(() => { scrollCooldown = false; }, 800);
+
+    if (e.deltaY > 0)  changeSlide(1);
+    if (e.deltaY < 0)  changeSlide(-1);
+  }, { passive: false });
+})();
 
 document.addEventListener('keydown', e => {
   // PageDown / PageUp / Home / End always skip whole sections, bypassing
