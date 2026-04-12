@@ -2505,75 +2505,7 @@ body.nav-wake .nav { opacity: 1; }
   overflow: hidden;
 }
 
-.scs5-left {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(145deg, #1c1028 0%, #12141a 50%, var(--dark2) 100%);
-}
-
-.scs5-bg {
-  position: absolute;
-  inset: 0;
-  background: url('https://gsr-andrade.com/wp-content/uploads/2021/06/001_GSRAndradeHeadshots2021_-9x12-WEB-e1623694425483.jpg') center 15% / cover no-repeat;
-  opacity: 0.45;
-}
-
-.scs5-funnel {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0;
-  z-index: 2;
-}
-
-.scs5-funnel-step {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 18px;
-  width: 220px;
-}
-
-.scs5-funnel-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.scs5-funnel-dot.step-guide  { background: #7c3aed; box-shadow: 0 0 8px rgba(124,58,237,0.5); }
-.scs5-funnel-dot.step-call   { background: var(--green); opacity: 0.6; }
-.scs5-funnel-dot.step-meet   { background: var(--green); opacity: 0.8; }
-.scs5-funnel-dot.step-placed { background: var(--green); box-shadow: 0 0 10px rgba(151,212,34,0.5); }
-
-.scs5-funnel-line {
-  width: 2px;
-  height: 14px;
-  margin-left: 22px;
-  background: linear-gradient(to bottom, rgba(124,58,237,0.4), rgba(151,212,34,0.3));
-}
-
-.scs5-funnel-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: rgba(255,255,255,0.6);
-  letter-spacing: -0.2px;
-}
-
-.scs5-funnel-label.step-final {
-  color: var(--green);
-}
-
-.scs5-funnel-time {
-  font-size: 10px;
-  font-weight: 500;
-  color: rgba(255,255,255,0.25);
-  margin-top: 1px;
-}
+/* Left panel reuses shared .scs-photo-wrap */
 
 /* ─── SLIDE 7: WHAT'S NEXT (4-panel carousel) ─────── */
 #slide-7 {
@@ -3915,47 +3847,10 @@ body.nav-wake .nav { opacity: 1; }
 <div class="slide" id="slide-cs5">
   <span class="page-tag">15 / 16</span>
 
-  <!-- Left: Conversion funnel visual -->
-  <div class="scs5-left">
-    <div class="scs5-bg"></div>
+  <!-- Left: Photo panel -->
+  <div class="scs-photo-wrap">
+    <img src="https://gsr-andrade.com/wp-content/uploads/2021/06/001_GSRAndradeHeadshots2021_-9x12-WEB-e1623694425483.jpg" alt="LuWanna May · GSR Andrade Architects" style="object-position:center 15%;" />
     <div class="scs-photo-overlay"></div>
-
-    <!-- Funnel pipeline -->
-    <div class="scs5-funnel">
-      <div class="scs5-funnel-step">
-        <div class="scs5-funnel-dot step-guide"></div>
-        <div>
-          <div class="scs5-funnel-label">Salary Guide Downloaded</div>
-          <div class="scs5-funnel-time">5 Mar · 5:01 AM</div>
-        </div>
-      </div>
-      <div class="scs5-funnel-line"></div>
-      <div class="scs5-funnel-step">
-        <div class="scs5-funnel-dot step-call"></div>
-        <div>
-          <div class="scs5-funnel-label">Claire Reaches Out</div>
-          <div class="scs5-funnel-time">Same day · Candidate profile sent</div>
-        </div>
-      </div>
-      <div class="scs5-funnel-line"></div>
-      <div class="scs5-funnel-step">
-        <div class="scs5-funnel-dot step-meet"></div>
-        <div>
-          <div class="scs5-funnel-label">Intro Call + Client Meeting</div>
-          <div class="scs5-funnel-time">Same day · Full brief captured</div>
-        </div>
-      </div>
-      <div class="scs5-funnel-line"></div>
-      <div class="scs5-funnel-step">
-        <div class="scs5-funnel-dot step-placed"></div>
-        <div>
-          <div class="scs5-funnel-label step-final">Placement ✓</div>
-          <div class="scs5-funnel-time">3 Apr · Paola Chirinos De Lima</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bottom badge -->
     <div class="scs-photo-tag">
       <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;">
         <span style="display:inline-block;background:#7c3aed;color:#fff;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:3px 8px;border-radius:4px;">Salary Guide Lead</span>
