@@ -2784,7 +2784,7 @@ function initSocialChart() {
 
   const milestones = [
     { index:0,  label:'1', color:'#6b7280', text:'Tracking setup' },
-    { index:2,  label:'2', color:'#059669', text:'Brand function established' },
+    { index:2,  label:'2', color:'#059669', text:'Promoted to Global Brand Manager' },
     { index:5,  label:'3', color:'#0891b2', text:'New website' },
     { index:6,  label:'4', color:'#d97706', text:'Agency ends · £72K saved' },
     { index:7,  label:'5', color:'#7c3aed', text:'Podcast launched' },
@@ -2821,17 +2821,30 @@ function initSocialChart() {
         ctx.font='800 22px Inter,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
         ctx.fillText(f.t, scales.x.getPixelForValue(f.c), ca.bottom-22); ctx.restore();
       });
-      // Milestone pills
-      const ROW0=ca.top-50, ROW1=ca.top-26, PH=20, BW=18, FS=9.5, PP=6;
-      milestones.forEach(m => {
+      // Milestone pills — collision-aware row assignment
+      const ROWS=[ca.top-50, ca.top-26]; const PH=20, BW=18, FS=9.5, PP=6;
+      // Pre-compute pill widths and assign rows avoiding overlap
+      const placed = []; // {left, right, row}
+      const pillData = milestones.map(m => {
         const x = scales.x.getPixelForValue(m.index);
-        const ly = m.index%2===0 ? ROW0 : ROW1;
-        ctx.save();
-        ctx.font=`600 ${FS}px Inter,sans-serif`;
-        const tw = ctx.measureText(m.text).width;
+        ctx.save(); ctx.font=`600 ${FS}px Inter,sans-serif`;
+        const tw = ctx.measureText(m.text).width; ctx.restore();
         const pw = BW+5+tw+PP*2;
         let px = x-pw/2;
         px = Math.max(ca.left, Math.min(px, ca.right-pw));
+        // Try each row, pick the first without overlap
+        let row = 0;
+        for (let r = 0; r < ROWS.length; r++) {
+          const hasOverlap = placed.some(p => p.row === r && !(px+pw+4 < p.left || px > p.right+4));
+          if (!hasOverlap) { row = r; break; }
+        }
+        placed.push({left:px, right:px+pw, row});
+        return {m, x, px, pw, row};
+      });
+      pillData.forEach(({m, x, px, pw, row}) => {
+        const ly = ROWS[row];
+        ctx.save();
+        ctx.font=`600 ${FS}px Inter,sans-serif`;
         roundedRect(ctx,px,ly-PH/2,pw,PH,4);
         ctx.fillStyle=m.color+'18'; ctx.fill();
         roundedRect(ctx,px,ly-PH/2,pw,PH,4);
