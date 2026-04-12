@@ -1633,6 +1633,8 @@ body.nav-wake .nav { opacity: 1; }
 #slide-5c .s5-title em {
   background: linear-gradient(transparent 52%, rgba(6,182,212,0.60) 52%, rgba(6,182,212,0.60) 96%, transparent 96%);
 }
+/* Shared attrib row layout — used by slides 5b and 5c */
+#slide-5b .s5-attrib-row,
 #slide-5c .s5-attrib-row {
   display:flex;
   align-items:center;
@@ -1641,24 +1643,31 @@ body.nav-wake .nav { opacity: 1; }
   border-bottom:1px solid rgba(255,255,255,0.06);
   font-size:12px;
 }
+#slide-5b .s5-attrib-row:last-child,
 #slide-5c .s5-attrib-row:last-child { border-bottom:none; }
+#slide-5b .s5-attrib-label,
 #slide-5c .s5-attrib-label { color:rgba(255,255,255,0.72); flex:1; font-weight:500; }
-#slide-5c .s5-attrib-count { color:#06b6d4; font-weight:700; font-variant-numeric:tabular-nums; }
+#slide-5b .s5-attrib-bar,
 #slide-5c .s5-attrib-bar {
   flex: 0 0 120px;
   height: 6px;
-  background: rgba(6,182,212,0.1);
   border-radius: 3px;
   overflow: hidden;
   position: relative;
 }
+#slide-5b .s5-attrib-bar { background: rgba(16,185,129,0.1); }
+#slide-5c .s5-attrib-bar { background: rgba(6,182,212,0.1); }
+#slide-5b .s5-attrib-bar::after,
 #slide-5c .s5-attrib-bar::after {
   content:'';
   position:absolute; left:0; top:0; bottom:0;
   width: var(--w, 0%);
-  background: #06b6d4;
   border-radius: 3px;
 }
+#slide-5b .s5-attrib-bar::after { background: #10b981; }
+#slide-5c .s5-attrib-bar::after { background: #06b6d4; }
+#slide-5b .s5-attrib-count { color:#10b981; font-weight:700; font-variant-numeric:tabular-nums; }
+#slide-5c .s5-attrib-count { color:#06b6d4; font-weight:700; font-variant-numeric:tabular-nums; }
 
 /* ─── SLIDE 6: SALARY GUIDE ──────────────────────── */
 #slide-6 {
@@ -2336,10 +2345,22 @@ body.nav-wake .nav { opacity: 1; }
     </div>
   </div>
 
-  <div class="s5-right">
+  <div class="s5-right" style="display:grid;grid-template-rows:auto 1fr auto;gap:16px;">
     <div class="s5-chart-label">Inbound Hiring Demand by Quarter · Q3 FY25 – Q3 FY26</div>
-    <div class="s5-chart-wrap">
+    <div class="s5-chart-wrap" style="min-height:260px;">
       <canvas id="inboundChart"></canvas>
+    </div>
+
+    <div>
+      <div class="s5-chart-label" style="margin-bottom:10px;">Q3 FY26 · Where They Came From <span style="opacity:0.5;font-weight:500;">(first year of attribution data)</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;">
+        <div class="s5-attrib-row"><span class="s5-attrib-label">Google search</span><div class="s5-attrib-bar" style="--w:100%"></div><span class="s5-attrib-count">42%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">Friend / colleague</span><div class="s5-attrib-bar" style="--w:44%"></div><span class="s5-attrib-count">19%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">LinkedIn / Instagram</span><div class="s5-attrib-bar" style="--w:39%"></div><span class="s5-attrib-count">16%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">ChatGPT / AI search</span><div class="s5-attrib-bar" style="--w:20%"></div><span class="s5-attrib-count">8%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">Salary Guide</span><div class="s5-attrib-bar" style="--w:6%"></div><span class="s5-attrib-count">2%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">Event / social / other</span><div class="s5-attrib-bar" style="--w:29%"></div><span class="s5-attrib-count">12%</span></div>
+      </div>
     </div>
   </div>
 </div>
@@ -2385,12 +2406,12 @@ body.nav-wake .nav { opacity: 1; }
     <div>
       <div class="s5-chart-label" style="margin-bottom:10px;">Q3 FY26 · Where They Came From <span style="opacity:0.5;font-weight:500;">(first year of attribution data)</span></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;">
-        <div class="s5-attrib-row"><span class="s5-attrib-label">Google search</span><div class="s5-attrib-bar" style="--w:100%"></div><span class="s5-attrib-count">175</span></div>
-        <div class="s5-attrib-row"><span class="s5-attrib-label">Friend / colleague</span><div class="s5-attrib-bar" style="--w:44%"></div><span class="s5-attrib-count">78</span></div>
-        <div class="s5-attrib-row"><span class="s5-attrib-label">LinkedIn / Instagram</span><div class="s5-attrib-bar" style="--w:39%"></div><span class="s5-attrib-count">68</span></div>
-        <div class="s5-attrib-row"><span class="s5-attrib-label">ChatGPT / AI search</span><div class="s5-attrib-bar" style="--w:20%"></div><span class="s5-attrib-count">35</span></div>
-        <div class="s5-attrib-row"><span class="s5-attrib-label">Salary Guide</span><div class="s5-attrib-bar" style="--w:6%"></div><span class="s5-attrib-count">10</span></div>
-        <div class="s5-attrib-row"><span class="s5-attrib-label">Event / social / other</span><div class="s5-attrib-bar" style="--w:29%"></div><span class="s5-attrib-count">51</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">Google search</span><div class="s5-attrib-bar" style="--w:100%"></div><span class="s5-attrib-count">42%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">Friend / colleague</span><div class="s5-attrib-bar" style="--w:44%"></div><span class="s5-attrib-count">19%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">LinkedIn / Instagram</span><div class="s5-attrib-bar" style="--w:39%"></div><span class="s5-attrib-count">16%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">ChatGPT / AI search</span><div class="s5-attrib-bar" style="--w:20%"></div><span class="s5-attrib-count">8%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">Salary Guide</span><div class="s5-attrib-bar" style="--w:6%"></div><span class="s5-attrib-count">2%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">Event / social / other</span><div class="s5-attrib-bar" style="--w:29%"></div><span class="s5-attrib-count">12%</span></div>
       </div>
     </div>
   </div>
