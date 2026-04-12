@@ -179,7 +179,7 @@ html, body {
 }
 /* Staggered word reveal on cover headline — uses clip-path */
 .cover-h1 .ch1-row {
-  overflow: hidden;
+  overflow: visible;
   display: block;
   /* padding-bottom makes descenders (g, y) visible beyond the
      tight line-height. margin-bottom pulls the next row back up
@@ -187,6 +187,10 @@ html, body {
      effective = line-height(0.75) + padding(0.3) − margin(0.22) ≈ 0.83 */
   padding-bottom: 0.3em;
   margin-bottom: -0.22em;
+  /* clip-path instead of overflow:hidden: clips the row vertically
+     (so word slide-up animation works) but extends far horizontally
+     so the final "year." never clips on the right edge */
+  clip-path: inset(0 -60vw 0 -60vw);
 }
 .cover-h1 .ch1-word {
   display: inline-block;
@@ -1669,6 +1673,692 @@ body.nav-wake .nav { opacity: 1; }
 #slide-5b .s5-attrib-count { color:#10b981; font-weight:700; font-variant-numeric:tabular-nums; }
 #slide-5c .s5-attrib-count { color:#06b6d4; font-weight:700; font-variant-numeric:tabular-nums; }
 
+/* ─── SLIDE CS1: CASE STUDY — LINDSAY NUNES ─────── */
+#slide-cs1 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
+}
+
+.scs-photo-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.scs-photo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.scs-photo-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(22,26,16,0) 0%,
+    rgba(22,26,16,0) 55%,
+    rgba(22,26,16,0.85) 80%,
+    var(--dark2) 100%
+  );
+}
+
+.scs-photo-tag {
+  position: absolute;
+  bottom: 32px;
+  left: 28px;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 11px 18px;
+}
+
+.scs-photo-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+}
+
+.scs-photo-title {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  font-weight: 500;
+  margin-top: 3px;
+}
+
+.scs-right {
+  padding: 52px 60px 52px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.scs-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--green);
+  margin-bottom: 12px;
+}
+
+.scs-hero-row {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  line-height: 1;
+}
+
+.scs-hero-num {
+  font-size: clamp(72px, 9.5vw, 124px);
+  font-weight: 900;
+  letter-spacing: -6px;
+  color: #fff;
+  line-height: 0.85;
+}
+
+.scs-hero-unit {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scs-hero-label {
+  font-size: 30px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+.scs-hero-sub {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: var(--green);
+}
+
+.scs-quote {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.5);
+  border-left: 3px solid var(--green);
+  padding-left: 18px;
+}
+
+.scs-quote strong { color: rgba(255,255,255,0.88); font-weight: 600; }
+
+.scs-timeline {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+}
+
+.scs-timeline-track {
+  position: absolute;
+  top: 9px;
+  left: 10px;
+  right: 10px;
+  height: 2px;
+  background: rgba(255,255,255,0.08);
+}
+
+.scs-timeline-track::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, var(--green) 0%, rgba(151,212,34,0.3) 100%);
+}
+
+.scs-tnode {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.scs-tnode-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--green);
+  border: 3px solid var(--dark2);
+  box-shadow: 0 0 0 2px var(--green), 0 0 10px rgba(151,212,34,0.4);
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.scs-tnode-dot.scs-dot-final {
+  background: #fff;
+  box-shadow: 0 0 0 2px #fff, 0 0 14px rgba(255,255,255,0.5);
+}
+
+.scs-tnode-date {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--green);
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 5px;
+}
+
+.scs-tnode-date.scs-date-final { color: #fff; }
+
+.scs-tnode-event {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.scs-tnode-event.scs-event-final {
+  color: rgba(255,255,255,0.85);
+  font-weight: 700;
+}
+
+.scs-meta-row {
+  display: grid;
+  grid-template-columns: 1.1fr 0.85fr 1.05fr;
+  gap: 8px;
+}
+
+.scs-meta-pill {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 13px 16px;
+}
+
+.scs-meta-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.25);
+  margin-bottom: 5px;
+}
+
+.scs-meta-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+}
+
+.scs-meta-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  margin-top: 3px;
+}
+
+.scs-competitor-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 20px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #f87171;
+  margin-top: 5px;
+}
+
+/* ─── SLIDE CSA1: CANDIDATE CASE — MANALI SONI ──── */
+#slide-csa1 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
+}
+
+.scsa-revit-bar {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scsa-revit-track {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+
+.scsa-revit-fill {
+  height: 100%;
+  width: 90%;
+  border-radius: 2px;
+  background: var(--green);
+}
+
+.scsa-revit-pct {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+/* ─── SLIDE CSA2: CANDIDATE CASE — MONTY DAWSON ─── */
+#slide-csa2 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
+}
+
+.scsb-interco {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+.scsb-interco-line {
+  position: absolute;
+  left: 8px;
+  top: 20px;
+  bottom: 20px;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    rgba(151,212,34,0.3) 0%,
+    rgba(151,212,34,0.3) 40%,
+    rgba(255,255,255,0.08) 40%,
+    rgba(255,255,255,0.08) 55%,
+    rgba(151,212,34,0.7) 55%,
+    var(--green) 100%
+  );
+}
+
+.scsb-office-node {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 0 0 18px 0;
+  position: relative;
+}
+
+.scsb-office-node:last-child { padding-bottom: 0; }
+
+.scsb-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+.scsb-dot-active {
+  background: var(--green);
+  box-shadow: 0 0 0 3px var(--dark2), 0 0 0 5px var(--green);
+}
+
+.scsb-dot-pass {
+  background: rgba(255,255,255,0.12);
+  border: 2px solid rgba(255,255,255,0.15);
+}
+
+.scsb-dot-placed {
+  background: var(--green);
+  box-shadow: 0 0 0 3px var(--dark2), 0 0 0 5px var(--green), 0 0 14px rgba(151,212,34,0.5);
+}
+
+.scsb-node-text { flex: 1; }
+
+.scsb-node-city {
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.scsb-node-city.scsb-city-pass { color: rgba(255,255,255,0.35); }
+.scsb-node-city.scsb-city-placed { color: var(--green); }
+
+.scsb-node-person {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.3);
+  margin-top: 2px;
+}
+
+.scsb-node-result {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 3px;
+}
+
+.scsb-result-active { color: rgba(151,212,34,0.7); }
+.scsb-result-pass   { color: rgba(255,255,255,0.2); }
+.scsb-result-placed { color: var(--green); }
+
+/* ─── SLIDE CSA3: CANDIDATE CASE — GABRIELLE GONZALEZ ─── */
+#slide-csa3 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
+}
+
+.scsc-pivot {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.scsc-pivot-arrow {
+  display: flex;
+  align-items: center;
+  color: rgba(255,255,255,0.12);
+  font-size: 20px;
+  flex-shrink: 0;
+  padding: 0 2px;
+}
+
+.scsc-pivot-card {
+  flex: 1;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.scsc-pivot-fail {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.scsc-pivot-win {
+  background: rgba(151,212,34,0.08);
+  border: 1px solid rgba(151,212,34,0.2);
+}
+
+.scsc-pivot-firm {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.scsc-pivot-role {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.35);
+  margin-top: 3px;
+}
+
+.scsc-pivot-status {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 6px;
+}
+
+/* ─── SLIDE CS2: CASE STUDY — AMY ELSHAFEI ─────── */
+#slide-cs2 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
+}
+
+.scs2-creds {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.scs2-cred-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(151,212,34,0.25);
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  align-self: flex-start;
+}
+
+.scs2-cred-badge::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  flex-shrink: 0;
+}
+
+/* ─── SLIDE CS3: CASE STUDY — GREGOIRE HENRIOUD ─── */
+#slide-cs3 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
+}
+
+.scs3-left {
+  position: relative;
+  background: #0d1109;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 52px 44px;
+  overflow: hidden;
+}
+
+.scs3-left::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(151,212,34,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(151,212,34,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+.scs3-quote-mark {
+  position: relative;
+  z-index: 1;
+  font-size: 120px;
+  line-height: 0.7;
+  font-family: Georgia, serif;
+  color: var(--green);
+  opacity: 0.6;
+  letter-spacing: -4px;
+}
+
+.scs3-testimonial {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(17px, 2vw, 22px);
+  font-weight: 500;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.82);
+  letter-spacing: -0.2px;
+  font-style: italic;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.scs3-attribution {
+  position: relative;
+  z-index: 1;
+}
+
+.scs3-attr-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+.scs3-attr-firm {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-top: 3px;
+}
+
+.scs3-attr-location {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.3);
+  margin-top: 2px;
+}
+
+/* ─── SLIDE CS4: CASE STUDY — LINDSAY BRIGGS ─────── */
+#slide-cs4 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
+}
+
+.scs4-photo-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.scs4-photo-wrap > .scs4-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+}
+
+.scs4-photo-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(13,17,9,0.55) 0%,
+    rgba(13,17,9,0.05) 28%,
+    rgba(13,17,9,0.05) 50%,
+    rgba(13,17,9,0.92) 100%
+  );
+}
+
+.scs4-logo-overlay {
+  position: absolute;
+  top: 26px;
+  left: 26px;
+  z-index: 2;
+}
+
+.scs4-logo-overlay img {
+  height: 38px;
+  width: auto;
+  filter: brightness(0) invert(1);
+  opacity: 0.85;
+}
+
+.scs4-scoreboard {
+  position: absolute;
+  bottom: 22px;
+  left: 18px;
+  right: 18px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scs4-score-card {
+  border-radius: 10px;
+  padding: 11px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.scs4-score-fail {
+  background: rgba(239,68,68,0.12);
+  border: 1px solid rgba(239,68,68,0.22);
+}
+
+.scs4-score-win {
+  background: rgba(151,212,34,0.13);
+  border: 1px solid rgba(151,212,34,0.28);
+}
+
+.scs4-score-label {
+  font-size: 9.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.scs4-score-fail .scs4-score-label { color: rgba(239,68,68,0.65); }
+.scs4-score-win  .scs4-score-label { color: rgba(151,212,34,0.8); }
+
+.scs4-score-detail {
+  font-size: 11px;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.scs4-score-fail .scs4-score-detail { color: rgba(255,255,255,0.28); }
+.scs4-score-win  .scs4-score-detail { color: rgba(255,255,255,0.6); }
+
+.scs4-score-icon {
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.scs4-score-fail .scs4-score-icon { color: rgba(239,68,68,0.45); }
+.scs4-score-win  .scs4-score-icon { color: var(--green); }
+
+.scs4-vs-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.scs4-vs-line { flex: 1; height: 1px; background: rgba(255,255,255,0.1); }
+
+.scs4-vs-text {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.2);
+}
+
 /* ─── SLIDE 6: SALARY GUIDE ──────────────────────── */
 #slide-6 {
   background: var(--light);
@@ -1805,6 +2495,51 @@ body.nav-wake .nav { opacity: 1; }
   letter-spacing: -1.5px;
   color: white;
   margin-bottom: 4px;
+}
+
+/* ─── SLIDE CS5: CASE STUDY — GSR ANDRADE (SALARY GUIDE) ── */
+#slide-cs5 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
+}
+
+/* Left panel reuses shared .scs-photo-wrap */
+
+/* ─── SLIDE CS6: CASE STUDY — STUFISH (CONTACT FORM) ── */
+#slide-cs6 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
+}
+
+/* Stufish project showcase strip */
+.scsd-projects {
+  display: flex;
+  gap: 6px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.scsd-proj-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(6,182,212,0.08);
+  border: 1px solid rgba(6,182,212,0.18);
+  color: rgba(6,182,212,0.85);
+  white-space: nowrap;
+}
+
+/* ─── SLIDE CS7: CASE STUDY — HENRYBUILT (CONTACT FORM) ── */
+#slide-cs7 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
 }
 
 /* ─── SLIDE 7: WHAT'S NEXT (4-panel carousel) ─────── */
@@ -2166,7 +2901,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE 3 · SOCIAL MEDIA
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-3">
-  <span class="page-tag">03 / 08</span>
+  <span class="page-tag">03 / 18</span>
 
   <div class="s3-left">
     <div>
@@ -2176,7 +2911,7 @@ body.nav-wake .nav { opacity: 1; }
 
     <div>
       <div class="s3-period-label">Q3 FY26 · Jan–Mar 2026</div>
-      <div class="s3-big-num">0.00M</div>
+      <div class="s3-big-num">1.39M</div>
       <div class="s3-big-label">impressions in a single quarter</div>
       <div class="s3-yoy">↑ 495% &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">vs Q3 FY25 (234K)</span></div>
 
@@ -2274,7 +3009,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE 5 · JOB APPLICATIONS
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-5">
-  <span class="page-tag">04 / 08</span>
+  <span class="page-tag">04 / 18</span>
 
   <div class="s5-left">
     <div>
@@ -2284,7 +3019,7 @@ body.nav-wake .nav { opacity: 1; }
 
     <div>
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.25);margin-bottom:8px;">March 2026 · Monthly Record</div>
-      <div class="s5-big-num">0</div>
+      <div class="s5-big-num">3,964</div>
       <div class="s5-big-label">website job applications · highest ever quarter</div>
       <div class="s5-yoy">↑ 59% YoY &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">vs Q3 FY25 (2,488)</span></div>
       <div style="font-size:10px;color:rgba(255,255,255,0.28);line-height:1.55;margin-top:-16px;margin-bottom:clamp(8px,1.5vh,24px);max-width:380px;">
@@ -2315,10 +3050,309 @@ body.nav-wake .nav { opacity: 1; }
 
 
 <!-- ══════════════════════════════════════════════════
+     SLIDE CSA1 · CANDIDATE CASE — MANALI SONI
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-csa1">
+  <span class="page-tag">05 / 18</span>
+
+  <div class="scs-photo-wrap">
+    <img src="https://assets.isu.pub/document-structure/241009001635-64ede05f822ba181787ce236f2506819/v1/d0153af5b006eb4c1995747e6f2ed5a9.jpeg" alt="Manali Soni · Architectural Technician" />
+    <div class="scs-photo-overlay"></div>
+    <div class="scs-photo-tag">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;background:var(--green);color:#0d0f0a;padding:3px 8px;border-radius:20px;">Applied via Website</span>
+      </div>
+      <div class="scs-photo-name" style="font-size:18px;font-weight:900;letter-spacing:-0.5px;">Manali Soni</div>
+      <div class="scs-photo-title" style="font-size:12px;margin-top:2px;">Architectural Technician · Geelong</div>
+      <div class="scsa-revit-bar">
+        <div class="scsa-revit-track"><div class="scsa-revit-fill"></div></div>
+        <div class="scsa-revit-pct">90% Revit</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scs-right">
+
+    <div>
+      <div class="scs-eyebrow">Candidate Case · Melbourne Team · Temp Placement</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num">17</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">days</div>
+          <div class="scs-hero-sub">applied &rarr; offer</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-quote" style="font-style:italic;">
+      "I'm genuinely excited to be joining the team and <strong>can't wait to get started.</strong>"
+      <div style="font-size:11px;font-style:normal;font-weight:600;color:rgba(151,212,34,0.7);margin-top:10px;">— Manali Soni, acceptance email · 9 April 2026</div>
+    </div>
+
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.18);margin-bottom:18px;">Timeline · 23 March → 13 April 2026</div>
+      <div class="scs-timeline">
+        <div class="scs-timeline-track"></div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">23 Mar</div>
+          <div class="scs-tnode-event">Applied via<br>website<br>6:17pm Sun</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">24 Mar</div>
+          <div class="scs-tnode-event">Emma interviews<br>9:30am Mon.<br>CV → Baldasso</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">1 Apr</div>
+          <div class="scs-tnode-event">Interview at<br>Baldasso<br>Geelong ✓</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot scs-dot-final"></div>
+          <div class="scs-tnode-date scs-date-final">9 Apr</div>
+          <div class="scs-tnode-event scs-event-final">Offer accepted.<br>Starts Mon<br>13 Apr ✓</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placed At</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Baldasso Cortese<br>Architects</div>
+        <div class="scs-meta-sub">Geelong · 3-month contract</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Charge-out Rate</div>
+        <div class="scs-meta-value">A$77.28<span style="font-size:12px;font-weight:500;">/hr</span></div>
+        <div class="scs-meta-sub">+GST · 37.5 hrs/week</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Source</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Applyflow<br>Website</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10px;font-weight:700;color:rgba(151,212,34,0.85);">↑ inbound applicant</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE CSA2 · CANDIDATE CASE — MONTGOMERY DAWSON
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-csa2">
+  <span class="page-tag">06 / 18</span>
+
+  <!-- Left: Photo panel -->
+  <div class="scs-photo-wrap">
+    <img src="https://media.licdn.com/dms/image/v2/D4E03AQFHpz31MxF7fg/profile-displayphoto-crop_800_800/B4EZzAgSyvGUAI-/0/1772756220456?e=1777507200&v=beta&t=Y3ch2THhNjJ8JHBxNJNGEtgmJa7nsMV2Wvh9m6ASg2o" alt="Montgomery Dawson" style="object-position:center 15%;" />
+    <div class="scs-photo-overlay"></div>
+    <div class="scs-photo-tag">
+      <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;">
+        <span style="display:inline-block;background:var(--green);color:#0d0f0a;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:3px 8px;border-radius:4px;">Applied via Website</span>
+      </div>
+      <div class="scs-photo-name" style="font-size:18px;font-weight:900;letter-spacing:-0.5px;">Montgomery<br>Dawson</div>
+      <div class="scs-photo-title" style="font-size:12px;margin-top:4px;">Grad Architect · NZ → Brisbane</div>
+    </div>
+  </div>
+
+  <!-- Right: Story panel -->
+  <div class="scs-right">
+    <div>
+      <div class="scs-eyebrow">Candidate Success · 3-Office Interco · Brisbane</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num">32</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">days</div>
+          <div class="scs-hero-sub">applied → offer</div>
+        </div>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:0.5px;margin-top:6px;">Applied 9 Mar from Aotearoa · Offer accepted 10 Apr</div>
+
+      <!-- 3-office interco journey diagram -->
+      <div class="scsb-interco" style="margin-top:20px;max-width:280px;">
+        <div class="scsb-interco-line"></div>
+        <div class="scsb-office-node">
+          <div class="scsb-dot scsb-dot-active"></div>
+          <div class="scsb-node-text">
+            <div class="scsb-node-city">Melbourne</div>
+            <div class="scsb-node-person">Charlotte Poulain · Consultant</div>
+            <div class="scsb-node-result scsb-result-active">Interviewed ↑</div>
+          </div>
+        </div>
+        <div class="scsb-office-node">
+          <div class="scsb-dot scsb-dot-pass"></div>
+          <div class="scsb-node-text">
+            <div class="scsb-node-city scsb-city-pass">Sydney</div>
+            <div class="scsb-node-person">Ellie Nissan · Consultant</div>
+            <div class="scsb-node-result scsb-result-pass">Market fit identified</div>
+          </div>
+        </div>
+        <div class="scsb-office-node">
+          <div class="scsb-dot scsb-dot-placed"></div>
+          <div class="scsb-node-text">
+            <div class="scsb-node-city scsb-city-placed">Brisbane ✓</div>
+            <div class="scsb-node-person">Luke Russo · Consultant</div>
+            <div class="scsb-node-result scsb-result-placed">Placed · Elevation Architecture</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="scs-timeline" style="margin-top:4px;">
+      <div class="scs-timeline-track"></div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">9 Mar</div>
+        <div class="scs-tnode-event">Applied<br>from NZ</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">13 Mar</div>
+        <div class="scs-tnode-event">Melbourne<br>interview</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">8 Apr</div>
+        <div class="scs-tnode-event">Brisbane<br>interviews</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot scs-dot-final"></div>
+        <div class="scs-tnode-date scs-date-final">10 Apr</div>
+        <div class="scs-tnode-event scs-event-final">Offer<br>Accepted ✓</div>
+      </div>
+    </div>
+
+    <!-- Meta pills -->
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placed At</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.3;">Elevation<br>Architecture</div>
+        <div class="scs-meta-sub">Brisbane · Perm</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placement Fee</div>
+        <div class="scs-meta-value">A$11,916<span style="font-size:11px;font-weight:500;">.80</span></div>
+        <div class="scs-meta-sub">16% permanent</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Source</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Applyflow<br>Website</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10px;font-weight:700;color:rgba(151,212,34,0.85);">↑ inbound applicant</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE CSA3 · CANDIDATE CASE — GABRIELLE GONZALEZ
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-csa3">
+  <span class="page-tag">07 / 18</span>
+
+  <!-- Left: Photo panel -->
+  <div class="scs-photo-wrap">
+    <img src="https://media.licdn.com/dms/image/v2/D4D03AQGg3854eQR0Gw/profile-displayphoto-shrink_400_400/B4DZZo.TjIGgAo-/0/1745517885988?e=1777507200&v=beta&t=6lygP9QZkMxjfFkVGJdjGRtrmo0bnemBIGd0arpHSE4" alt="Gabrielle Gonzalez" style="object-position:center 20%;" />
+    <div class="scs-photo-overlay"></div>
+    <div class="scs-photo-tag">
+      <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;">
+        <span style="display:inline-block;background:var(--green);color:#0d0f0a;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:3px 8px;border-radius:4px;">Website Applicant</span>
+      </div>
+      <div class="scs-photo-name" style="font-size:18px;font-weight:900;letter-spacing:-0.5px;">Gabrielle<br>Gonzalez</div>
+      <div class="scs-photo-title" style="font-size:12px;margin-top:4px;">Assoc. AIA · Graphics Technology</div>
+    </div>
+  </div>
+
+  <!-- Right: Story panel -->
+  <div class="scs-right">
+    <div>
+      <div class="scs-eyebrow">Candidate Success · Consultant Pivot · New York</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num">25</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">days</div>
+          <div class="scs-hero-sub">RAMSA outreach → offer</div>
+        </div>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:0.5px;margin-top:6px;">First role went on hold · Nikki pivoted to RAMSA · Placed</div>
+
+      <!-- Pivot cards: C+G (on hold) → RAMSA (placed) -->
+      <div class="scsc-pivot">
+        <div class="scsc-pivot-card scsc-pivot-fail">
+          <div class="scsc-pivot-firm" style="color:rgba(255,255,255,0.35);">Curtis + Ginsberg</div>
+          <div class="scsc-pivot-role">Graphics Coordinator</div>
+          <div class="scsc-pivot-status" style="color:#f87171;">✗ On Hold</div>
+        </div>
+        <div class="scsc-pivot-arrow">→</div>
+        <div class="scsc-pivot-card scsc-pivot-win">
+          <div class="scsc-pivot-firm" style="color:var(--green);">RAMSA</div>
+          <div class="scsc-pivot-role" style="color:rgba(151,212,34,0.5);">Graphics Tech Specialist</div>
+          <div class="scsc-pivot-status" style="color:var(--green);">✓ Placed · $70k</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quote from Gabrielle's signed-offer email -->
+    <div class="scs-quote" style="font-style:italic;">
+      "Thank you for supporting my work and seeing my potential — <strong>I truly value your expertise</strong> and am happy you have inspired me to begin a new chapter."
+      <div style="font-size:11px;font-style:normal;font-weight:600;color:rgba(151,212,34,0.7);margin-top:10px;">— Gabrielle Gonzalez, in her signed offer response</div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="scs-timeline">
+      <div class="scs-timeline-track"></div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">8 Jul</div>
+        <div class="scs-tnode-event">Website<br>application</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">25 Jul</div>
+        <div class="scs-tnode-event">C+G<br>interview</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">13 Sep</div>
+        <div class="scs-tnode-event">RAMSA<br>outreach</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot scs-dot-final"></div>
+        <div class="scs-tnode-date scs-date-final">8 Oct</div>
+        <div class="scs-tnode-event scs-event-final">Offer<br>Accepted ✓</div>
+      </div>
+    </div>
+
+    <!-- Meta pills -->
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placed At</div>
+        <div class="scs-meta-value" style="font-size:12px;line-height:1.3;">Robert A.M.<br>Stern Architects</div>
+        <div class="scs-meta-sub">New York · Perm</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placement Fee</div>
+        <div class="scs-meta-value">US$14,000</div>
+        <div class="scs-meta-sub">20% · permanent</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Source</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Applyflow<br>Website</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10px;font-weight:700;color:rgba(151,212,34,0.85);">↑ inbound applicant</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
      SLIDE 5B · INBOUND CLIENT DEMAND
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-5b">
-  <span class="page-tag">05 / 08</span>
+  <span class="page-tag">08 / 18</span>
 
   <div class="s5-left">
     <div>
@@ -2328,7 +3362,7 @@ body.nav-wake .nav { opacity: 1; }
 
     <div>
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.25);margin-bottom:8px;">Q3 FY26 · Jan–Mar 2026</div>
-      <div class="s5-big-num">0</div>
+      <div class="s5-big-num">41</div>
       <div class="s5-big-label">website job briefs · highest ever quarter</div>
       <div class="s5-yoy">↑ 356% YoY &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">vs Q3 FY25 (9)</span></div>
     </div>
@@ -2366,10 +3400,372 @@ body.nav-wake .nav { opacity: 1; }
 
 
 <!-- ══════════════════════════════════════════════════
+     SLIDE CS1 · CASE STUDY — LINDSAY NUNES
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-cs1">
+  <span class="page-tag">09 / 18</span>
+
+  <div class="scs-photo-wrap">
+    <img src="https://images.squarespace-cdn.com/content/v1/639127618a24a2207cd0c88f/c6fc1c6e-e225-42cf-ad91-b5e334379739/lindsay+2A_desat+bg.jpg" alt="Lindsay Nunes · Principal, Punch Design" />
+    <div class="scs-photo-overlay"></div>
+    <div class="scs-photo-tag">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;background:var(--green);color:#0d0f0a;padding:3px 8px;border-radius:20px;">New Client</span>
+      </div>
+      <div class="scs-photo-name" style="font-size:18px;font-weight:900;letter-spacing:-0.5px;">Punch Design</div>
+      <div class="scs-photo-title" style="font-size:12px;margin-top:2px;">Brisbane · Lindsay Nunes, Principal</div>
+    </div>
+  </div>
+
+  <div class="scs-right">
+
+    <div>
+      <div class="scs-eyebrow">New Client · Inbound from Content · Brisbane</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num">17</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">days</div>
+          <div class="scs-hero-sub">brief &rarr; offer</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-quote">
+      Lindsay found Bespoke through our <strong>Sustainability Report</strong> — not a cold call, not an ad. She submitted a brief via the website the same day, flagging she was using a competitor she called <strong>"absolutely terrible."</strong> Eight days later we'd introduced a candidate. Nine days after that, there was an offer on the table.
+    </div>
+
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.18);margin-bottom:18px;">Timeline · 23 March → 9 April 2026</div>
+      <div class="scs-timeline">
+        <div class="scs-timeline-track"></div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">23 Mar</div>
+          <div class="scs-tnode-event">Sustainability<br>Report download<br>+ brief submitted</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">31 Mar</div>
+          <div class="scs-tnode-event">Candidate<br>introduced</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">2 Apr</div>
+          <div class="scs-tnode-event">First<br>interview</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot scs-dot-final"></div>
+          <div class="scs-tnode-date scs-date-final">9 Apr</div>
+          <div class="scs-tnode-event scs-event-final">Offer<br>made ✓</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Candidate Placed</div>
+        <div class="scs-meta-value">Megan Glassington</div>
+        <div class="scs-meta-sub">Senior Interior Designer · ~A$95k</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placement Fee</div>
+        <div class="scs-meta-value">~A$15,200</div>
+        <div class="scs-meta-sub">16% of base salary</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">How They Found Us</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Sustainability<br>Report</div>
+        <div class="scs-competitor-tag">↑ displaced Gough</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE CS2 · CASE STUDY — AMY ELSHAFEI
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-cs2">
+  <span class="page-tag">10 / 18</span>
+
+  <div class="scs-photo-wrap">
+    <img src="https://amyelshafei.com/wp-content/uploads/2025/02/People_Amy-1.jpg" alt="Amy Elshafei · Amy Elshafei + Associates" />
+    <div class="scs-photo-overlay"></div>
+    <div class="scs-photo-tag">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;background:var(--green);color:#0d0f0a;padding:3px 8px;border-radius:20px;">New Client</span>
+      </div>
+      <div class="scs-photo-name" style="font-size:18px;font-weight:900;letter-spacing:-0.5px;">Amy Elshafei<br>+ Associates</div>
+      <div class="scs-photo-title" style="font-size:12px;margin-top:3px;">London · Amy Elshafei, Principal</div>
+      <div class="scs2-creds">
+        <div class="scs2-cred-badge">Foster + Partners lineage</div>
+        <div class="scs2-cred-badge">Subconsultant to starchitects</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scs-right">
+
+    <div>
+      <div class="scs-eyebrow">New Client · Temp Placement · London</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num">3</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">days</div>
+          <div class="scs-hero-sub">brief &rarr; placed</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-quote">
+      Amy first came to Bespoke for <strong>Architecture Assistants</strong>. Three weeks later she mentioned she needed a <strong>temp PA — urgently</strong>. Leoni had Harriet Williams confirmed and starting within the same week. Brief filed on a Wednesday. Harriet started the following Monday.
+    </div>
+
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.18);margin-bottom:18px;">Timeline · 5 February → 2 March 2026</div>
+      <div class="scs-timeline">
+        <div class="scs-timeline-track"></div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">5 Feb</div>
+          <div class="scs-tnode-event">Website brief<br>submitted<br>(Architecture Assistants)</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">25 Feb</div>
+          <div class="scs-tnode-event">New need flagged:<br>temp PA +<br>HR onboarding</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">28 Feb</div>
+          <div class="scs-tnode-event">Harriet Williams<br>placed &amp;<br>confirmed</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot scs-dot-final"></div>
+          <div class="scs-tnode-date scs-date-final">2 Mar</div>
+          <div class="scs-tnode-event scs-event-final">Harriet<br>starts ✓</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Candidate Placed</div>
+        <div class="scs-meta-value">Harriet Williams</div>
+        <div class="scs-meta-sub">Temp Junior PA</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Fee</div>
+        <div class="scs-meta-value">18%</div>
+        <div class="scs-meta-sub">Temp margin · ongoing</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">How They Found Us</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Website<br>Job Brief</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10px;font-weight:700;color:rgba(151,212,34,0.85);">↑ 100% inbound</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE CS3 · CASE STUDY — GREGOIRE HENRIOUD
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-cs3">
+  <span class="page-tag">11 / 18</span>
+
+  <div class="scs-photo-wrap">
+    <img src="https://media.licdn.com/dms/image/v2/C4D03AQFq0-0-5XCYbA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1541632077429?e=1777507200&v=beta&t=HvOK2NQCIP931mpV1rp4tZWXlYuk2hFfuRcF8zqHlm4" alt="Gregoire Henrioud · henrioud-architectes" />
+    <div class="scs-photo-overlay"></div>
+    <div class="scs-photo-tag">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;background:var(--green);color:#0d0f0a;padding:3px 8px;border-radius:20px;">New Client</span>
+      </div>
+      <div class="scs-photo-name" style="font-size:18px;font-weight:900;letter-spacing:-0.5px;">henrioud-<br>architectes</div>
+      <div class="scs-photo-title" style="font-size:12px;margin-top:3px;">London · Gregoire Henrioud, Principal</div>
+    </div>
+  </div>
+
+  <div class="scs-right">
+
+    <div>
+      <div class="scs-eyebrow">New Client · 2 Placements · London</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num">2</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">hires</div>
+          <div class="scs-hero-sub">from 1 brief</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-quote" style="font-style:italic;">
+      "Thank you for your support throughout the process — <strong>much appreciated as always.</strong>"
+      <div style="font-size:11px;font-style:normal;font-weight:600;color:rgba(151,212,34,0.7);margin-top:10px;">— Gregoire Henrioud, after placing his second hire</div>
+    </div>
+
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.18);margin-bottom:18px;">Timeline · Oct 2025 → Feb 2026</div>
+      <div class="scs-timeline">
+        <div class="scs-timeline-track"></div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">27 Oct</div>
+          <div class="scs-tnode-event">Website brief<br>submitted<br>(Rhino Designer)</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">4 Nov</div>
+          <div class="scs-tnode-event">Terms signed.<br>Brief scoped<br>with Tahj</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">27 Jan</div>
+          <div class="scs-tnode-event">Siddharthan<br>Saravanan<br>placed ✓</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot scs-dot-final"></div>
+          <div class="scs-tnode-date scs-date-final">27 Feb</div>
+          <div class="scs-tnode-event scs-event-final">Valeria Mazzilli<br>placed ✓<br>2nd hire</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Candidates Placed</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Siddharthan S.<br>Valeria Mazzilli</div>
+        <div class="scs-meta-sub">Both Rhino Designers · temp</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Hourly Rate</div>
+        <div class="scs-meta-value">£40.03<span style="font-size:13px;font-weight:500;">/hr</span></div>
+        <div class="scs-meta-sub">32hrs/wk · ongoing</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">How They Found Us</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Website<br>Job Brief</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10px;font-weight:700;color:rgba(151,212,34,0.85);">↑ 100% inbound</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE CS4 · CASE STUDY — LINDSAY BRIGGS
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-cs4">
+  <span class="page-tag">12 / 18</span>
+
+  <div class="scs4-photo-wrap">
+    <img class="scs4-bg-img" src="https://dallashomesforsaleandsoldphotos.dougnewby.com/4428-livingston-avenue-highland-park-texas/mls-20577551-1.jpg" alt="Briggs Architecture &amp; Design — Highland Park project" />
+    <div class="scs4-photo-gradient"></div>
+
+    <div class="scs4-logo-overlay">
+      <img src="https://images.squarespace-cdn.com/content/v1/537a7a18e4b0f5318f931fbc/8e599899-fa93-4602-8606-362306a2488e/Briggs-Logo-2024-Final-2color-Revised-6-21.png" alt="Briggs Architecture &amp; Design" />
+    </div>
+
+    <div class="scs4-scoreboard">
+      <div class="scs4-score-card scs4-score-fail">
+        <div>
+          <div class="scs4-score-label">Previous Recruiter</div>
+          <div class="scs4-score-detail">6 months · 0 hires</div>
+        </div>
+        <div class="scs4-score-icon">✗</div>
+      </div>
+
+      <div class="scs4-vs-row">
+        <div class="scs4-vs-line"></div>
+        <div class="scs4-vs-text">vs Bespoke</div>
+        <div class="scs4-vs-line"></div>
+      </div>
+
+      <div class="scs4-score-card scs4-score-win">
+        <div>
+          <div class="scs4-score-label">Bespoke Careers · Texas</div>
+          <div class="scs4-score-detail">69 days · Othavio starts</div>
+        </div>
+        <div class="scs4-score-icon">✓</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scs-right">
+
+    <div>
+      <div class="scs-eyebrow">New Client · Dallas, Texas · Perm Placement</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num">69</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">days</div>
+          <div class="scs-hero-sub">brief &rarr; start</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-quote">
+      Lindsay's previous recruiter had been trying for <strong>six months with zero results</strong>. She submitted a website brief on 16 December. Claire had a full discovery call the same day. Othavio started on 23 February — and <strong>relocated his family to Texas</strong> to take the role. Lindsay's email: <strong>"He's off to a great start."</strong>
+    </div>
+
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.18);margin-bottom:18px;">Timeline · Dec 2025 → Feb 2026</div>
+      <div class="scs-timeline">
+        <div class="scs-timeline-track"></div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">16 Dec</div>
+          <div class="scs-tnode-event">Website brief<br>submitted +<br>discovery call</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">17 Dec</div>
+          <div class="scs-tnode-event">Terms agreed.<br>Search<br>commenced</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">23 Feb</div>
+          <div class="scs-tnode-event">Othavio<br>starts.<br>Family relocated ✓</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot scs-dot-final"></div>
+          <div class="scs-tnode-date scs-date-final">2 Mar</div>
+          <div class="scs-tnode-event scs-event-final">Fee paid<br>$13,750 ✓<br>instalment 1</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Client</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Briggs Architecture<br>&amp; Design</div>
+        <div class="scs-meta-sub">Dallas, TX · 6-person firm</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placement Fee</div>
+        <div class="scs-meta-value">US$13,750</div>
+        <div class="scs-meta-sub">Architectural Designer · perm</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">How They Found Us</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Website<br>Job Brief</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10px;font-weight:700;color:rgba(151,212,34,0.85);">↑ displaced prior recruiter</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
      SLIDE 5C · CONTACT FORM SUBMISSIONS
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-5c">
-  <span class="page-tag">06 / 08</span>
+  <span class="page-tag">13 / 18</span>
 
   <div class="s5-left">
     <div>
@@ -2379,7 +3775,7 @@ body.nav-wake .nav { opacity: 1; }
 
     <div>
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.25);margin-bottom:8px;">Q3 FY26 · Jan–Mar 2026</div>
-      <div class="s5-big-num">0</div>
+      <div class="s5-big-num">681</div>
       <div class="s5-big-label">contact-form submissions · highest ever quarter</div>
       <div class="s5-yoy">↑ 7.6% YoY &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">vs Q3 FY25 (633)</span></div>
     </div>
@@ -2418,10 +3814,204 @@ body.nav-wake .nav { opacity: 1; }
 
 
 <!-- ══════════════════════════════════════════════════
+     SLIDE CS6 · CASE STUDY — STUFISH (CONTACT FORM)
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-cs6">
+  <span class="page-tag">14 / 18</span>
+
+  <!-- Left: Photo panel -->
+  <div class="scs-photo-wrap">
+    <img src="https://stufish.com/wp-content/uploads/2020/09/Simone-website-photo-formal_w-e1761217823872.jpg" alt="Simone Plekkepoel · Stufish Entertainment Architects" style="object-position:center 30%;" />
+    <div class="scs-photo-overlay"></div>
+    <div class="scs-photo-tag">
+      <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;">
+        <span style="display:inline-block;background:#06b6d4;color:#fff;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:3px 8px;border-radius:4px;">Contact Form Lead</span>
+      </div>
+      <div class="scs-photo-name" style="font-size:18px;font-weight:900;letter-spacing:-0.5px;">Stufish Entertainment<br>Architects</div>
+      <div class="scs-photo-title" style="font-size:12px;margin-top:4px;">London · Beyoncé · ABBA Voyage · Adele</div>
+    </div>
+  </div>
+
+  <!-- Right: Story panel -->
+  <div class="scs-right">
+    <div>
+      <div class="scs-eyebrow" style="color:#06b6d4;">Contact Form → New Client → Placement · London</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num">27</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">days</div>
+          <div class="scs-hero-sub">contact form → placement</div>
+        </div>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:0.5px;margin-top:6px;">Stufish found Bespoke via website search — previously declined outreach in Jul 2024</div>
+    </div>
+
+    <!-- Quote from Simone -->
+    <div class="scs-quote" style="border-left-color:#06b6d4;">
+      "Thank you for all your help and for <strong>finding a great candidate!</strong>"
+      <div style="font-size:11px;font-weight:600;color:rgba(6,182,212,0.7);margin-top:10px;">— Simone Plekkepoel, Commercial Manager & Partner · Stufish</div>
+    </div>
+
+    <!-- Notable projects strip -->
+    <div class="scsd-projects">
+      <div class="scsd-proj-tag">ABBA Voyage</div>
+      <div class="scsd-proj-tag">Beyoncé</div>
+      <div class="scsd-proj-tag">Adele</div>
+      <div class="scsd-proj-tag">Rolling Stones</div>
+      <div class="scsd-proj-tag">U2</div>
+      <div class="scsd-proj-tag">Sabrina Carpenter</div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="scs-timeline">
+      <div class="scs-timeline-track" style="background:rgba(255,255,255,0.06);"></div>
+      <div style="position:absolute;top:9px;left:10px;right:10px;height:2px;background:linear-gradient(to right, #06b6d4 0%, var(--green) 100%);border-radius:1px;"></div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot" style="background:#06b6d4;border-color:#06b6d4;box-shadow:0 0 0 2px #06b6d4, 0 0 8px rgba(6,182,212,0.4);"></div>
+        <div class="scs-tnode-date" style="color:#06b6d4;">24 Jan</div>
+        <div class="scs-tnode-event">Contact<br>form</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">29 Jan</div>
+        <div class="scs-tnode-event">Studio visit<br>+ CV sent</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">3 Feb</div>
+        <div class="scs-tnode-event">Ayo<br>interview</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">19 Feb</div>
+        <div class="scs-tnode-event">Offer<br>accepted</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot scs-dot-final"></div>
+        <div class="scs-tnode-date scs-date-final">2 Mar</div>
+        <div class="scs-tnode-event scs-event-final">Started ✓</div>
+      </div>
+    </div>
+
+    <!-- Meta pills -->
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placed</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.3;">Ayodele Akinola</div>
+        <div class="scs-meta-sub">Senior Architect · Contract</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Rate</div>
+        <div class="scs-meta-value">£48.99/hr</div>
+        <div class="scs-meta-sub">~£62k equiv · 40 hrs/wk</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Source</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Contact Form<br>Submission</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10px;font-weight:700;color:rgba(6,182,212,0.85);">↑ inbound lead</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE CS7 · CASE STUDY — HENRYBUILT (CONTACT FORM)
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-cs7">
+  <span class="page-tag">15 / 18</span>
+
+  <!-- Left: Photo panel -->
+  <div class="scs-photo-wrap">
+    <img src="https://media.licdn.com/dms/image/v2/D5603AQES7NXb2pjU8g/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1669818038741?e=1777507200&v=beta&t=sV8Oc7sQl1-p5Kmj_zCkE9BRd0aCQ3MzPttjFpX_KoA" alt="Nicole Wolfgram · Henrybuilt" style="object-position:center 20%;" />
+    <div class="scs-photo-overlay"></div>
+    <div class="scs-photo-tag">
+      <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;">
+        <span style="display:inline-block;background:#06b6d4;color:#fff;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:3px 8px;border-radius:4px;">Contact Form Lead</span>
+      </div>
+      <div class="scs-photo-name" style="font-size:18px;font-weight:900;letter-spacing:-0.5px;">Henrybuilt</div>
+      <div class="scs-photo-title" style="font-size:12px;margin-top:4px;">New York · Luxury Kitchen Systems</div>
+    </div>
+  </div>
+
+  <!-- Right: Story panel -->
+  <div class="scs-right">
+    <div>
+      <div class="scs-eyebrow" style="color:#06b6d4;">Contact Form → New Client → Placement · New York</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num" style="font-size:52px;">10 mo</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">long game</div>
+          <div class="scs-hero-sub">contact form → placement</div>
+        </div>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:0.5px;margin-top:6px;">Nicole found Bespoke via website — Shelby Boland nurtured the relationship across 30+ touchpoints</div>
+    </div>
+
+    <!-- Quote from Nicole -->
+    <div class="scs-quote" style="border-left-color:#06b6d4;">
+      "Assuming references go well, will try and make those happen quickly and then <strong>we can move to offer</strong>"
+      <div style="font-size:11px;font-weight:600;color:rgba(6,182,212,0.7);margin-top:10px;">— Nicole Wolfgram, Chief Revenue Officer · Henrybuilt</div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="scs-timeline">
+      <div class="scs-timeline-track" style="background:rgba(255,255,255,0.06);"></div>
+      <div style="position:absolute;top:9px;left:10px;right:10px;height:2px;background:linear-gradient(to right, #06b6d4 0%, var(--green) 100%);border-radius:1px;"></div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot" style="background:#06b6d4;border-color:#06b6d4;box-shadow:0 0 0 2px #06b6d4, 0 0 8px rgba(6,182,212,0.4);"></div>
+        <div class="scs-tnode-date" style="color:#06b6d4;">Apr 25</div>
+        <div class="scs-tnode-event">Contact<br>form</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">Jul 25</div>
+        <div class="scs-tnode-event">Client<br>meeting</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">Dec 25</div>
+        <div class="scs-tnode-event">Full<br>role brief</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">Jan 26</div>
+        <div class="scs-tnode-event">Offer<br>accepted</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot scs-dot-final"></div>
+        <div class="scs-tnode-date scs-date-final">2 Mar</div>
+        <div class="scs-tnode-event scs-event-final">Started ✓</div>
+      </div>
+    </div>
+
+    <!-- Meta pills -->
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placed</div>
+        <div class="scs-meta-value" style="font-size:12px;line-height:1.3;">Mary Grace Tate</div>
+        <div class="scs-meta-sub">Dir. of Development &<br>Showroom Operations</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placement Fee</div>
+        <div class="scs-meta-value">US$33,750</div>
+        <div class="scs-meta-sub">25% of US$135K base</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Source</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Contact Form<br>Submission</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10px;font-weight:700;color:rgba(6,182,212,0.85);">↑ inbound lead</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
      SLIDE 6 · SALARY GUIDE
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-6">
-  <span class="page-tag dark">07 / 08</span>
+  <span class="page-tag dark">16 / 18</span>
 
   <div class="s6-top">
     <div>
@@ -2481,10 +4071,97 @@ body.nav-wake .nav { opacity: 1; }
 
 
 <!-- ══════════════════════════════════════════════════
+     SLIDE CS5 · CASE STUDY — GSR ANDRADE (SALARY GUIDE)
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-cs5">
+  <span class="page-tag">17 / 18</span>
+
+  <!-- Left: Photo panel -->
+  <div class="scs-photo-wrap">
+    <img src="https://gsr-andrade.com/wp-content/uploads/2021/06/001_GSRAndradeHeadshots2021_-9x12-WEB-e1623694425483.jpg" alt="LuWanna May · GSR Andrade Architects" style="object-position:center 15%;" />
+    <div class="scs-photo-overlay"></div>
+    <div class="scs-photo-tag">
+      <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;">
+        <span style="display:inline-block;background:#7c3aed;color:#fff;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:3px 8px;border-radius:4px;">Salary Guide Lead</span>
+      </div>
+      <div class="scs-photo-name" style="font-size:18px;font-weight:900;letter-spacing:-0.5px;">GSR Andrade<br>Architects</div>
+      <div class="scs-photo-title" style="font-size:12px;margin-top:4px;">Dallas · 2024 AIA Dallas Firm of the Year</div>
+    </div>
+  </div>
+
+  <!-- Right: Story panel -->
+  <div class="scs-right">
+    <div>
+      <div class="scs-eyebrow" style="color:#7c3aed;">Salary Guide → New Client → Placement · Dallas</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num">30</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">days</div>
+          <div class="scs-hero-sub">download → placement</div>
+        </div>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:0.5px;margin-top:6px;">Guide download triggered same-day outreach by Claire Mizell</div>
+    </div>
+
+    <!-- Quote from LuWanna -->
+    <div class="scs-quote" style="border-left-color:#7c3aed;">
+      "Your timing is excellent — we are <strong>actively looking to add to our team</strong>, and the candidate profile you shared is very promising."
+      <div style="font-size:11px;font-weight:600;color:rgba(124,58,237,0.7);margin-top:10px;">— LuWanna May, HR · GSR Andrade Architects</div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="scs-timeline">
+      <div class="scs-timeline-track" style="background:rgba(255,255,255,0.06);"></div>
+      <div style="position:absolute;top:9px;left:10px;right:10px;height:2px;background:linear-gradient(to right, #7c3aed 0%, var(--green) 100%);border-radius:1px;"></div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot" style="background:#7c3aed;border-color:#7c3aed;box-shadow:0 0 0 2px #7c3aed, 0 0 8px rgba(124,58,237,0.4);"></div>
+        <div class="scs-tnode-date" style="color:#7c3aed;">4 Mar</div>
+        <div class="scs-tnode-event">Guide<br>downloaded</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">4 Mar</div>
+        <div class="scs-tnode-event">Claire<br>outreach</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">5 Mar</div>
+        <div class="scs-tnode-event">Client<br>meeting</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot scs-dot-final"></div>
+        <div class="scs-tnode-date scs-date-final">3 Apr</div>
+        <div class="scs-tnode-event scs-event-final">Placed ✓</div>
+      </div>
+    </div>
+
+    <!-- Meta pills -->
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placed At</div>
+        <div class="scs-meta-value" style="font-size:12px;line-height:1.3;">GSR Andrade<br>Architects</div>
+        <div class="scs-meta-sub">Dallas · ~40 staff</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placement Fee</div>
+        <div class="scs-meta-value">US$18,000</div>
+        <div class="scs-meta-sub">Paola Chirinos De Lima</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Source</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Salary Guide<br>Download</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10px;font-weight:700;color:rgba(124,58,237,0.85);">↑ inbound lead</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
      SLIDE 7 · WHAT'S NEXT
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-7">
-  <span class="page-tag">08 / 08</span>
+  <span class="page-tag">18 / 18</span>
 
   <div class="s7-header">
     <div class="s7-eyebrow">Looking ahead · FY27</div>
@@ -2547,7 +4224,7 @@ body.nav-wake .nav { opacity: 1; }
         <div class="s7-panel-content">
           <div class="s7-panel-tag planned">Planned · Q2 FY27</div>
           <div class="s7-panel-title">Ask<br>Bespoke</div>
-          <div class="s7-panel-desc">A sharper, more viral short-form series answering the industry's most-googled career questions. Filmed in person alongside podcast recordings with select guests, so we get two formats out of every session. Higher viral potential, deeper audience engagement, and a media machine that no longer leans on a single host.</div>
+          <div class="s7-panel-desc">15-minute video episodes answering the industry's most-googled career questions, filmed in person alongside podcast recordings with select guests — so we get two formats out of every session. Each episode is repurposed into short-form clips for social, giving us a full content engine with higher viral potential, deeper audience engagement, and a media machine that no longer leans on a single host.</div>
           <div class="s7-panel-kpis">
             <div class="s7-panel-kpi">
               <div class="s7-panel-kpi-num">12</div>
@@ -2628,7 +4305,7 @@ body.nav-wake .nav { opacity: 1; }
 <div class="nav">
   <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">&#8592;</button>
   <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">&#8594;</button>
-  <div class="slide-counter" id="slideCounter">01 / 08</div>
+  <div class="slide-counter" id="slideCounter">01 / 18</div>
   <div class="nav-dots" id="navDots"></div>
 </div>
 <script>
@@ -2983,13 +4660,13 @@ document.addEventListener('keydown', e => {
 // ─── CHARTS ────────────────────────────────────────
 
 function initChartsForSlide(idx) {
-  // After reorder + slide-2 removal: 0=cover, 1=year-that-was, 2=social, 3=job,
-  // 4=inbound-briefs, 5=contact-form, 6=salary, 7=whatsnext
-  if (idx === 2 && !chartsInit.social)  { initSocialChart();  chartsInit.social  = true; }
-  if (idx === 3 && !chartsInit.job)     { initJobChart();     chartsInit.job     = true; }
-  if (idx === 4 && !chartsInit.inbound) { initInboundChart(); chartsInit.inbound = true; }
-  if (idx === 5 && !chartsInit.contact) { initContactChart(); chartsInit.contact = true; }
-  if (idx === 6 && !chartsInit.salary)  { initSalaryChart();  chartsInit.salary  = true; }
+  // ID-based detection — robust against slide order changes
+  const slideId = slides[idx] ? slides[idx].id : null;
+  if (slideId === 'slide-3'  && !chartsInit.social)  { initSocialChart();  chartsInit.social  = true; }
+  if (slideId === 'slide-5'  && !chartsInit.job)     { initJobChart();     chartsInit.job     = true; }
+  if (slideId === 'slide-5b' && !chartsInit.inbound) { initInboundChart(); chartsInit.inbound = true; }
+  if (slideId === 'slide-5c' && !chartsInit.contact) { initContactChart(); chartsInit.contact = true; }
+  if (slideId === 'slide-6'  && !chartsInit.salary)  { initSalaryChart();  chartsInit.salary  = true; }
 }
 
 // ── Social Media ──
@@ -3139,7 +4816,7 @@ function initSocialChart() {
       }
     }
   });
-  _runCountsForSlide(2);
+  // count-up removed — static values in HTML
 }
 
 // ── Job Applications ──
@@ -3208,7 +4885,7 @@ function initJobChart() {
       }
     }
   });
-  _runCountsForSlide(3);
+  // count-up removed — static values in HTML
 }
 
 // ── Inbound Demand ──
@@ -3279,7 +4956,7 @@ function initInboundChart() {
       }
     }
   });
-  _runCountsForSlide(4);
+  // count-up removed — static values in HTML
 }
 
 // ── Contact Form ──
@@ -3347,7 +5024,7 @@ function initContactChart() {
       }
     }
   });
-  _runCountsForSlide(5);
+  // count-up removed — static values in HTML
 }
 
 // ── Salary Guide ──
@@ -4328,60 +6005,6 @@ window.addEventListener('popstate', () => _applyURLState(true));
     ls.classList.add('hidden');
   }, 1900);
 })();
-
-// ═══════════════════════════════════════════════════════
-// COUNTING NUMBERS
-// ═══════════════════════════════════════════════════════
-function animateCount(el, target, duration) {
-  if (!el || el._counting) return;
-  el._counting = true;
-  const start = performance.now();
-  function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
-  function step(now) {
-    const progress = Math.min(1, (now - start) / duration);
-    const val = Math.round(target * easeOutQuart(progress));
-    el.textContent = val.toLocaleString();
-    if (progress < 1) requestAnimationFrame(step);
-    else el.textContent = target.toLocaleString();
-  }
-  requestAnimationFrame(step);
-}
-
-// Called from chart init functions directly (no override needed)
-function _runCountsForSlide(idx) {
-  // Zero immediately — prevents any flash of the final value before the
-  // count-up animation starts. HTML already starts at "0" but this
-  // guards against re-render edge cases.
-  const _sel = {
-    2: '#slide-3 .s3-big-num',
-    3: '#slide-5 .s5-big-num',
-    4: '#slide-5b .s5-big-num',
-    5: '#slide-5c .s5-big-num'
-  };
-  const el = _sel[idx] ? document.querySelector(_sel[idx]) : null;
-  if (el && !el._counting) el.textContent = idx === 2 ? '0.00M' : '0';
-
-  setTimeout(() => {
-    if (idx === 2) {
-      // Social media: "1.39M" impressions — formatted with M suffix
-      const elM = document.querySelector('#slide-3 .s3-big-num');
-      if (!elM || elM._counting) return;
-      elM._counting = true;
-      const dur = 1800, target = 1.39, t0 = performance.now();
-      const easeOut4 = t => 1 - Math.pow(1 - t, 4);
-      const tickM = now => {
-        const p = Math.min(1, (now - t0) / dur);
-        elM.textContent = (target * easeOut4(p)).toFixed(2) + 'M';
-        if (p < 1) requestAnimationFrame(tickM);
-        else elM.textContent = '1.39M';
-      };
-      requestAnimationFrame(tickM);
-    }
-    if (idx === 3) animateCount(document.querySelector('#slide-5 .s5-big-num'), 3964, 1800);
-    if (idx === 4) animateCount(document.querySelector('#slide-5b .s5-big-num'), 41, 1400);
-    if (idx === 5) animateCount(document.querySelector('#slide-5c .s5-big-num'), 681, 1600);
-  }, 350);
-}
 
 // ═══════════════════════════════════════════════════════
 // WHAT'S NEXT PANEL PARALLAX
