@@ -179,30 +179,45 @@ html, body {
 }
 /* Staggered word reveal on cover headline — uses clip-path */
 .cover-h1 .ch1-row {
-  overflow: hidden;
+  overflow: visible;
   display: block;
+  /* padding-bottom makes descenders (g, y) visible beyond the
+     tight line-height. margin-bottom pulls the next row back up
+     so the visual gap ≈ Big Moments line-height (0.86):
+     effective = line-height(0.75) + padding(0.3) − margin(0.22) ≈ 0.83 */
+  padding-bottom: 0.3em;
+  margin-bottom: -0.22em;
+  /* clip-path instead of overflow:hidden: clips the row vertically
+     (so word slide-up animation works) but extends far horizontally
+     so the final "year." never clips on the right edge */
+  clip-path: inset(0 -60vw 0 -60vw);
 }
 .cover-h1 .ch1-word {
   display: inline-block;
-  transform: translateY(110%);
+  /* 160% (was 110%) — needed because padding-bottom extends the
+     visible area; words must start below that extended boundary */
+  transform: translateY(160%);
   opacity: 0;
-  animation: wordSlideUp 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  animation: wordSlideUp 0.75s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
 @keyframes wordSlideUp {
   to { transform: translateY(0); opacity: 1; }
 }
-/* Cover eyebrow and sub also animate in */
+/* Cover eyebrow and sub also animate in.
+   Delays are timed AFTER the loading screen fades (loading screen
+   starts fading at 1.9s, fully gone by ~2.8s). Words start at 2.0s
+   so they appear as the loading screen is lifting — cinematic. */
 .cover-eyebrow {
   opacity: 0;
-  animation: fadeSlideUp 0.6s ease 1.4s forwards;
+  animation: fadeSlideUp 0.6s ease 1.8s forwards;
 }
 .cover-sub {
   opacity: 0;
-  animation: fadeSlideUp 0.7s ease 1.8s forwards;
+  animation: fadeSlideUp 0.7s ease 3.2s forwards;
 }
 .cover-meta-bl, .cover-meta-br {
   opacity: 0;
-  animation: fadeSlideUp 0.6s ease 2s forwards;
+  animation: fadeSlideUp 0.6s ease 3.5s forwards;
 }
 .cover-pill {
   opacity: 0;
@@ -214,15 +229,95 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════════
-   ORBIT RING FLY-IN
+   ORBIT RING — STELLAR BIRTH ENTRANCE
+   Each circle materialises one-by-one from scale 0.
+   The CSS `scale` property is independent of the rAF
+   `transform: translate(--dx, --dy)` so we can spring
+   it in without fighting the positioning system.
 ═══════════════════════════════════════════════════════ */
-.s4-orbit-circle.fly-in {
-  transition: none !important;
+
+/* While waiting to be born: scale 0, position already correct */
+.s4-orbit-circle.s4-unborn {
+  scale: 0 !important;
   opacity: 0 !important;
 }
-.s4-orbit-circle.fly-in-active {
-  transition: transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1),
-              opacity 0.5s ease !important;
+
+/* Active during the spring-pop transition (added momentarily) */
+.s4-orbit-circle.s4-born {
+  transition: scale 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* Shockwave ripple ring — expands outward from the circle */
+.s4-orbit-circle.s4-born::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 100%; height: 100%;
+  transform: translate(-50%, -50%) scale(0.6);
+  border-radius: 50%;
+  border: 2px solid rgba(151, 212, 34, 0.95);
+  animation: s4BirthRipple 0.85s cubic-bezier(0.2, 0.6, 0.4, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes s4BirthRipple {
+  0%   { transform: translate(-50%, -50%) scale(0.6);  opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(2.8);  opacity: 0; }
+}
+
+/* Inner glow pulse when the circle snaps into place */
+.s4-oc-inner.s4-birth-glow {
+  animation: s4InnerGlow 0.75s ease-out forwards;
+}
+
+@keyframes s4InnerGlow {
+  0%   { box-shadow: 0 0 0   0   rgba(151, 212, 34, 0);   }
+  25%  { box-shadow: 0 0 22px 8px rgba(151, 212, 34, 0.7); }
+  100% { box-shadow: 0 0 0   0   rgba(151, 212, 34, 0);   }
+}
+
+/* ═══════════════════════════════════════════════════════
+   HERO SELECTION RING
+   Fires each time a circle becomes the active hero.
+   Two layers: a one-shot burst ring on arrival, plus a
+   soft breathing ring that persists while it is active.
+═══════════════════════════════════════════════════════ */
+
+/* One-shot shockwave burst — same language as birth ripple */
+.s4-orbit-circle.s4-hero-burst::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 100%; height: 100%;
+  transform: translate(-50%, -50%) scale(0.92);
+  border-radius: 50%;
+  border: 3px solid rgba(151, 212, 34, 1.0);
+  animation: s4HeroBurst 1.1s cubic-bezier(0.2, 0.55, 0.3, 1) forwards;
+  pointer-events: none;
+}
+@keyframes s4HeroBurst {
+  0%   { transform: translate(-50%, -50%) scale(0.92); opacity: 1.0; }
+  100% { transform: translate(-50%, -50%) scale(1.55); opacity: 0; }
+}
+
+/* Breathing ring — fades away as the circle grows toward hero size.
+   --oc-ring-opacity is set each rAF frame: (1 - ea) so it's only
+   visible on small orbit circles, invisible on the full hero. */
+.s4-orbit-circle.s4-hero-active::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: calc(100% + 10px); height: calc(100% + 10px);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px solid rgba(151, 212, 34, 0.75);
+  animation: s4HeroPulse 2.4s ease-in-out infinite;
+  opacity: var(--oc-ring-opacity, 0.75);
+  pointer-events: none;
+}
+@keyframes s4HeroPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1.00); }
+  50%      { transform: translate(-50%, -50%) scale(1.12); }
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -446,7 +541,7 @@ body.nav-wake .nav { opacity: 1; }
 .cover-h1 {
   font-size: clamp(96px, 14vw, 232px);
   font-weight: 900;
-  line-height: 0.86;
+  line-height: 0.75;
   letter-spacing: -0.06em;
   color: var(--c-ink);
   margin: 0;
@@ -1048,9 +1143,12 @@ body.nav-wake .nav { opacity: 1; }
   margin-left: calc(var(--size, 84px) / -2);
   margin-top:  calc(var(--size, 84px) / -2);
   transform: translate(var(--dx, 0px), var(--dy, 0px));
+  /* CSS individual `scale` property — composes on top of transform,
+     independent of rAF. Used by the stellar birth entrance. */
+  scale: 1;
   opacity: var(--oc-opacity, 1);
   z-index: var(--oc-z, 1);
-  will-change: transform, width, height, opacity;
+  will-change: transform, scale, width, height, opacity;
 }
 .s4-oc-inner {
   position: absolute;
@@ -1539,6 +1637,8 @@ body.nav-wake .nav { opacity: 1; }
 #slide-5c .s5-title em {
   background: linear-gradient(transparent 52%, rgba(6,182,212,0.60) 52%, rgba(6,182,212,0.60) 96%, transparent 96%);
 }
+/* Shared attrib row layout — used by slides 5b and 5c */
+#slide-5b .s5-attrib-row,
 #slide-5c .s5-attrib-row {
   display:flex;
   align-items:center;
@@ -1547,23 +1647,716 @@ body.nav-wake .nav { opacity: 1; }
   border-bottom:1px solid rgba(255,255,255,0.06);
   font-size:12px;
 }
+#slide-5b .s5-attrib-row:last-child,
 #slide-5c .s5-attrib-row:last-child { border-bottom:none; }
+#slide-5b .s5-attrib-label,
 #slide-5c .s5-attrib-label { color:rgba(255,255,255,0.72); flex:1; font-weight:500; }
-#slide-5c .s5-attrib-count { color:#06b6d4; font-weight:700; font-variant-numeric:tabular-nums; }
+#slide-5b .s5-attrib-bar,
 #slide-5c .s5-attrib-bar {
   flex: 0 0 120px;
   height: 6px;
-  background: rgba(6,182,212,0.1);
   border-radius: 3px;
   overflow: hidden;
   position: relative;
 }
+#slide-5b .s5-attrib-bar { background: rgba(16,185,129,0.1); }
+#slide-5c .s5-attrib-bar { background: rgba(6,182,212,0.1); }
+#slide-5b .s5-attrib-bar::after,
 #slide-5c .s5-attrib-bar::after {
   content:'';
   position:absolute; left:0; top:0; bottom:0;
   width: var(--w, 0%);
-  background: #06b6d4;
   border-radius: 3px;
+}
+#slide-5b .s5-attrib-bar::after { background: #10b981; }
+#slide-5c .s5-attrib-bar::after { background: #06b6d4; }
+#slide-5b .s5-attrib-count { color:#10b981; font-weight:700; font-variant-numeric:tabular-nums; }
+#slide-5c .s5-attrib-count { color:#06b6d4; font-weight:700; font-variant-numeric:tabular-nums; }
+
+/* ─── SLIDE CS1: CASE STUDY — LINDSAY NUNES ─────── */
+#slide-cs1 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
+}
+
+.scs-photo-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.scs-photo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.scs-photo-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(22,26,16,0) 0%,
+    rgba(22,26,16,0) 55%,
+    rgba(22,26,16,0.85) 80%,
+    var(--dark2) 100%
+  );
+}
+
+.scs-photo-tag {
+  position: absolute;
+  bottom: 32px;
+  left: 28px;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 11px 18px;
+}
+
+.scs-photo-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+}
+
+.scs-photo-title {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  font-weight: 500;
+  margin-top: 3px;
+}
+
+.scs-right {
+  padding: 52px 60px 52px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.scs-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--green);
+  margin-bottom: 12px;
+}
+
+.scs-hero-row {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  line-height: 1;
+}
+
+.scs-hero-num {
+  font-size: clamp(72px, 9.5vw, 124px);
+  font-weight: 900;
+  letter-spacing: -6px;
+  color: #fff;
+  line-height: 0.85;
+}
+
+.scs-hero-unit {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scs-hero-label {
+  font-size: 30px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+.scs-hero-sub {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: var(--green);
+}
+
+.scs-quote {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.5);
+  border-left: 3px solid var(--green);
+  padding-left: 18px;
+}
+
+.scs-quote strong { color: rgba(255,255,255,0.88); font-weight: 600; }
+
+.scs-timeline {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+}
+
+.scs-timeline-track {
+  position: absolute;
+  top: 9px;
+  left: 10px;
+  right: 10px;
+  height: 2px;
+  background: rgba(255,255,255,0.08);
+}
+
+.scs-timeline-track::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, var(--green) 0%, rgba(151,212,34,0.3) 100%);
+}
+
+.scs-tnode {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.scs-tnode-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--green);
+  border: 3px solid var(--dark2);
+  box-shadow: 0 0 0 2px var(--green), 0 0 10px rgba(151,212,34,0.4);
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.scs-tnode-dot.scs-dot-final {
+  background: #fff;
+  box-shadow: 0 0 0 2px #fff, 0 0 14px rgba(255,255,255,0.5);
+}
+
+.scs-tnode-date {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--green);
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 5px;
+}
+
+.scs-tnode-date.scs-date-final { color: #fff; }
+
+.scs-tnode-event {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.scs-tnode-event.scs-event-final {
+  color: rgba(255,255,255,0.85);
+  font-weight: 700;
+}
+
+.scs-meta-row {
+  display: grid;
+  grid-template-columns: 1.1fr 0.85fr 1.05fr;
+  gap: 8px;
+}
+
+.scs-meta-pill {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 13px 16px;
+}
+
+.scs-meta-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.25);
+  margin-bottom: 5px;
+}
+
+.scs-meta-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+}
+
+.scs-meta-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  margin-top: 3px;
+}
+
+.scs-competitor-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 20px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #f87171;
+  margin-top: 5px;
+}
+
+/* ─── SLIDE CSA1: CANDIDATE CASE — MANALI SONI ──── */
+#slide-csa1 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
+}
+
+.scsa-revit-bar {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scsa-revit-track {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+
+.scsa-revit-fill {
+  height: 100%;
+  width: 90%;
+  border-radius: 2px;
+  background: var(--green);
+}
+
+.scsa-revit-pct {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+/* ─── SLIDE CSA2: CANDIDATE CASE — MONTY DAWSON ─── */
+#slide-csa2 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
+}
+
+.scsb-interco {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+.scsb-interco-line {
+  position: absolute;
+  left: 8px;
+  top: 20px;
+  bottom: 20px;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    rgba(151,212,34,0.3) 0%,
+    rgba(151,212,34,0.3) 40%,
+    rgba(255,255,255,0.08) 40%,
+    rgba(255,255,255,0.08) 55%,
+    rgba(151,212,34,0.7) 55%,
+    var(--green) 100%
+  );
+}
+
+.scsb-office-node {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 0 0 18px 0;
+  position: relative;
+}
+
+.scsb-office-node:last-child { padding-bottom: 0; }
+
+.scsb-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+.scsb-dot-active {
+  background: var(--green);
+  box-shadow: 0 0 0 3px var(--dark2), 0 0 0 5px var(--green);
+}
+
+.scsb-dot-pass {
+  background: rgba(255,255,255,0.12);
+  border: 2px solid rgba(255,255,255,0.15);
+}
+
+.scsb-dot-placed {
+  background: var(--green);
+  box-shadow: 0 0 0 3px var(--dark2), 0 0 0 5px var(--green), 0 0 14px rgba(151,212,34,0.5);
+}
+
+.scsb-node-text { flex: 1; }
+
+.scsb-node-city {
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.scsb-node-city.scsb-city-pass { color: rgba(255,255,255,0.35); }
+.scsb-node-city.scsb-city-placed { color: var(--green); }
+
+.scsb-node-person {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.3);
+  margin-top: 2px;
+}
+
+.scsb-node-result {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 3px;
+}
+
+.scsb-result-active { color: rgba(151,212,34,0.7); }
+.scsb-result-pass   { color: rgba(255,255,255,0.2); }
+.scsb-result-placed { color: var(--green); }
+
+/* ─── SLIDE CSA3: CANDIDATE CASE — GABRIELLE GONZALEZ ─── */
+#slide-csa3 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
+}
+
+.scsc-pivot {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.scsc-pivot-arrow {
+  display: flex;
+  align-items: center;
+  color: rgba(255,255,255,0.12);
+  font-size: 20px;
+  flex-shrink: 0;
+  padding: 0 2px;
+}
+
+.scsc-pivot-card {
+  flex: 1;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.scsc-pivot-fail {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.scsc-pivot-win {
+  background: rgba(151,212,34,0.08);
+  border: 1px solid rgba(151,212,34,0.2);
+}
+
+.scsc-pivot-firm {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.scsc-pivot-role {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.35);
+  margin-top: 3px;
+}
+
+.scsc-pivot-status {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 6px;
+}
+
+/* ─── SLIDE CS2: CASE STUDY — AMY ELSHAFEI ─────── */
+#slide-cs2 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
+}
+
+.scs2-creds {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.scs2-cred-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(151,212,34,0.25);
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  align-self: flex-start;
+}
+
+.scs2-cred-badge::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  flex-shrink: 0;
+}
+
+/* ─── SLIDE CS3: CASE STUDY — GREGOIRE HENRIOUD ─── */
+#slide-cs3 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
+}
+
+.scs3-left {
+  position: relative;
+  background: #0d1109;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 52px 44px;
+  overflow: hidden;
+}
+
+.scs3-left::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(151,212,34,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(151,212,34,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+.scs3-quote-mark {
+  position: relative;
+  z-index: 1;
+  font-size: 120px;
+  line-height: 0.7;
+  font-family: Georgia, serif;
+  color: var(--green);
+  opacity: 0.6;
+  letter-spacing: -4px;
+}
+
+.scs3-testimonial {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(17px, 2vw, 22px);
+  font-weight: 500;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.82);
+  letter-spacing: -0.2px;
+  font-style: italic;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.scs3-attribution {
+  position: relative;
+  z-index: 1;
+}
+
+.scs3-attr-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+.scs3-attr-firm {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-top: 3px;
+}
+
+.scs3-attr-location {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.3);
+  margin-top: 2px;
+}
+
+/* ─── SLIDE CS4: CASE STUDY — LINDSAY BRIGGS ─────── */
+#slide-cs4 {
+  background: var(--dark2);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  overflow: hidden;
+}
+
+.scs4-photo-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.scs4-photo-wrap > .scs4-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+}
+
+.scs4-photo-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(13,17,9,0.55) 0%,
+    rgba(13,17,9,0.05) 28%,
+    rgba(13,17,9,0.05) 50%,
+    rgba(13,17,9,0.92) 100%
+  );
+}
+
+.scs4-logo-overlay {
+  position: absolute;
+  top: 26px;
+  left: 26px;
+  z-index: 2;
+}
+
+.scs4-logo-overlay img {
+  height: 38px;
+  width: auto;
+  filter: brightness(0) invert(1);
+  opacity: 0.85;
+}
+
+.scs4-scoreboard {
+  position: absolute;
+  bottom: 22px;
+  left: 18px;
+  right: 18px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scs4-score-card {
+  border-radius: 10px;
+  padding: 11px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.scs4-score-fail {
+  background: rgba(239,68,68,0.12);
+  border: 1px solid rgba(239,68,68,0.22);
+}
+
+.scs4-score-win {
+  background: rgba(151,212,34,0.13);
+  border: 1px solid rgba(151,212,34,0.28);
+}
+
+.scs4-score-label {
+  font-size: 9.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.scs4-score-fail .scs4-score-label { color: rgba(239,68,68,0.65); }
+.scs4-score-win  .scs4-score-label { color: rgba(151,212,34,0.8); }
+
+.scs4-score-detail {
+  font-size: 11px;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.scs4-score-fail .scs4-score-detail { color: rgba(255,255,255,0.28); }
+.scs4-score-win  .scs4-score-detail { color: rgba(255,255,255,0.6); }
+
+.scs4-score-icon {
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.scs4-score-fail .scs4-score-icon { color: rgba(239,68,68,0.45); }
+.scs4-score-win  .scs4-score-icon { color: var(--green); }
+
+.scs4-vs-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.scs4-vs-line { flex: 1; height: 1px; background: rgba(255,255,255,0.1); }
+
+.scs4-vs-text {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.2);
 }
 
 /* ─── SLIDE 6: SALARY GUIDE ──────────────────────── */
@@ -2029,8 +2822,8 @@ body.nav-wake .nav { opacity: 1; }
   <main class="cover-hero">
     <div class="cover-eyebrow">Marketing Performance Review · 2026</div>
     <h1 class="cover-h1">
-      <span class="ch1-row"><span class="ch1-word" style="animation-delay:0.7s">It's</span> <span class="ch1-word" style="animation-delay:0.85s">been</span></span>
-      <span class="ch1-row"><span class="ch1-word" style="animation-delay:1.0s">a</span> <span class="ch1-word" style="animation-delay:1.1s"><em>big</em></span> <span class="ch1-word" style="animation-delay:1.25s">year.</span></span>
+      <span class="ch1-row"><span class="ch1-word" style="animation-delay:2.0s">It's</span> <span class="ch1-word" style="animation-delay:2.15s">been</span></span>
+      <span class="ch1-row"><span class="ch1-word" style="animation-delay:2.3s">a</span> <span class="ch1-word" style="animation-delay:2.42s"><em>big</em></span> <span class="ch1-word" style="animation-delay:2.57s">year.</span></span>
     </h1>
     <p class="cover-sub">Here's what I've been up to, how it's impacting <strong>business outcomes</strong>, and what I want to do in the next twelve months.</p>
   </main>
@@ -2063,7 +2856,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE 3 · SOCIAL MEDIA
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-3">
-  <span class="page-tag">03 / 08</span>
+  <span class="page-tag">03 / 15</span>
 
   <div class="s3-left">
     <div>
@@ -2073,7 +2866,7 @@ body.nav-wake .nav { opacity: 1; }
 
     <div>
       <div class="s3-period-label">Q3 FY26 · Jan–Mar 2026</div>
-      <div class="s3-big-num">1.39M</div>
+      <div class="s3-big-num">0.00M</div>
       <div class="s3-big-label">impressions in a single quarter</div>
       <div class="s3-yoy">↑ 495% &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">vs Q3 FY25 (234K)</span></div>
 
@@ -2171,7 +2964,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE 5 · JOB APPLICATIONS
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-5">
-  <span class="page-tag">04 / 08</span>
+  <span class="page-tag">04 / 15</span>
 
   <div class="s5-left">
     <div>
@@ -2181,9 +2974,9 @@ body.nav-wake .nav { opacity: 1; }
 
     <div>
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.25);margin-bottom:8px;">March 2026 · Monthly Record</div>
-      <div class="s5-big-num">1,308</div>
-      <div class="s5-big-label">website applications · highest ever month</div>
-      <div class="s5-yoy">↑ 52% YoY &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">Q3 FY26 total: 3,964 (+59%)</span></div>
+      <div class="s5-big-num">0</div>
+      <div class="s5-big-label">website job applications · highest ever quarter</div>
+      <div class="s5-yoy">↑ 59% YoY &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">vs Q3 FY25 (2,488)</span></div>
       <div style="font-size:10px;color:rgba(255,255,255,0.28);line-height:1.55;margin-top:-16px;margin-bottom:clamp(8px,1.5vh,24px);max-width:380px;">
         Clean baseline: Indeed stopped scraping Bespoke jobs in 2024, removing inflated historical traffic. Every application here is organically earned.
       </div>
@@ -2212,10 +3005,309 @@ body.nav-wake .nav { opacity: 1; }
 
 
 <!-- ══════════════════════════════════════════════════
+     SLIDE CSA1 · CANDIDATE CASE — MANALI SONI
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-csa1">
+  <span class="page-tag">05 / 15</span>
+
+  <div class="scs-photo-wrap">
+    <img src="https://assets.isu.pub/document-structure/241009001635-64ede05f822ba181787ce236f2506819/v1/d0153af5b006eb4c1995747e6f2ed5a9.jpeg" alt="Manali Soni · Architectural Technician" />
+    <div class="scs-photo-overlay"></div>
+    <div class="scs-photo-tag">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;background:var(--green);color:#0d0f0a;padding:3px 8px;border-radius:20px;">Applied via Website</span>
+      </div>
+      <div class="scs-photo-name" style="font-size:18px;font-weight:900;letter-spacing:-0.5px;">Manali Soni</div>
+      <div class="scs-photo-title" style="font-size:12px;margin-top:2px;">Architectural Technician · Geelong</div>
+      <div class="scsa-revit-bar">
+        <div class="scsa-revit-track"><div class="scsa-revit-fill"></div></div>
+        <div class="scsa-revit-pct">90% Revit</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scs-right">
+
+    <div>
+      <div class="scs-eyebrow">Candidate Case · Melbourne Team · Temp Placement</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num">17</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">days</div>
+          <div class="scs-hero-sub">applied &rarr; offer</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-quote" style="font-style:italic;">
+      "I'm genuinely excited to be joining the team and <strong>can't wait to get started.</strong>"
+      <div style="font-size:11px;font-style:normal;font-weight:600;color:rgba(151,212,34,0.7);margin-top:10px;">— Manali Soni, acceptance email · 9 April 2026</div>
+    </div>
+
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.18);margin-bottom:18px;">Timeline · 23 March → 13 April 2026</div>
+      <div class="scs-timeline">
+        <div class="scs-timeline-track"></div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">23 Mar</div>
+          <div class="scs-tnode-event">Applied via<br>website<br>6:17pm Sun</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">24 Mar</div>
+          <div class="scs-tnode-event">Emma interviews<br>9:30am Mon.<br>CV → Baldasso</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">1 Apr</div>
+          <div class="scs-tnode-event">Interview at<br>Baldasso<br>Geelong ✓</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot scs-dot-final"></div>
+          <div class="scs-tnode-date scs-date-final">9 Apr</div>
+          <div class="scs-tnode-event scs-event-final">Offer accepted.<br>Starts Mon<br>13 Apr ✓</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placed At</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Baldasso Cortese<br>Architects</div>
+        <div class="scs-meta-sub">Geelong · 3-month contract</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Charge-out Rate</div>
+        <div class="scs-meta-value">$77.28<span style="font-size:12px;font-weight:500;">/hr</span></div>
+        <div class="scs-meta-sub">+GST · 37.5 hrs/week</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Source</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Applyflow<br>Website</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10px;font-weight:700;color:rgba(151,212,34,0.85);">↑ inbound applicant</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE CSA2 · CANDIDATE CASE — MONTGOMERY DAWSON
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-csa2">
+  <span class="page-tag">06 / 15</span>
+
+  <!-- Left: Photo panel -->
+  <div class="scs-photo-wrap">
+    <img src="https://media.licdn.com/dms/image/v2/D4E03AQFHpz31MxF7fg/profile-displayphoto-crop_800_800/B4EZzAgSyvGUAI-/0/1772756220456?e=1777507200&v=beta&t=Y3ch2THhNjJ8JHBxNJNGEtgmJa7nsMV2Wvh9m6ASg2o" alt="Montgomery Dawson" style="object-position:center 15%;" />
+    <div class="scs-photo-overlay"></div>
+    <div class="scs-photo-tag">
+      <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;">
+        <span style="display:inline-block;background:var(--green);color:#0d0f0a;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:3px 8px;border-radius:4px;">Applied via Website</span>
+      </div>
+      <div class="scs-photo-name" style="font-size:18px;font-weight:900;letter-spacing:-0.5px;">Montgomery<br>Dawson</div>
+      <div class="scs-photo-title" style="font-size:12px;margin-top:4px;">Grad Architect · NZ → Brisbane</div>
+    </div>
+  </div>
+
+  <!-- Right: Story panel -->
+  <div class="scs-right">
+    <div>
+      <div class="scs-eyebrow">Candidate Success · 3-Office Interco · Brisbane</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num">32</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">days</div>
+          <div class="scs-hero-sub">applied → offer</div>
+        </div>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:0.5px;margin-top:6px;">Applied 9 Mar from Aotearoa · Offer accepted 10 Apr</div>
+
+      <!-- 3-office interco journey diagram -->
+      <div class="scsb-interco" style="margin-top:20px;max-width:280px;">
+        <div class="scsb-interco-line"></div>
+        <div class="scsb-office-node">
+          <div class="scsb-dot scsb-dot-active"></div>
+          <div class="scsb-node-text">
+            <div class="scsb-node-city">Melbourne</div>
+            <div class="scsb-node-person">Charlotte Poulain · Consultant</div>
+            <div class="scsb-node-result scsb-result-active">Interviewed ↑</div>
+          </div>
+        </div>
+        <div class="scsb-office-node">
+          <div class="scsb-dot scsb-dot-pass"></div>
+          <div class="scsb-node-text">
+            <div class="scsb-node-city scsb-city-pass">Sydney</div>
+            <div class="scsb-node-person">Ellie Nissan · Consultant</div>
+            <div class="scsb-node-result scsb-result-pass">Market fit identified</div>
+          </div>
+        </div>
+        <div class="scsb-office-node">
+          <div class="scsb-dot scsb-dot-placed"></div>
+          <div class="scsb-node-text">
+            <div class="scsb-node-city scsb-city-placed">Brisbane ✓</div>
+            <div class="scsb-node-person">Luke Russo · Consultant</div>
+            <div class="scsb-node-result scsb-result-placed">Placed · Elevation Architecture</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="scs-timeline" style="margin-top:4px;">
+      <div class="scs-timeline-track"></div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">9 Mar</div>
+        <div class="scs-tnode-event">Applied<br>from NZ</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">13 Mar</div>
+        <div class="scs-tnode-event">Melbourne<br>interview</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">8 Apr</div>
+        <div class="scs-tnode-event">Brisbane<br>interviews</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot scs-dot-final"></div>
+        <div class="scs-tnode-date scs-date-final">10 Apr</div>
+        <div class="scs-tnode-event scs-event-final">Offer<br>Accepted ✓</div>
+      </div>
+    </div>
+
+    <!-- Meta pills -->
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placed At</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.3;">Elevation<br>Architecture</div>
+        <div class="scs-meta-sub">Brisbane · Perm</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placement Fee</div>
+        <div class="scs-meta-value">$11,916<span style="font-size:11px;font-weight:500;">.80</span></div>
+        <div class="scs-meta-sub">16% permanent</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Source</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Applyflow<br>Website</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10px;font-weight:700;color:rgba(151,212,34,0.85);">↑ inbound applicant</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE CSA3 · CANDIDATE CASE — GABRIELLE GONZALEZ
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-csa3">
+  <span class="page-tag">07 / 15</span>
+
+  <!-- Left: Photo panel -->
+  <div class="scs-photo-wrap">
+    <img src="https://media.licdn.com/dms/image/v2/D4D03AQGg3854eQR0Gw/profile-displayphoto-shrink_400_400/B4DZZo.TjIGgAo-/0/1745517885988?e=1777507200&v=beta&t=6lygP9QZkMxjfFkVGJdjGRtrmo0bnemBIGd0arpHSE4" alt="Gabrielle Gonzalez" style="object-position:center 20%;" />
+    <div class="scs-photo-overlay"></div>
+    <div class="scs-photo-tag">
+      <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;">
+        <span style="display:inline-block;background:var(--green);color:#0d0f0a;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:3px 8px;border-radius:4px;">Website Applicant</span>
+      </div>
+      <div class="scs-photo-name" style="font-size:18px;font-weight:900;letter-spacing:-0.5px;">Gabrielle<br>Gonzalez</div>
+      <div class="scs-photo-title" style="font-size:12px;margin-top:4px;">Assoc. AIA · Graphics Technology</div>
+    </div>
+  </div>
+
+  <!-- Right: Story panel -->
+  <div class="scs-right">
+    <div>
+      <div class="scs-eyebrow">Candidate Success · Consultant Pivot · New York</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num">25</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">days</div>
+          <div class="scs-hero-sub">RAMSA outreach → offer</div>
+        </div>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:0.5px;margin-top:6px;">First role went on hold · Nikki pivoted to RAMSA · Placed</div>
+
+      <!-- Pivot cards: C+G (on hold) → RAMSA (placed) -->
+      <div class="scsc-pivot">
+        <div class="scsc-pivot-card scsc-pivot-fail">
+          <div class="scsc-pivot-firm" style="color:rgba(255,255,255,0.35);">Curtis + Ginsberg</div>
+          <div class="scsc-pivot-role">Graphics Coordinator</div>
+          <div class="scsc-pivot-status" style="color:#f87171;">✗ On Hold</div>
+        </div>
+        <div class="scsc-pivot-arrow">→</div>
+        <div class="scsc-pivot-card scsc-pivot-win">
+          <div class="scsc-pivot-firm" style="color:var(--green);">RAMSA</div>
+          <div class="scsc-pivot-role" style="color:rgba(151,212,34,0.5);">Graphics Tech Specialist</div>
+          <div class="scsc-pivot-status" style="color:var(--green);">✓ Placed · $70k</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quote from Gabrielle's signed-offer email -->
+    <div class="scs-quote" style="font-style:italic;">
+      "Thank you for supporting my work and seeing my potential — <strong>I truly value your expertise</strong> and am happy you have inspired me to begin a new chapter."
+      <div style="font-size:11px;font-style:normal;font-weight:600;color:rgba(151,212,34,0.7);margin-top:10px;">— Gabrielle Gonzalez, in her signed offer response</div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="scs-timeline">
+      <div class="scs-timeline-track"></div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">8 Jul</div>
+        <div class="scs-tnode-event">Website<br>application</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">25 Jul</div>
+        <div class="scs-tnode-event">C+G<br>interview</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot"></div>
+        <div class="scs-tnode-date">13 Sep</div>
+        <div class="scs-tnode-event">RAMSA<br>outreach</div>
+      </div>
+      <div class="scs-tnode">
+        <div class="scs-tnode-dot scs-dot-final"></div>
+        <div class="scs-tnode-date scs-date-final">8 Oct</div>
+        <div class="scs-tnode-event scs-event-final">Offer<br>Accepted ✓</div>
+      </div>
+    </div>
+
+    <!-- Meta pills -->
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placed At</div>
+        <div class="scs-meta-value" style="font-size:12px;line-height:1.3;">Robert A.M.<br>Stern Architects</div>
+        <div class="scs-meta-sub">New York · Perm</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placement Fee</div>
+        <div class="scs-meta-value">$14,000</div>
+        <div class="scs-meta-sub">20% · permanent</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Source</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Applyflow<br>Website</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10px;font-weight:700;color:rgba(151,212,34,0.85);">↑ inbound applicant</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
      SLIDE 5B · INBOUND CLIENT DEMAND
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-5b">
-  <span class="page-tag">05 / 08</span>
+  <span class="page-tag">08 / 15</span>
 
   <div class="s5-left">
     <div>
@@ -2225,7 +3317,7 @@ body.nav-wake .nav { opacity: 1; }
 
     <div>
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.25);margin-bottom:8px;">Q3 FY26 · Jan–Mar 2026</div>
-      <div class="s5-big-num">41</div>
+      <div class="s5-big-num">0</div>
       <div class="s5-big-label">website job briefs · highest ever quarter</div>
       <div class="s5-yoy">↑ 356% YoY &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">vs Q3 FY25 (9)</span></div>
     </div>
@@ -2242,11 +3334,384 @@ body.nav-wake .nav { opacity: 1; }
     </div>
   </div>
 
-  <div class="s5-right">
+  <div class="s5-right" style="display:grid;grid-template-rows:auto 1fr auto;gap:16px;">
     <div class="s5-chart-label">Inbound Hiring Demand by Quarter · Q3 FY25 – Q3 FY26</div>
-    <div class="s5-chart-wrap">
+    <div class="s5-chart-wrap" style="min-height:260px;">
       <canvas id="inboundChart"></canvas>
     </div>
+
+    <div>
+      <div class="s5-chart-label" style="margin-bottom:10px;">Where They Came From <span style="opacity:0.5;font-weight:500;">(25 responses · first year of attribution data)</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;">
+        <div class="s5-attrib-row"><span class="s5-attrib-label">Google search</span><div class="s5-attrib-bar" style="--w:100%"></div><span class="s5-attrib-count">52%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">Event / social / other</span><div class="s5-attrib-bar" style="--w:46%"></div><span class="s5-attrib-count">24%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">ChatGPT / AI search</span><div class="s5-attrib-bar" style="--w:31%"></div><span class="s5-attrib-count">16%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">LinkedIn / Instagram</span><div class="s5-attrib-bar" style="--w:8%"></div><span class="s5-attrib-count">4%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">Friend / colleague</span><div class="s5-attrib-bar" style="--w:8%"></div><span class="s5-attrib-count">4%</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE CS1 · CASE STUDY — LINDSAY NUNES
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-cs1">
+  <span class="page-tag">09 / 15</span>
+
+  <div class="scs-photo-wrap">
+    <img src="https://images.squarespace-cdn.com/content/v1/639127618a24a2207cd0c88f/c6fc1c6e-e225-42cf-ad91-b5e334379739/lindsay+2A_desat+bg.jpg" alt="Lindsay Nunes · Principal, Punch Design" />
+    <div class="scs-photo-overlay"></div>
+    <div class="scs-photo-tag">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;background:var(--green);color:#0d0f0a;padding:3px 8px;border-radius:20px;">New Client</span>
+      </div>
+      <div class="scs-photo-name" style="font-size:18px;font-weight:900;letter-spacing:-0.5px;">Punch Design</div>
+      <div class="scs-photo-title" style="font-size:12px;margin-top:2px;">Brisbane · Lindsay Nunes, Principal</div>
+    </div>
+  </div>
+
+  <div class="scs-right">
+
+    <div>
+      <div class="scs-eyebrow">New Client · Inbound from Content · Brisbane</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num">17</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">days</div>
+          <div class="scs-hero-sub">brief &rarr; offer</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-quote">
+      Lindsay found Bespoke through our <strong>Sustainability Report</strong> — not a cold call, not an ad. She submitted a brief via the website the same day, flagging she was using a competitor she called <strong>"absolutely terrible."</strong> Eight days later we'd introduced a candidate. Nine days after that, there was an offer on the table.
+    </div>
+
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.18);margin-bottom:18px;">Timeline · 23 March → 9 April 2026</div>
+      <div class="scs-timeline">
+        <div class="scs-timeline-track"></div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">23 Mar</div>
+          <div class="scs-tnode-event">Sustainability<br>Report download<br>+ brief submitted</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">31 Mar</div>
+          <div class="scs-tnode-event">Candidate<br>introduced</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">2 Apr</div>
+          <div class="scs-tnode-event">First<br>interview</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot scs-dot-final"></div>
+          <div class="scs-tnode-date scs-date-final">9 Apr</div>
+          <div class="scs-tnode-event scs-event-final">Offer<br>made ✓</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Candidate Placed</div>
+        <div class="scs-meta-value">Megan Glassington</div>
+        <div class="scs-meta-sub">Senior Interior Designer · ~$95k</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placement Fee</div>
+        <div class="scs-meta-value">~$15,200</div>
+        <div class="scs-meta-sub">16% of base salary</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">How They Found Us</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Sustainability<br>Report</div>
+        <div class="scs-competitor-tag">↑ displaced Gough</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE CS2 · CASE STUDY — AMY ELSHAFEI
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-cs2">
+  <span class="page-tag">10 / 15</span>
+
+  <div class="scs-photo-wrap">
+    <img src="https://amyelshafei.com/wp-content/uploads/2025/02/People_Amy-1.jpg" alt="Amy Elshafei · Amy Elshafei + Associates" />
+    <div class="scs-photo-overlay"></div>
+    <div class="scs-photo-tag">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;background:var(--green);color:#0d0f0a;padding:3px 8px;border-radius:20px;">New Client</span>
+      </div>
+      <div class="scs-photo-name" style="font-size:18px;font-weight:900;letter-spacing:-0.5px;">Amy Elshafei<br>+ Associates</div>
+      <div class="scs-photo-title" style="font-size:12px;margin-top:3px;">London · Amy Elshafei, Principal</div>
+      <div class="scs2-creds">
+        <div class="scs2-cred-badge">Foster + Partners lineage</div>
+        <div class="scs2-cred-badge">Subconsultant to starchitects</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scs-right">
+
+    <div>
+      <div class="scs-eyebrow">New Client · Temp Placement · London</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num">3</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">days</div>
+          <div class="scs-hero-sub">brief &rarr; placed</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-quote">
+      Amy first came to Bespoke for <strong>Architecture Assistants</strong>. Three weeks later she mentioned she needed a <strong>temp PA — urgently</strong>. Leoni had Harriet Williams confirmed and starting within the same week. Brief filed on a Wednesday. Harriet started the following Monday.
+    </div>
+
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.18);margin-bottom:18px;">Timeline · 5 February → 2 March 2026</div>
+      <div class="scs-timeline">
+        <div class="scs-timeline-track"></div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">5 Feb</div>
+          <div class="scs-tnode-event">Website brief<br>submitted<br>(Architecture Assistants)</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">25 Feb</div>
+          <div class="scs-tnode-event">New need flagged:<br>temp PA +<br>HR onboarding</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">28 Feb</div>
+          <div class="scs-tnode-event">Harriet Williams<br>placed &amp;<br>confirmed</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot scs-dot-final"></div>
+          <div class="scs-tnode-date scs-date-final">2 Mar</div>
+          <div class="scs-tnode-event scs-event-final">Harriet<br>starts ✓</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Candidate Placed</div>
+        <div class="scs-meta-value">Harriet Williams</div>
+        <div class="scs-meta-sub">Temp Junior PA</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Fee</div>
+        <div class="scs-meta-value">18%</div>
+        <div class="scs-meta-sub">Temp margin · ongoing</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">How They Found Us</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Website<br>Job Brief</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10px;font-weight:700;color:rgba(151,212,34,0.85);">↑ 100% inbound</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE CS3 · CASE STUDY — GREGOIRE HENRIOUD
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-cs3">
+  <span class="page-tag">11 / 15</span>
+
+  <div class="scs-photo-wrap">
+    <img src="https://media.licdn.com/dms/image/v2/C4D03AQFq0-0-5XCYbA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1541632077429?e=1777507200&v=beta&t=HvOK2NQCIP931mpV1rp4tZWXlYuk2hFfuRcF8zqHlm4" alt="Gregoire Henrioud · henrioud-architectes" />
+    <div class="scs-photo-overlay"></div>
+    <div class="scs-photo-tag">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;background:var(--green);color:#0d0f0a;padding:3px 8px;border-radius:20px;">New Client</span>
+      </div>
+      <div class="scs-photo-name" style="font-size:18px;font-weight:900;letter-spacing:-0.5px;">henrioud-<br>architectes</div>
+      <div class="scs-photo-title" style="font-size:12px;margin-top:3px;">London · Gregoire Henrioud, Principal</div>
+    </div>
+  </div>
+
+  <div class="scs-right">
+
+    <div>
+      <div class="scs-eyebrow">New Client · 2 Placements · London</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num">2</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">hires</div>
+          <div class="scs-hero-sub">from 1 brief</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-quote" style="font-style:italic;">
+      "Thank you for your support throughout the process — <strong>much appreciated as always.</strong>"
+      <div style="font-size:11px;font-style:normal;font-weight:600;color:rgba(151,212,34,0.7);margin-top:10px;">— Gregoire Henrioud, after placing his second hire</div>
+    </div>
+
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.18);margin-bottom:18px;">Timeline · Oct 2025 → Feb 2026</div>
+      <div class="scs-timeline">
+        <div class="scs-timeline-track"></div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">27 Oct</div>
+          <div class="scs-tnode-event">Website brief<br>submitted<br>(Rhino Designer)</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">4 Nov</div>
+          <div class="scs-tnode-event">Terms signed.<br>Brief scoped<br>with Tahj</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">27 Jan</div>
+          <div class="scs-tnode-event">Siddharthan<br>Saravanan<br>placed ✓</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot scs-dot-final"></div>
+          <div class="scs-tnode-date scs-date-final">27 Feb</div>
+          <div class="scs-tnode-event scs-event-final">Valeria Mazzilli<br>placed ✓<br>2nd hire</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Candidates Placed</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Siddharthan S.<br>Valeria Mazzilli</div>
+        <div class="scs-meta-sub">Both Rhino Designers · temp</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Hourly Rate</div>
+        <div class="scs-meta-value">£40.03<span style="font-size:13px;font-weight:500;">/hr</span></div>
+        <div class="scs-meta-sub">32hrs/wk · ongoing</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">How They Found Us</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Website<br>Job Brief</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10px;font-weight:700;color:rgba(151,212,34,0.85);">↑ 100% inbound</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE CS4 · CASE STUDY — LINDSAY BRIGGS
+══════════════════════════════════════════════════ -->
+<div class="slide" id="slide-cs4">
+  <span class="page-tag">12 / 15</span>
+
+  <div class="scs4-photo-wrap">
+    <img class="scs4-bg-img" src="https://dallashomesforsaleandsoldphotos.dougnewby.com/4428-livingston-avenue-highland-park-texas/mls-20577551-1.jpg" alt="Briggs Architecture &amp; Design — Highland Park project" />
+    <div class="scs4-photo-gradient"></div>
+
+    <div class="scs4-logo-overlay">
+      <img src="https://images.squarespace-cdn.com/content/v1/537a7a18e4b0f5318f931fbc/8e599899-fa93-4602-8606-362306a2488e/Briggs-Logo-2024-Final-2color-Revised-6-21.png" alt="Briggs Architecture &amp; Design" />
+    </div>
+
+    <div class="scs4-scoreboard">
+      <div class="scs4-score-card scs4-score-fail">
+        <div>
+          <div class="scs4-score-label">Previous Recruiter</div>
+          <div class="scs4-score-detail">6 months · 0 hires</div>
+        </div>
+        <div class="scs4-score-icon">✗</div>
+      </div>
+
+      <div class="scs4-vs-row">
+        <div class="scs4-vs-line"></div>
+        <div class="scs4-vs-text">vs Bespoke</div>
+        <div class="scs4-vs-line"></div>
+      </div>
+
+      <div class="scs4-score-card scs4-score-win">
+        <div>
+          <div class="scs4-score-label">Bespoke Careers · Texas</div>
+          <div class="scs4-score-detail">69 days · Othavio starts</div>
+        </div>
+        <div class="scs4-score-icon">✓</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scs-right">
+
+    <div>
+      <div class="scs-eyebrow">New Client · Dallas, Texas · Perm Placement</div>
+      <div class="scs-hero-row">
+        <div class="scs-hero-num">69</div>
+        <div class="scs-hero-unit">
+          <div class="scs-hero-label">days</div>
+          <div class="scs-hero-sub">brief &rarr; start</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-quote">
+      Lindsay's previous recruiter had been trying for <strong>six months with zero results</strong>. She submitted a website brief on 16 December. Claire had a full discovery call the same day. Othavio started on 23 February — and <strong>relocated his family to Texas</strong> to take the role. Lindsay's email: <strong>"He's off to a great start."</strong>
+    </div>
+
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.18);margin-bottom:18px;">Timeline · Dec 2025 → Feb 2026</div>
+      <div class="scs-timeline">
+        <div class="scs-timeline-track"></div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">16 Dec</div>
+          <div class="scs-tnode-event">Website brief<br>submitted +<br>discovery call</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">17 Dec</div>
+          <div class="scs-tnode-event">Terms agreed.<br>Search<br>commenced</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot"></div>
+          <div class="scs-tnode-date">23 Feb</div>
+          <div class="scs-tnode-event">Othavio<br>starts.<br>Family relocated ✓</div>
+        </div>
+        <div class="scs-tnode">
+          <div class="scs-tnode-dot scs-dot-final"></div>
+          <div class="scs-tnode-date scs-date-final">2 Mar</div>
+          <div class="scs-tnode-event scs-event-final">Fee paid<br>$13,750 ✓<br>instalment 1</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scs-meta-row">
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Client</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Briggs Architecture<br>&amp; Design</div>
+        <div class="scs-meta-sub">Dallas, TX · 6-person firm</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">Placement Fee</div>
+        <div class="scs-meta-value">$13,750</div>
+        <div class="scs-meta-sub">Architectural Designer · perm</div>
+      </div>
+      <div class="scs-meta-pill">
+        <div class="scs-meta-label">How They Found Us</div>
+        <div class="scs-meta-value" style="font-size:13px;line-height:1.4;">Website<br>Job Brief</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10px;font-weight:700;color:rgba(151,212,34,0.85);">↑ displaced prior recruiter</div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -2255,7 +3720,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE 5C · CONTACT FORM SUBMISSIONS
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-5c">
-  <span class="page-tag">06 / 08</span>
+  <span class="page-tag">13 / 15</span>
 
   <div class="s5-left">
     <div>
@@ -2265,7 +3730,7 @@ body.nav-wake .nav { opacity: 1; }
 
     <div>
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.25);margin-bottom:8px;">Q3 FY26 · Jan–Mar 2026</div>
-      <div class="s5-big-num">681</div>
+      <div class="s5-big-num">0</div>
       <div class="s5-big-label">contact-form submissions · highest ever quarter</div>
       <div class="s5-yoy">↑ 7.6% YoY &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">vs Q3 FY25 (633)</span></div>
     </div>
@@ -2291,12 +3756,12 @@ body.nav-wake .nav { opacity: 1; }
     <div>
       <div class="s5-chart-label" style="margin-bottom:10px;">Q3 FY26 · Where They Came From <span style="opacity:0.5;font-weight:500;">(first year of attribution data)</span></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;">
-        <div class="s5-attrib-row"><span class="s5-attrib-label">Google search</span><div class="s5-attrib-bar" style="--w:100%"></div><span class="s5-attrib-count">175</span></div>
-        <div class="s5-attrib-row"><span class="s5-attrib-label">Friend / colleague</span><div class="s5-attrib-bar" style="--w:44%"></div><span class="s5-attrib-count">78</span></div>
-        <div class="s5-attrib-row"><span class="s5-attrib-label">LinkedIn / Instagram</span><div class="s5-attrib-bar" style="--w:39%"></div><span class="s5-attrib-count">68</span></div>
-        <div class="s5-attrib-row"><span class="s5-attrib-label">ChatGPT / AI search</span><div class="s5-attrib-bar" style="--w:20%"></div><span class="s5-attrib-count">35</span></div>
-        <div class="s5-attrib-row"><span class="s5-attrib-label">Salary Guide</span><div class="s5-attrib-bar" style="--w:6%"></div><span class="s5-attrib-count">10</span></div>
-        <div class="s5-attrib-row"><span class="s5-attrib-label">Event / social / other</span><div class="s5-attrib-bar" style="--w:29%"></div><span class="s5-attrib-count">51</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">Google search</span><div class="s5-attrib-bar" style="--w:100%"></div><span class="s5-attrib-count">42%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">Friend / colleague</span><div class="s5-attrib-bar" style="--w:44%"></div><span class="s5-attrib-count">19%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">LinkedIn / Instagram</span><div class="s5-attrib-bar" style="--w:39%"></div><span class="s5-attrib-count">16%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">ChatGPT / AI search</span><div class="s5-attrib-bar" style="--w:20%"></div><span class="s5-attrib-count">8%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">Salary Guide</span><div class="s5-attrib-bar" style="--w:6%"></div><span class="s5-attrib-count">2%</span></div>
+        <div class="s5-attrib-row"><span class="s5-attrib-label">Event / social / other</span><div class="s5-attrib-bar" style="--w:29%"></div><span class="s5-attrib-count">12%</span></div>
       </div>
     </div>
   </div>
@@ -2307,7 +3772,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE 6 · SALARY GUIDE
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-6">
-  <span class="page-tag dark">07 / 08</span>
+  <span class="page-tag dark">14 / 15</span>
 
   <div class="s6-top">
     <div>
@@ -2370,7 +3835,7 @@ body.nav-wake .nav { opacity: 1; }
      SLIDE 7 · WHAT'S NEXT
 ══════════════════════════════════════════════════ -->
 <div class="slide" id="slide-7">
-  <span class="page-tag">08 / 08</span>
+  <span class="page-tag">15 / 15</span>
 
   <div class="s7-header">
     <div class="s7-eyebrow">Looking ahead · FY27</div>
@@ -2514,7 +3979,7 @@ body.nav-wake .nav { opacity: 1; }
 <div class="nav">
   <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">&#8592;</button>
   <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">&#8594;</button>
-  <div class="slide-counter" id="slideCounter">01 / 08</div>
+  <div class="slide-counter" id="slideCounter">01 / 15</div>
   <div class="nav-dots" id="navDots"></div>
 </div>
 <script>
@@ -2869,13 +4334,13 @@ document.addEventListener('keydown', e => {
 // ─── CHARTS ────────────────────────────────────────
 
 function initChartsForSlide(idx) {
-  // After reorder + slide-2 removal: 0=cover, 1=year-that-was, 2=social, 3=job,
-  // 4=inbound-briefs, 5=contact-form, 6=salary, 7=whatsnext
-  if (idx === 2 && !chartsInit.social)  { initSocialChart();  chartsInit.social  = true; }
-  if (idx === 3 && !chartsInit.job)     { initJobChart();     chartsInit.job     = true; }
-  if (idx === 4 && !chartsInit.inbound) { initInboundChart(); chartsInit.inbound = true; }
-  if (idx === 5 && !chartsInit.contact) { initContactChart(); chartsInit.contact = true; }
-  if (idx === 6 && !chartsInit.salary)  { initSalaryChart();  chartsInit.salary  = true; }
+  // ID-based detection — robust against slide order changes
+  const slideId = slides[idx] ? slides[idx].id : null;
+  if (slideId === 'slide-3'  && !chartsInit.social)  { initSocialChart();  chartsInit.social  = true; }
+  if (slideId === 'slide-5'  && !chartsInit.job)     { initJobChart();     chartsInit.job     = true; }
+  if (slideId === 'slide-5b' && !chartsInit.inbound) { initInboundChart(); chartsInit.inbound = true; }
+  if (slideId === 'slide-5c' && !chartsInit.contact) { initContactChart(); chartsInit.contact = true; }
+  if (slideId === 'slide-6'  && !chartsInit.salary)  { initSalaryChart();  chartsInit.salary  = true; }
 }
 
 // ── Social Media ──
@@ -3025,6 +4490,7 @@ function initSocialChart() {
       }
     }
   });
+  _runCountsForSlide(2);
 }
 
 // ── Job Applications ──
@@ -3093,6 +4559,7 @@ function initJobChart() {
       }
     }
   });
+  _runCountsForSlide(3);
 }
 
 // ── Inbound Demand ──
@@ -3163,6 +4630,7 @@ function initInboundChart() {
       }
     }
   });
+  _runCountsForSlide(4);
 }
 
 // ── Contact Form ──
@@ -3230,6 +4698,7 @@ function initContactChart() {
       }
     }
   });
+  _runCountsForSlide(5);
 }
 
 // ── Salary Guide ──
@@ -3792,7 +5261,9 @@ function buildSlide4() {
     // ── Orbit circle ──
     const tile = s4MomentTile(m);
     const circle = document.createElement('div');
-    circle.className = 's4-orbit-circle';
+    // s4-unborn hides the circle (scale 0, opacity 0) from the very
+    // first render so there's no flash before triggerS4FlyIn fires.
+    circle.className = 's4-orbit-circle s4-unborn';
     circle.dataset.idx = i;
 
     let innerHtml;
@@ -3864,6 +5335,10 @@ function buildSlide4() {
     });
   }
   document.getElementById('s4HudTot').textContent = String(N).padStart(2, '0');
+
+  // Trigger the stellar birth entrance — circles pop in one-by-one
+  // 300ms after the orbit DOM is fully built and rAF has started.
+  setTimeout(triggerS4FlyIn, 300);
 }
 
 // smoothstep easing
@@ -3876,6 +5351,7 @@ function _smooth(t) { return t * t * (3 - 2 * t); }
 let _s4RotAngle = 0;
 let _s4RotSpeed = 0.12;              // current angular velocity (rad/s)
 let _s4LastFrame = null;             // rAF timestamp of prior frame
+let _s4ActiveRingI = -1;            // which circle currently has the hero ring
 const _S4_BASE_ROT  = 0.12;          // rest rate (slow)
 const _S4_BURST_ROT = 4.8;           // kick applied on scroll / click
 const _S4_DECAY = 1.6;               // rate at which burst decays
@@ -3997,6 +5473,8 @@ function updateSlide4() {
     c.style.setProperty('--oc-z', ea > 0.5 ? '10' : '1');
     // The tiny "01 · Feb 2024" label shows on ring circles, hides on hero.
     c.style.setProperty('--oc-label-opacity', (1 - ea).toFixed(3));
+    // Hero selection ring fades out as circle grows — only visible on small orbit circles.
+    c.style.setProperty('--oc-ring-opacity', Math.max(0, 1 - ea * 2.5).toFixed(3));
   });
 
   // ─ Text panels ─
@@ -4060,6 +5538,37 @@ function updateSlide4() {
   document.querySelectorAll('#s4HudTicks .s4-hud-tick').forEach((t, j) => {
     t.classList.toggle('active', j <= curIdx);
   });
+
+  // ─ Hero selection ring ─────────────────────────────────
+  // Fires when the active circle changes in moment view.
+  // Two effects: a one-shot burst ring on arrival, plus a
+  // persistent breathing ring while the circle is the hero.
+  const inMomentView = activeIdx > -0.3;
+  const heroI = Math.round(Math.max(0, Math.min(N - 1, activeIdx)));
+
+  if (inMomentView && heroI !== _s4ActiveRingI) {
+    // Remove ring from previously active circle
+    if (_s4ActiveRingI >= 0) {
+      const prev = circles[_s4ActiveRingI];
+      if (prev) prev.classList.remove('s4-hero-active', 's4-hero-burst');
+    }
+    const heroCircle = circles[heroI];
+    if (heroCircle) {
+      heroCircle.classList.add('s4-hero-active');
+      // Fire burst immediately — circle is still small on the orbit ring.
+      // The ring expands outward as the circle grows toward center.
+      heroCircle.classList.remove('s4-hero-burst');
+      void heroCircle.offsetWidth; // reflow to restart animation
+      heroCircle.classList.add('s4-hero-burst');
+      setTimeout(() => heroCircle.classList.remove('s4-hero-burst'), 1150);
+    }
+    _s4ActiveRingI = heroI;
+  } else if (!inMomentView && _s4ActiveRingI !== -1) {
+    // Scrolled back to intro — clean up ring
+    const prev = circles[_s4ActiveRingI];
+    if (prev) prev.classList.remove('s4-hero-active', 's4-hero-burst');
+    _s4ActiveRingI = -1;
+  }
 }
 
 function initSlide4() {
@@ -4174,71 +5683,56 @@ window.addEventListener('popstate', () => _applyURLState(true));
 // ═══════════════════════════════════════════════════════
 // COUNTING NUMBERS
 // ═══════════════════════════════════════════════════════
-function animateCount(el, target, duration, prefix, suffix, decimals) {
-  if (!el) return;
-  decimals = decimals || 0;
-  prefix = prefix || '';
-  suffix = suffix || '';
+function animateCount(el, target, duration) {
+  if (!el || el._counting) return;
+  el._counting = true;
   const start = performance.now();
-  const startVal = 0;
   function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
   function step(now) {
-    const elapsed = now - start;
-    const progress = Math.min(1, elapsed / duration);
-    const val = startVal + (target - startVal) * easeOutQuart(progress);
-    const formatted = decimals > 0
-      ? val.toFixed(decimals)
-      : Math.round(val).toLocaleString();
-    el.textContent = prefix + formatted + suffix;
+    const progress = Math.min(1, (now - start) / duration);
+    const val = Math.round(target * easeOutQuart(progress));
+    el.textContent = val.toLocaleString();
     if (progress < 1) requestAnimationFrame(step);
-    else el.textContent = prefix + (decimals > 0 ? target.toFixed(decimals) : target.toLocaleString()) + suffix;
+    else el.textContent = target.toLocaleString();
   }
   requestAnimationFrame(step);
 }
 
-// Map of slide index → numbers to count
-// Each entry: { selector, target, prefix, suffix, decimals, duration }
-const COUNT_TARGETS = {
-  // Slide 3 (social): triggered after chart appears
-  3: [
-    { selector: '.s5-big-num', target: 1308, duration: 1800 },
-  ],
-  4: [
-    { selector: '#slide-5b .s5-big-num', target: 41, duration: 1400 },
-  ],
-  5: [
-    { selector: '#slide-5c .s5-big-num', target: 681, duration: 1600 },
-  ],
-};
+// Called from chart init functions directly (no override needed)
+function _runCountsForSlide(idx) {
+  // ID-based detection — robust against slide order changes.
+  // Zero immediately to prevent flash of final value before count-up.
+  const slideId = slides[idx] ? slides[idx].id : null;
+  const _sel = {
+    'slide-3':  '#slide-3 .s3-big-num',
+    'slide-5':  '#slide-5 .s5-big-num',
+    'slide-5b': '#slide-5b .s5-big-num',
+    'slide-5c': '#slide-5c .s5-big-num'
+  };
+  const el = slideId && _sel[slideId] ? document.querySelector(_sel[slideId]) : null;
+  if (el && !el._counting) el.textContent = slideId === 'slide-3' ? '0.00M' : '0';
 
-const _countedSlides = {};
-function triggerCountsForSlide(idx) {
-  if (_countedSlides[idx]) return;
-  const targets = COUNT_TARGETS[idx];
-  if (!targets) return;
-  _countedSlides[idx] = true;
   setTimeout(() => {
-    targets.forEach(t => {
-      const el = document.querySelector(t.selector);
-      animateCount(el, t.target, t.duration, t.prefix || '', t.suffix || '', t.decimals || 0);
-    });
-  }, 400);
+    if (slideId === 'slide-3') {
+      // Social media: "1.39M" impressions — formatted with M suffix
+      const elM = document.querySelector('#slide-3 .s3-big-num');
+      if (!elM || elM._counting) return;
+      elM._counting = true;
+      const dur = 1800, target = 1.39, t0 = performance.now();
+      const easeOut4 = t => 1 - Math.pow(1 - t, 4);
+      const tickM = now => {
+        const p = Math.min(1, (now - t0) / dur);
+        elM.textContent = (target * easeOut4(p)).toFixed(2) + 'M';
+        if (p < 1) requestAnimationFrame(tickM);
+        else elM.textContent = '1.39M';
+      };
+      requestAnimationFrame(tickM);
+    }
+    if (slideId === 'slide-5')  animateCount(document.querySelector('#slide-5 .s5-big-num'), 3964, 1800);
+    if (slideId === 'slide-5b') animateCount(document.querySelector('#slide-5b .s5-big-num'), 41, 1400);
+    if (slideId === 'slide-5c') animateCount(document.querySelector('#slide-5c .s5-big-num'), 681, 1600);
+  }, 350);
 }
-
-// Hook into goTo to trigger counts
-const _origGoTo = _doGoTo;
-
-// Also trigger on initial slide changes — patch initChartsForSlide
-const _origInitCharts = initChartsForSlide;
-function initChartsForSlide(idx) {
-  _origInitCharts(idx);
-  triggerCountsForSlide(idx);
-}
-
-// Re-run count triggers when navigating
-document.addEventListener('_slideChanged', e => {
-  triggerCountsForSlide(e.detail.idx);
-});
 
 // ═══════════════════════════════════════════════════════
 // WHAT'S NEXT PANEL PARALLAX
@@ -4246,68 +5740,81 @@ document.addEventListener('_slideChanged', e => {
 (function initS7Parallax() {
   const carousel = document.querySelector('.s7-carousel');
   if (!carousel) return;
-
   carousel.addEventListener('mousemove', e => {
     const rect = carousel.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const dx = (e.clientX - cx) / rect.width;   // -0.5 to 0.5
-    const dy = (e.clientY - cy) / rect.height;  // -0.5 to 0.5
-
+    const dx = (e.clientX - (rect.left + rect.width / 2)) / rect.width;
+    const dy = (e.clientY - (rect.top + rect.height / 2)) / rect.height;
     const activePanel = carousel.querySelector('.s7-panel.active');
     if (!activePanel) return;
     const img = activePanel.querySelector('.s7-panel-img');
     if (!img) return;
-
-    const tx = dx * 18;  // max 18px shift
-    const ty = dy * 12;
-    img.style.transform = `scale(1) translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px)`;
+    img.style.transform = `scale(1) translate(${(dx * 18).toFixed(1)}px, ${(dy * 12).toFixed(1)}px)`;
   });
-
   carousel.addEventListener('mouseleave', () => {
-    const img = document.querySelector('.s7-panel.active .s7-panel-img');
+    const img = carousel.querySelector('.s7-panel.active .s7-panel-img');
     if (img) img.style.transform = 'scale(1)';
   });
 })();
 
 // ═══════════════════════════════════════════════════════
-// ORBIT RING FLY-IN (runs once when slide-4 first shows)
+// ORBIT RING — STELLAR BIRTH ENTRANCE
+// Each of the 19 circles materialises one-by-one.
+// Strategy: CSS individual `scale` property transitions
+// independently from the rAF-driven `transform: translate()`,
+// so the rAF keeps positioning while we spring in scale.
 // ═══════════════════════════════════════════════════════
 let _s4FlyInDone = false;
 function triggerS4FlyIn() {
   if (_s4FlyInDone) return;
   _s4FlyInDone = true;
-  const circles = document.querySelectorAll('#s4Orbit .s4-orbit-circle');
+
+  const circles = Array.from(document.querySelectorAll('#s4Orbit .s4-orbit-circle'));
   if (!circles.length) return;
 
-  // Start all circles off-screen (fly-in class removes position transition)
-  circles.forEach((c, i) => {
-    c.classList.add('fly-in');
-    // Each circle bursts from the center outward with a stagger
-    const angle = (Math.PI * 2 * i / circles.length) - Math.PI / 2;
-    const startDist = 0; // from center
-    c.style.setProperty('--dx', '0px');
-    c.style.setProperty('--dy', '0px');
-    c.style.setProperty('--size', '20px');
-  });
+  // ── Phase 0: circles are already s4-unborn from creation ──
+  // Ensure any that somehow lost the class are re-hidden.
+  circles.forEach(c => c.classList.add('s4-unborn'));
 
-  // Stagger each circle flying into its orbit position
+  // ── Phase 1: stagger each circle's birth ──
+  // 200ms initial pause, then 72ms between each circle.
+  // Total constellation forms over ~1.55s.
   circles.forEach((c, i) => {
-    const delay = 80 + i * 55;
+    const delay = 200 + i * 72;
+
     setTimeout(() => {
-      c.classList.remove('fly-in');
-      c.classList.add('fly-in-active');
-      c.style.opacity = ''; // let updateSlide4 control opacity
-      setTimeout(() => c.classList.remove('fly-in-active'), 1200);
+      // Remove hidden state — rAF's --oc-opacity now drives visibility
+      c.classList.remove('s4-unborn');
+
+      // Add the transition class so `scale` springs with overshoot
+      c.classList.add('s4-born');
+
+      // Double-rAF ensures the browser has rendered scale=0 before
+      // we flip to scale=1 (needed for the transition to fire).
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          c.style.scale = '1';
+        });
+      });
+
+      // Inner glow pulse — brief green flash on arrival
+      const inner = c.querySelector('.s4-oc-inner');
+      if (inner) {
+        inner.classList.remove('s4-birth-glow');
+        // Force reflow to restart animation if circle is revisited
+        void inner.offsetWidth;
+        inner.classList.add('s4-birth-glow');
+        setTimeout(() => inner.classList.remove('s4-birth-glow'), 800);
+      }
+
+      // Clean up: remove s4-born after spring settles (ripple stays
+      // for its own animation duration via the ::after keyframe).
+      // Leave scale:1 via inline style so it doesn't snap back.
+      setTimeout(() => {
+        c.classList.remove('s4-born');
+      }, 950);
+
     }, delay);
   });
-}
-
-// Hook into initSlide4 — run fly-in after build
-const _origInitSlide4 = initSlide4;
-function initSlide4() {
-  _origInitSlide4();
-  setTimeout(triggerS4FlyIn, 200);
 }
 </script>
 </body>
