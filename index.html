@@ -181,10 +181,12 @@ html, body {
 .cover-h1 .ch1-row {
   overflow: hidden;
   display: block;
-  /* 0.3em bottom padding to show descenders (g, y, p).
-     translateY is increased to 160% below to ensure words
-     still start below the clipping boundary during animation. */
+  /* padding-bottom makes descenders (g, y) visible beyond the
+     tight line-height. margin-bottom pulls the next row back up
+     so the visual gap ≈ Big Moments line-height (0.86):
+     effective = line-height(0.75) + padding(0.3) − margin(0.22) ≈ 0.83 */
   padding-bottom: 0.3em;
+  margin-bottom: -0.22em;
 }
 .cover-h1 .ch1-word {
   display: inline-block;
@@ -294,21 +296,24 @@ html, body {
   100% { transform: translate(-50%, -50%) scale(1.55); opacity: 0; }
 }
 
-/* Persistent breathing ring — shows while circle is the active hero */
+/* Breathing ring — fades away as the circle grows toward hero size.
+   --oc-ring-opacity is set each rAF frame: (1 - ea) so it's only
+   visible on small orbit circles, invisible on the full hero. */
 .s4-orbit-circle.s4-hero-active::before {
   content: '';
   position: absolute;
   top: 50%; left: 50%;
-  width: calc(100% + 12px); height: calc(100% + 12px);
+  width: calc(100% + 10px); height: calc(100% + 10px);
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  border: 2px solid rgba(151, 212, 34, 0.55);
-  animation: s4HeroPulse 2.8s ease-in-out infinite;
+  border: 2px solid rgba(151, 212, 34, 0.75);
+  animation: s4HeroPulse 2.4s ease-in-out infinite;
+  opacity: var(--oc-ring-opacity, 0.75);
   pointer-events: none;
 }
 @keyframes s4HeroPulse {
-  0%, 100% { opacity: 0.35; transform: translate(-50%, -50%) scale(1.00); }
-  50%      { opacity: 0.75; transform: translate(-50%, -50%) scale(1.07); }
+  0%, 100% { transform: translate(-50%, -50%) scale(1.00); }
+  50%      { transform: translate(-50%, -50%) scale(1.12); }
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -532,7 +537,7 @@ body.nav-wake .nav { opacity: 1; }
 .cover-h1 {
   font-size: clamp(96px, 14vw, 232px);
   font-weight: 900;
-  line-height: 0.78;
+  line-height: 0.75;
   letter-spacing: -0.06em;
   color: var(--c-ink);
   margin: 0;
@@ -4097,6 +4102,8 @@ function updateSlide4() {
     c.style.setProperty('--oc-z', ea > 0.5 ? '10' : '1');
     // The tiny "01 · Feb 2024" label shows on ring circles, hides on hero.
     c.style.setProperty('--oc-label-opacity', (1 - ea).toFixed(3));
+    // Hero selection ring fades out as circle grows — only visible on small orbit circles.
+    c.style.setProperty('--oc-ring-opacity', Math.max(0, 1 - ea * 2.5).toFixed(3));
   });
 
   // ─ Text panels ─
@@ -4177,14 +4184,12 @@ function updateSlide4() {
     const heroCircle = circles[heroI];
     if (heroCircle) {
       heroCircle.classList.add('s4-hero-active');
-      // Delay burst 350 ms so it fires once the circle is mostly centred
-      setTimeout(() => {
-        if (!heroCircle.classList.contains('s4-hero-active')) return;
-        heroCircle.classList.remove('s4-hero-burst');
-        void heroCircle.offsetWidth; // reflow to restart animation
-        heroCircle.classList.add('s4-hero-burst');
-        setTimeout(() => heroCircle.classList.remove('s4-hero-burst'), 1150);
-      }, 350);
+      // Fire burst immediately — circle is still small on the orbit ring.
+      // The ring expands outward as the circle grows toward center.
+      heroCircle.classList.remove('s4-hero-burst');
+      void heroCircle.offsetWidth; // reflow to restart animation
+      heroCircle.classList.add('s4-hero-burst');
+      setTimeout(() => heroCircle.classList.remove('s4-hero-burst'), 1150);
     }
     _s4ActiveRingI = heroI;
   } else if (!inMomentView && _s4ActiveRingI !== -1) {
@@ -4343,13 +4348,14 @@ function _runCountsForSlide(idx) {
       if (!elM || elM._counting) return;
       elM._counting = true;
       const dur = 1800, target = 1.39, t0 = performance.now();
-      function easeOutQ(t) { return 1 - Math.pow(1 - t, 4); }
-      (function step(now) {
+      const easeOut4 = t => 1 - Math.pow(1 - t, 4);
+      const tickM = now => {
         const p = Math.min(1, (now - t0) / dur);
-        elM.textContent = (target * easeOutQ(p)).toFixed(2) + 'M';
-        if (p < 1) requestAnimationFrame(step);
+        elM.textContent = (target * easeOut4(p)).toFixed(2) + 'M';
+        if (p < 1) requestAnimationFrame(tickM);
         else elM.textContent = '1.39M';
-      })(performance.now());
+      };
+      requestAnimationFrame(tickM);
     }
     if (idx === 3) animateCount(document.querySelector('#slide-5 .s5-big-num'), 1308, 1800);
     if (idx === 4) animateCount(document.querySelector('#slide-5b .s5-big-num'), 41, 1400);
