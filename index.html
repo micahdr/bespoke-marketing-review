@@ -96,19 +96,19 @@ html, body {
   pointer-events: none;
   opacity: 0;
   background: white;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.6s ease;
 }
 .s4-dissolve.flash-white {
   opacity: 1;
 }
 .s4-dissolve.to-black {
   background: #0a0f05;
-  transition: opacity 0.7s ease, background 0.6s ease;
+  transition: opacity 1.1s ease, background 0.9s ease;
   opacity: 1;
 }
 .s4-dissolve.fade-out {
   background: #0a0f05;
-  transition: opacity 0.8s ease;
+  transition: opacity 1.3s ease;
   opacity: 0;
 }
 /* While exploding, the text fades quickly */
@@ -2580,13 +2580,13 @@ function triggerS4Explosion(onComplete) {
     });
   }, 1200);
 
-  // Phase 3 (1550ms): White dissolve → crossfade to dark
+  // Phase 3 (1700ms): White dissolve → crossfade to dark
   setTimeout(() => {
     if (flash) flash.classList.remove('active');
     if (dissolve) { dissolve.className = 's4-dissolve to-black'; }
-  }, 1550);
+  }, 1700);
 
-  // Phase 4 (1900ms): Behind the dark curtain, silently switch slides
+  // Phase 4 (2200ms): Behind the dark curtain, silently switch slides
   setTimeout(() => {
     _s4JustExploded = true;
     _s4ExplodeFreeSpin = false;
@@ -2611,17 +2611,17 @@ function triggerS4Explosion(onComplete) {
       s4.style.transition = '';
       s4.style.opacity = '';
     });
-  }, 1900);
-
-  // Phase 5 (2200ms): Fade curtain away, revealing the new slide
-  setTimeout(() => {
-    if (dissolve) { dissolve.className = 's4-dissolve fade-out'; }
   }, 2200);
 
-  // Phase 6 (3200ms): Clean up dissolve completely
+  // Phase 5 (2700ms): Fade curtain away, revealing the new slide
+  setTimeout(() => {
+    if (dissolve) { dissolve.className = 's4-dissolve fade-out'; }
+  }, 2700);
+
+  // Phase 6 (4200ms): Clean up dissolve completely
   setTimeout(() => {
     if (dissolve) { dissolve.className = 's4-dissolve'; dissolve.style.opacity = ''; }
-  }, 3200);
+  }, 4200);
 }
 
 function changeSlide(dir) {
