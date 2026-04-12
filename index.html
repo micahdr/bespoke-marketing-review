@@ -2223,7 +2223,7 @@ body.nav-wake .nav { opacity: 1; }
 
     <div>
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.25);margin-bottom:8px;">March 2026 · Monthly Record</div>
-      <div class="s5-big-num">1,308</div>
+      <div class="s5-big-num">0</div>
       <div class="s5-big-label">website applications · highest ever month</div>
       <div class="s5-yoy">↑ 52% YoY &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">Q3 FY26 total: 3,964 (+59%)</span></div>
       <div style="font-size:10px;color:rgba(255,255,255,0.28);line-height:1.55;margin-top:-16px;margin-bottom:clamp(8px,1.5vh,24px);max-width:380px;">
@@ -2267,7 +2267,7 @@ body.nav-wake .nav { opacity: 1; }
 
     <div>
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.25);margin-bottom:8px;">Q3 FY26 · Jan–Mar 2026</div>
-      <div class="s5-big-num">41</div>
+      <div class="s5-big-num">0</div>
       <div class="s5-big-label">website job briefs · highest ever quarter</div>
       <div class="s5-yoy">↑ 356% YoY &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">vs Q3 FY25 (9)</span></div>
     </div>
@@ -2307,7 +2307,7 @@ body.nav-wake .nav { opacity: 1; }
 
     <div>
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.25);margin-bottom:8px;">Q3 FY26 · Jan–Mar 2026</div>
-      <div class="s5-big-num">681</div>
+      <div class="s5-big-num">0</div>
       <div class="s5-big-label">contact-form submissions · highest ever quarter</div>
       <div class="s5-yoy">↑ 7.6% YoY &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">vs Q3 FY25 (633)</span></div>
     </div>
@@ -4242,6 +4242,13 @@ function animateCount(el, target, duration) {
 
 // Called from chart init functions directly (no override needed)
 function _runCountsForSlide(idx) {
+  // Zero immediately — prevents any flash of the final value before the
+  // count-up animation starts. HTML already starts at "0" but this
+  // guards against re-render edge cases.
+  const _sel = { 3:'#slide-5 .s5-big-num', 4:'#slide-5b .s5-big-num', 5:'#slide-5c .s5-big-num' };
+  const el = _sel[idx] ? document.querySelector(_sel[idx]) : null;
+  if (el && !el._counting) el.textContent = '0';
+
   setTimeout(() => {
     if (idx === 3) animateCount(document.querySelector('#slide-5 .s5-big-num'), 1308, 1800);
     if (idx === 4) animateCount(document.querySelector('#slide-5b .s5-big-num'), 41, 1400);
