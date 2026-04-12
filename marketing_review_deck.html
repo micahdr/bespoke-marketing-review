@@ -1530,15 +1530,14 @@ body.nav-wake .nav { opacity: 1; }
 }
 
 .s7-header {
-  padding: 44px 56px 28px;
+  padding: 48px 72px 32px;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   flex-shrink: 0;
-  gap: 48px;
 }
 
-.s7-header-left { max-width: 62%; }
+.s7-header-left {}
 
 .s7-eyebrow {
   font-size: 10px;
@@ -1550,33 +1549,28 @@ body.nav-wake .nav { opacity: 1; }
 }
 
 .s7-title {
-  font-size: 64px;
+  font-size: 72px;
   font-weight: 900;
-  letter-spacing: -3.5px;
-  line-height: 0.9;
+  letter-spacing: -4px;
+  line-height: 0.88;
   color: white;
 }
 
 .s7-title em { font-style: normal; color: var(--green); }
 
 .s7-tagline {
-  font-size: 14px;
-  color: rgba(255,255,255,0.4);
-  line-height: 1.55;
-  max-width: 320px;
+  font-size: 15px;
+  color: rgba(255,255,255,0.35);
+  line-height: 1.6;
+  max-width: 340px;
   text-align: right;
-}
-
-.s7-tagline strong {
-  color: var(--green);
-  font-weight: 700;
 }
 
 .s7-cards {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 14px;
-  padding: 0 56px 40px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  padding: 0 72px 48px;
   flex: 1;
   min-height: 0;
 }
@@ -1624,7 +1618,7 @@ body.nav-wake .nav { opacity: 1; }
 .s7-card-content {
   position: relative;
   z-index: 2;
-  padding: 22px 22px 22px;
+  padding: 28px 28px 28px;
 }
 
 .s7-card-tag {
@@ -1635,7 +1629,7 @@ body.nav-wake .nav { opacity: 1; }
   text-transform: uppercase;
   padding: 4px 10px;
   border-radius: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .s7-card-tag.active {
@@ -1649,112 +1643,48 @@ body.nav-wake .nav { opacity: 1; }
   border: 1px solid rgba(255,255,255,0.12);
 }
 
-.s7-card-tag.hero {
-  background: rgba(151, 212, 34, 0.18);
-  color: var(--green);
-  border: 1px solid rgba(151, 212, 34, 0.4);
-}
-
 .s7-card-title {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 900;
-  letter-spacing: -0.7px;
+  letter-spacing: -0.8px;
   color: white;
-  line-height: 1.08;
+  line-height: 1.1;
   margin-bottom: 8px;
 }
 
-.s7-card-title em {
-  font-style: normal;
-  color: var(--green);
-}
-
 .s7-card-desc {
-  font-size: 11.5px;
-  color: rgba(255,255,255,0.55);
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
   line-height: 1.55;
 }
 
-.s7-card-desc strong {
-  color: rgba(255,255,255,0.88);
-  font-weight: 700;
-}
-
-.s7-card-kpi {
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.s7-card-kpi-num {
-  font-size: 16px;
-  font-weight: 900;
-  color: var(--green);
-  letter-spacing: -0.4px;
-  line-height: 1;
-}
-
-.s7-card-kpi-label {
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: rgba(255,255,255,0.4);
-}
-
 .s7-footer {
-  margin: 0 56px;
-  padding: 20px 0 22px;
+  padding: 0 72px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 32px;
   flex-shrink: 0;
-  border-top: 1px solid rgba(255,255,255,0.06);
-}
-
-.s7-footer-left {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.s7-footer-thesis {
-  font-size: 13px;
-  font-weight: 600;
-  color: rgba(255,255,255,0.75);
-  line-height: 1.4;
-  letter-spacing: -0.2px;
-}
-
-.s7-footer-thesis em {
-  font-style: normal;
-  color: var(--green);
 }
 
 .s7-footer-note {
-  font-size: 10px;
-  color: rgba(255,255,255,0.22);
-  letter-spacing: 0.3px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.15);
 }
 
 .s7-targets-inline {
   display: flex;
-  gap: 28px;
+  gap: 32px;
 }
 
 .s7-target-inline {
-  text-align: right;
+  text-align: center;
 }
 
 .s7-target-inline-num {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 900;
   color: var(--green);
-  letter-spacing: -0.6px;
+  letter-spacing: -0.5px;
   line-height: 1;
 }
 
@@ -1763,10 +1693,8 @@ body.nav-wake .nav { opacity: 1; }
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: rgba(255,255,255,0.35);
-  margin-top: 4px;
-  max-width: 140px;
-  margin-left: auto;
+  color: rgba(255,255,255,0.25);
+  margin-top: 3px;
 }
 
 /* ─── UTILITIES ──────────────────────────────────── */
@@ -2170,93 +2098,63 @@ body.nav-wake .nav { opacity: 1; }
 
   <div class="s7-header">
     <div class="s7-header-left">
-      <div class="s7-eyebrow">Act III · Year Ahead · FY27</div>
-      <div class="s7-title">Next year,<br>we <em>compound</em>.</div>
+      <div class="s7-eyebrow">Looking ahead · FY27</div>
+      <div class="s7-title">What's<br><em>Next</em></div>
     </div>
-    <div class="s7-tagline">Year one was the build.<br>Year two is the <strong>return</strong>.<br>Four bets. One thesis: marketing stops being a cost line.</div>
+    <div class="s7-tagline">The foundations are in place.<br>Now we build on them.</div>
   </div>
 
   <div class="s7-cards">
 
-    <!-- Bet 1: The Studio -->
-    <div class="s7-card">
-      <div class="s7-card-img" style="background-image:url('house-to-office.jpg')"></div>
-      <div class="s7-card-overlay"></div>
-      <div class="s7-card-content">
-        <div class="s7-card-tag active">Bet 01 · Q1 FY27</div>
-        <div class="s7-card-title">The Studio<br>goes <em>pro</em></div>
-        <div class="s7-card-desc">Home &amp; Office Tours series launches monthly. Podcast splits into two formats — the long-form interview show, plus a new 15-minute <strong>"Most Googled"</strong> series in the production style of AD &amp; GQ. Turns Bespoke into the default creative-industry content channel.</div>
-        <div class="s7-card-kpi">
-          <div class="s7-card-kpi-num">~80</div>
-          <div class="s7-card-kpi-label">Flagship episodes<br>in year one</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bet 2: Media Machine Earns -->
+    <!-- Card 1: Podcast Revamp -->
     <div class="s7-card">
       <div class="s7-card-img" style="background-image:url('podcast-revamped.jpg')"></div>
       <div class="s7-card-overlay"></div>
       <div class="s7-card-content">
-        <div class="s7-card-tag hero">Bet 02 · Q2 FY27</div>
-        <div class="s7-card-title">The media machine<br><em>pays for itself</em></div>
-        <div class="s7-card-desc">Build a sponsor rate card. Pitch AEC-adjacent brands — <strong>Autodesk, Adobe, materials &amp; finishes, premium bathware</strong>. Take podcast &amp; YouTube revenue from $200 NZD today to a real revenue line. Content that compounds into cash.</div>
-        <div class="s7-card-kpi">
-          <div class="s7-card-kpi-num">$200 → $20K+</div>
-          <div class="s7-card-kpi-label">Sponsor revenue<br>a 100× move</div>
-        </div>
+        <div class="s7-card-tag active">In progress · Q4 FY26</div>
+        <div class="s7-card-title">Podcast<br>Revamp</div>
+        <div class="s7-card-desc">Sharper format, stronger distribution and a push to reach wider audiences. Built on a first year that delivered 60K+ streams and an Archiboo nomination.</div>
       </div>
     </div>
 
-    <!-- Bet 3: Rebrand → Pipeline -->
+    <!-- Card 2: From Home to Office -->
+    <div class="s7-card">
+      <div class="s7-card-img" style="background-image:url('house-to-office.jpg')"></div>
+      <div class="s7-card-overlay"></div>
+      <div class="s7-card-content">
+        <div class="s7-card-tag planned">Planned · Q2 FY27</div>
+        <div class="s7-card-title">From Home<br>to Office</div>
+        <div class="s7-card-desc">Morning coffee. Home tour. Walk to work. Office tour. A live candidate review with a Bespoke consultant. Day-in-the-life content built for short-form and designed to travel.</div>
+      </div>
+    </div>
+
+    <!-- Card 3: Rebrand -->
     <div class="s7-card">
       <div class="s7-card-img" style="background-image:url('rebrand.png')"></div>
       <div class="s7-card-overlay"></div>
       <div class="s7-card-content">
-        <div class="s7-card-tag active">Bet 03 · Q1 FY27</div>
-        <div class="s7-card-title">Rebrand<br>becomes <em>pipeline</em></div>
-        <div class="s7-card-desc">Year one of a rebrand is the build. Year two is when it converts. Full rollout across web, proposals &amp; sales collateral. Three <strong>employer-brand campaigns built specifically for the London desk</strong>. The new identity becomes a sales lever, not a logo update.</div>
-        <div class="s7-card-kpi">
-          <div class="s7-card-kpi-num">3</div>
-          <div class="s7-card-kpi-label">London desk<br>employer-brand plays</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bet 4: Jobs Board Goes Public -->
-    <div class="s7-card">
-      <div class="s7-card-img" style="background-image:url('jobs.jpg')"></div>
-      <div class="s7-card-overlay"></div>
-      <div class="s7-card-content">
-        <div class="s7-card-tag hero">Bet 04 · Q4 FY27</div>
-        <div class="s7-card-title">Jobs Board<br>goes <em>public</em></div>
-        <div class="s7-card-desc">Launch <strong>free graduate job listings</strong> — open to any practice, no exclusivity — as a pro-bono service for the industry. Grows the candidate database, opens new client relationships, earns press pickup. A proof-of-concept for a paid listings model in FY28. The most ambitious bet on the slate, built on the SEO foundation we just switched on.</div>
-        <div class="s7-card-kpi">
-          <div class="s7-card-kpi-num">500+</div>
-          <div class="s7-card-kpi-label">Graduate listings<br>at launch</div>
-        </div>
+        <div class="s7-card-tag planned">Planned · Q1 FY27</div>
+        <div class="s7-card-title">Rebrand</div>
+        <div class="s7-card-desc">A full visual identity refresh. Positioning Bespoke as the definitive careers brand for architecture and design globally. Watch this space.</div>
       </div>
     </div>
 
   </div>
 
   <div class="s7-footer">
-    <div class="s7-footer-left">
-      <div class="s7-footer-thesis">By end of FY27: a marketing function that <em>funds itself</em>, diversifies revenue, and owns the creative-industry content space.</div>
-      <div class="s7-footer-note">Bespoke Careers · Marketing Performance Review · April 2026</div>
-    </div>
+    <div class="s7-footer-note">Bespoke Careers · Marketing Review · April 2026</div>
     <div class="s7-targets-inline">
       <div class="s7-target-inline">
-        <div class="s7-target-inline-num">$20K+</div>
-        <div class="s7-target-inline-label">Sponsor revenue<br>from $200 today</div>
+        <div class="s7-target-inline-num">2M</div>
+        <div class="s7-target-inline-label">Impressions target / qtr</div>
       </div>
       <div class="s7-target-inline">
-        <div class="s7-target-inline-num">15%</div>
-        <div class="s7-target-inline-label">Non-branded pipeline<br>from 3% today</div>
+        <div class="s7-target-inline-num">90K</div>
+        <div class="s7-target-inline-label">Engagements target / qtr</div>
       </div>
       <div class="s7-target-inline">
-        <div class="s7-target-inline-num">500+</div>
-        <div class="s7-target-inline-label">Free graduate<br>listings launched</div>
+        <div class="s7-target-inline-num">10K</div>
+        <div class="s7-target-inline-label">Salary guide downloads</div>
       </div>
     </div>
   </div>
