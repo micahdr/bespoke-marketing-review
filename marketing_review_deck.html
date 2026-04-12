@@ -1618,6 +1618,25 @@ body.nav-wake .nav { opacity: 1; }
   transform: scale(1);
 }
 
+/* Solid-colour panel variant, used for Rebrand. A flat brand-green fill
+   with inverted (dark) text so it reads as a colour reveal rather than
+   a photo bet. */
+.s7-panel.solid { background: var(--green); }
+.s7-panel.solid .s7-panel-overlay { display: none; }
+.s7-panel.solid .s7-panel-title { color: #0a0d07; }
+.s7-panel.solid .s7-panel-desc { color: rgba(10, 13, 7, 0.72); }
+.s7-panel.solid .s7-panel-kpi-num { color: #0a0d07; }
+.s7-panel.solid .s7-panel-kpi-label { color: rgba(10, 13, 7, 0.55); }
+.s7-panel.solid .s7-panel-tag.active {
+  background: #0a0d07;
+  color: var(--green);
+}
+.s7-panel.solid .s7-panel-tag.planned {
+  background: rgba(10, 13, 7, 0.08);
+  color: rgba(10, 13, 7, 0.6);
+  border-color: rgba(10, 13, 7, 0.15);
+}
+
 .s7-panel-overlay {
   position: absolute;
   inset: 0;
@@ -2203,8 +2222,7 @@ body.nav-wake .nav { opacity: 1; }
       </div>
 
       <!-- Panel 2: Rebrand -->
-      <div class="s7-panel">
-        <div class="s7-panel-img" style="background-image:url('rebrand.png')"></div>
+      <div class="s7-panel solid">
         <div class="s7-panel-overlay"></div>
         <div class="s7-panel-content">
           <div class="s7-panel-tag active">In progress · Q1 FY27</div>
@@ -2214,10 +2232,6 @@ body.nav-wake .nav { opacity: 1; }
             <div class="s7-panel-kpi">
               <div class="s7-panel-kpi-num">1</div>
               <div class="s7-panel-kpi-label">Unified<br>identity system</div>
-            </div>
-            <div class="s7-panel-kpi">
-              <div class="s7-panel-kpi-num">4</div>
-              <div class="s7-panel-kpi-label">Markets<br>refreshed</div>
             </div>
             <div class="s7-panel-kpi">
               <div class="s7-panel-kpi-num">Q1 FY27</div>
