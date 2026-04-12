@@ -1520,7 +1520,7 @@ body.nav-wake .nav { opacity: 1; }
   margin-bottom: 4px;
 }
 
-/* ─── SLIDE 7: WHAT'S NEXT ────────────────────────── */
+/* ─── SLIDE 7: WHAT'S NEXT (4-panel carousel) ─────── */
 #slide-7 {
   background: #0a0d07;
   display: flex;
@@ -1530,14 +1530,11 @@ body.nav-wake .nav { opacity: 1; }
 }
 
 .s7-header {
-  padding: 48px 60px 32px;
+  padding: 48px 60px 24px;
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
+  flex-direction: column;
   flex-shrink: 0;
 }
-
-.s7-header-left {}
 
 .s7-eyebrow {
   font-size: 10px;
@@ -1546,6 +1543,12 @@ body.nav-wake .nav { opacity: 1; }
   text-transform: uppercase;
   color: var(--green);
   margin-bottom: 10px;
+}
+
+.s7-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 }
 
 .s7-title {
@@ -1558,108 +1561,143 @@ body.nav-wake .nav { opacity: 1; }
 
 .s7-title em { font-style: normal; color: var(--green); }
 
-.s7-tagline {
-  font-size: 15px;
-  color: rgba(255,255,255,0.35);
-  line-height: 1.6;
-  max-width: 340px;
-  text-align: right;
+.s7-panel-indicator {
+  display: flex;
+  align-items: baseline;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
 }
 
-.s7-cards {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 14px;
-  padding: 0 60px 48px;
+.s7-panel-indicator .s7-panel-num {
+  color: white;
+  font-size: 26px;
+  margin-right: 6px;
+  letter-spacing: -0.5px;
+}
+
+.s7-carousel {
   flex: 1;
+  position: relative;
+  overflow: hidden;
   min-height: 0;
+  padding: 20px 0 20px 60px;
 }
 
-.s7-card {
-  border-radius: 20px;
+.s7-track {
+  display: flex;
+  gap: 24px;
+  height: 100%;
+  transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1);
+  will-change: transform;
+}
+
+.s7-panel {
+  flex: 0 0 80vw;
+  height: 100%;
+  border-radius: 24px;
   overflow: hidden;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  min-height: 0;
 }
 
-.s7-card-img {
+.s7-panel-img {
   position: absolute;
   inset: 0;
   background-size: cover;
   background-position: center;
-  transition: transform 0.6s ease;
+  transition: transform 1.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transform: scale(1.06);
 }
 
-.s7-card:hover .s7-card-img { transform: scale(1.04); }
+.s7-panel.active .s7-panel-img {
+  transform: scale(1);
+}
 
-.s7-card-overlay {
+.s7-panel-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.05) 100%);
+  background:
+    linear-gradient(to top, rgba(0,0,0,0.94) 0%, rgba(0,0,0,0.6) 42%, rgba(0,0,0,0.15) 78%, rgba(0,0,0,0.05) 100%),
+    linear-gradient(to right, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 45%);
 }
 
-.s7-card-placeholder {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 40% 30%, #1a2410, #0a0d07);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.s7-card-placeholder-icon {
-  font-size: 64px;
-  opacity: 0.15;
-}
-
-.s7-card-content {
+.s7-panel-content {
   position: relative;
   z-index: 2;
-  padding: 24px 22px 24px;
+  padding: 48px 56px 56px;
+  max-width: 820px;
 }
 
-.s7-card-tag {
+.s7-panel-tag {
   display: inline-block;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.6px;
   text-transform: uppercase;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 20px;
-  margin-bottom: 12px;
+  margin-bottom: 18px;
 }
 
-.s7-card-tag.active {
+.s7-panel-tag.active {
   background: var(--green);
   color: #0a0d07;
 }
 
-.s7-card-tag.planned {
+.s7-panel-tag.planned {
   background: rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.5);
-  border: 1px solid rgba(255,255,255,0.12);
-}
-
-.s7-card-title {
-  font-size: 20px;
-  font-weight: 900;
-  letter-spacing: -0.8px;
-  color: white;
-  line-height: 1.08;
-  margin-bottom: 8px;
-}
-
-.s7-card-desc {
-  font-size: 11px;
   color: rgba(255,255,255,0.55);
-  line-height: 1.55;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.s7-panel-title {
+  font-size: 56px;
+  font-weight: 900;
+  letter-spacing: -2.5px;
+  line-height: 0.95;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.s7-panel-desc {
+  font-size: 15px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.65;
+  max-width: 620px;
+  margin-bottom: 32px;
+  font-weight: 400;
+}
+
+.s7-panel-kpis {
+  display: flex;
+  gap: 56px;
+}
+
+.s7-panel-kpi-num {
+  font-size: 42px;
+  font-weight: 900;
+  color: var(--green);
+  letter-spacing: -1.5px;
+  line-height: 1;
+}
+
+.s7-panel-kpi-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: rgba(255,255,255,0.45);
+  margin-top: 8px;
+  max-width: 140px;
 }
 
 .s7-footer {
-  padding: 0 60px 20px;
+  padding: 16px 60px 28px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1668,33 +1706,63 @@ body.nav-wake .nav { opacity: 1; }
 
 .s7-footer-note {
   font-size: 11px;
-  color: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.18);
+  letter-spacing: 0.5px;
 }
 
-.s7-targets-inline {
+.s7-nav {
   display: flex;
-  gap: 32px;
+  align-items: center;
+  gap: 18px;
 }
 
-.s7-target-inline {
-  text-align: center;
+.s7-dots {
+  display: flex;
+  gap: 8px;
 }
 
-.s7-target-inline-num {
+.s7-dot {
+  width: 26px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.18);
+  cursor: pointer;
+  transition: background 0.3s, width 0.3s;
+}
+
+.s7-dot:hover { background: rgba(255,255,255,0.4); }
+
+.s7-dot.active {
+  background: var(--green);
+  width: 42px;
+}
+
+.s7-nav-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: white;
+  cursor: pointer;
   font-size: 18px;
-  font-weight: 900;
-  color: var(--green);
-  letter-spacing: -0.5px;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-family: inherit;
 }
 
-.s7-target-inline-label {
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: rgba(255,255,255,0.25);
-  margin-top: 3px;
+.s7-nav-btn:hover:not(:disabled) {
+  background: var(--green);
+  color: #0a0d07;
+  border-color: var(--green);
+  transform: scale(1.05);
+}
+
+.s7-nav-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
 }
 
 /* ─── UTILITIES ──────────────────────────────────── */
@@ -2097,76 +2165,127 @@ body.nav-wake .nav { opacity: 1; }
   <span class="page-tag">08 / 08</span>
 
   <div class="s7-header">
-    <div class="s7-header-left">
-      <div class="s7-eyebrow">Looking ahead · FY27</div>
+    <div class="s7-eyebrow">Looking ahead · FY27</div>
+    <div class="s7-title-row">
       <div class="s7-title">What's<br><em>Next</em></div>
+      <div class="s7-panel-indicator">
+        <span class="s7-panel-num" id="s7PanelNum">01</span> / 04
+      </div>
     </div>
-    <div class="s7-tagline">The foundations are in place.<br>Now we build on them.</div>
   </div>
 
-  <div class="s7-cards">
+  <div class="s7-carousel">
+    <div class="s7-track" id="s7Track">
 
-    <!-- Card 1: Podcast Revamp -->
-    <div class="s7-card">
-      <div class="s7-card-img" style="background-image:url('podcast-revamped.jpg')"></div>
-      <div class="s7-card-overlay"></div>
-      <div class="s7-card-content">
-        <div class="s7-card-tag active">In progress · Q4 FY26</div>
-        <div class="s7-card-title">Podcast<br>Revamp</div>
-        <div class="s7-card-desc">Optimising the show to go deeper into our target market. Hunting topics with real pull across architecture and design, and finding the right experts to unpack them. Always through a careers lens. Think "The Architects Designing a City from Scratch."</div>
+      <!-- Panel 1: Podcast Revamp -->
+      <div class="s7-panel active">
+        <div class="s7-panel-img" style="background-image:url('podcast-revamped.jpg')"></div>
+        <div class="s7-panel-overlay"></div>
+        <div class="s7-panel-content">
+          <div class="s7-panel-tag active">In progress · Q4 FY26</div>
+          <div class="s7-panel-title">Podcast<br>Revamp</div>
+          <div class="s7-panel-desc">Year one delivered 60,000+ streams and an Archiboo nomination. Year two optimises the show to go deeper into our target market. Hunting topics with real pull across architecture and design, and finding the right experts to unpack them. Always through a careers lens. Think "The Architects Designing a City from Scratch."</div>
+          <div class="s7-panel-kpis">
+            <div class="s7-panel-kpi">
+              <div class="s7-panel-kpi-num">100K</div>
+              <div class="s7-panel-kpi-label">Streams target<br>year one</div>
+            </div>
+            <div class="s7-panel-kpi">
+              <div class="s7-panel-kpi-num">2&times;</div>
+              <div class="s7-panel-kpi-label">Audience<br>growth</div>
+            </div>
+            <div class="s7-panel-kpi">
+              <div class="s7-panel-kpi-num">Top 10</div>
+              <div class="s7-panel-kpi-label">Category rank<br>goal</div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <!-- Card 2: Rebrand -->
-    <div class="s7-card">
-      <div class="s7-card-img" style="background-image:url('rebrand.png')"></div>
-      <div class="s7-card-overlay"></div>
-      <div class="s7-card-content">
-        <div class="s7-card-tag active">In progress · Q1 FY27</div>
-        <div class="s7-card-title">Rebrand</div>
-        <div class="s7-card-desc">A full visual identity refresh. Positioning Bespoke as the definitive careers brand for architecture and design globally. Watch this space.</div>
+      <!-- Panel 2: Rebrand -->
+      <div class="s7-panel">
+        <div class="s7-panel-img" style="background-image:url('rebrand.png')"></div>
+        <div class="s7-panel-overlay"></div>
+        <div class="s7-panel-content">
+          <div class="s7-panel-tag active">In progress · Q1 FY27</div>
+          <div class="s7-panel-title">Rebrand</div>
+          <div class="s7-panel-desc">A full visual identity refresh. Positioning Bespoke as the definitive careers brand for architecture and design globally. A new system that aligns every touchpoint (web, social, jobs board, pitch decks) under one ambitious identity. Watch this space.</div>
+          <div class="s7-panel-kpis">
+            <div class="s7-panel-kpi">
+              <div class="s7-panel-kpi-num">1</div>
+              <div class="s7-panel-kpi-label">Unified<br>identity system</div>
+            </div>
+            <div class="s7-panel-kpi">
+              <div class="s7-panel-kpi-num">4</div>
+              <div class="s7-panel-kpi-label">Markets<br>refreshed</div>
+            </div>
+            <div class="s7-panel-kpi">
+              <div class="s7-panel-kpi-num">Q1 FY27</div>
+              <div class="s7-panel-kpi-label">Target<br>launch</div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <!-- Card 3: Two New Series -->
-    <div class="s7-card">
-      <div class="s7-card-img" style="background-image:url('house-to-office.jpg')"></div>
-      <div class="s7-card-overlay"></div>
-      <div class="s7-card-content">
-        <div class="s7-card-tag planned">Planned · Q2 FY27</div>
-        <div class="s7-card-title">Two New<br>Series</div>
-        <div class="s7-card-desc">A fresh slate of YouTube content aimed squarely at architects and designers, built to pay its own way. Home-to-office day-in-the-life films, and a short 15-min AD/GQ-style Q&amp;A format. AdSense and sponsorships in play so the media machine funds itself.</div>
+      <!-- Panel 3: Two New Series -->
+      <div class="s7-panel">
+        <div class="s7-panel-img" style="background-image:url('house-to-office.jpg')"></div>
+        <div class="s7-panel-overlay"></div>
+        <div class="s7-panel-content">
+          <div class="s7-panel-tag planned">Planned · Q2 FY27</div>
+          <div class="s7-panel-title">Two New<br>Series</div>
+          <div class="s7-panel-desc">A fresh slate of YouTube content aimed squarely at architects and designers, built to pay its own way. Home-to-office day-in-the-life films, and a short 15-min AD/GQ-style Q&amp;A format. AdSense and sponsorships in play so the media machine funds itself. The goal for year two: the first real revenue line from content.</div>
+          <div class="s7-panel-kpis">
+            <div class="s7-panel-kpi">
+              <div class="s7-panel-kpi-num">2</div>
+              <div class="s7-panel-kpi-label">New series<br>launching</div>
+            </div>
+            <div class="s7-panel-kpi">
+              <div class="s7-panel-kpi-num">$20K+</div>
+              <div class="s7-panel-kpi-label">Sponsorship<br>target Y1</div>
+            </div>
+            <div class="s7-panel-kpi">
+              <div class="s7-panel-kpi-num">1M+</div>
+              <div class="s7-panel-kpi-label">Projected<br>views Y1</div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <!-- Card 4: Monetise Jobs Board -->
-    <div class="s7-card">
-      <div class="s7-card-img" style="background-image:url('jobs.jpg')"></div>
-      <div class="s7-card-overlay"></div>
-      <div class="s7-card-content">
-        <div class="s7-card-tag planned">Planned · Q4 FY27</div>
-        <div class="s7-card-title">Monetise<br>Jobs Board</div>
-        <div class="s7-card-desc">Turning the jobs board into a new revenue line. Launching as a loyalty perk for paying clients: every placement unlocks a year of unlimited grad postings. Phase two opens the board up to paid listings. Goodwill now, revenue next.</div>
+      <!-- Panel 4: Monetise Jobs Board -->
+      <div class="s7-panel">
+        <div class="s7-panel-img" style="background-image:url('jobs.jpg')"></div>
+        <div class="s7-panel-overlay"></div>
+        <div class="s7-panel-content">
+          <div class="s7-panel-tag planned">Planned · Q4 FY27</div>
+          <div class="s7-panel-title">Monetise<br>Jobs Board</div>
+          <div class="s7-panel-desc">Turning the jobs board into a new revenue line. Launching as a loyalty perk for paying clients: every placement unlocks a year of unlimited grad postings. Phase two opens the board up to paid listings. With 163K monthly searches in our four markets to compete for and SEO infrastructure now live, the upside is serious. Goodwill now, revenue next.</div>
+          <div class="s7-panel-kpis">
+            <div class="s7-panel-kpi">
+              <div class="s7-panel-kpi-num">163K</div>
+              <div class="s7-panel-kpi-label">Monthly searches<br>to compete for</div>
+            </div>
+            <div class="s7-panel-kpi">
+              <div class="s7-panel-kpi-num">$50K+</div>
+              <div class="s7-panel-kpi-label">Revenue target<br>phase two</div>
+            </div>
+            <div class="s7-panel-kpi">
+              <div class="s7-panel-kpi-num">500+</div>
+              <div class="s7-panel-kpi-label">Grad listings<br>year one</div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
 
+    </div>
   </div>
 
   <div class="s7-footer">
     <div class="s7-footer-note">Bespoke Careers · Marketing Review · April 2026</div>
-    <div class="s7-targets-inline">
-      <div class="s7-target-inline">
-        <div class="s7-target-inline-num">2M</div>
-        <div class="s7-target-inline-label">Impressions target / qtr</div>
-      </div>
-      <div class="s7-target-inline">
-        <div class="s7-target-inline-num">90K</div>
-        <div class="s7-target-inline-label">Engagements target / qtr</div>
-      </div>
-      <div class="s7-target-inline">
-        <div class="s7-target-inline-num">10K</div>
-        <div class="s7-target-inline-label">Salary guide downloads</div>
-      </div>
+    <div class="s7-nav">
+      <div class="s7-dots" id="s7Dots"></div>
+      <button class="s7-nav-btn" id="s7Prev" aria-label="Previous bet">&#8592;</button>
+      <button class="s7-nav-btn" id="s7Next" aria-label="Next bet">&#8594;</button>
     </div>
   </div>
 </div>
@@ -2289,7 +2408,78 @@ function changeSlide(dir) {
   // Year That Was captures nav by one moment at a time until the user
   // has scrolled all the way through the calendar in that direction.
   if (current === 1 && stepYearThatWas(dir)) return;
+  // What's Next captures nav by one panel at a time on the final slide.
+  if (current === slides.length - 1 && stepWhatsNext(dir)) return;
   goTo(current + dir);
+}
+
+// What's Next carousel: 4 forward bets, slide track horizontally with
+// a peek of the next panel on the right. Keyboard and nav buttons route
+// through stepWhatsNext() so arrow keys advance one panel at a time.
+let s7PanelIdx = 0;
+const s7PanelCount = 4;
+
+function initS7Carousel() {
+  const track = document.getElementById('s7Track');
+  const prevBtn = document.getElementById('s7Prev');
+  const nextBtn = document.getElementById('s7Next');
+  const dotsEl = document.getElementById('s7Dots');
+  if (!track || !prevBtn || !nextBtn || !dotsEl) return;
+
+  // Build dots
+  for (let i = 0; i < s7PanelCount; i++) {
+    const d = document.createElement('div');
+    d.className = 's7-dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => setS7Panel(i);
+    dotsEl.appendChild(d);
+  }
+
+  prevBtn.onclick = () => setS7Panel(s7PanelIdx - 1);
+  nextBtn.onclick = () => setS7Panel(s7PanelIdx + 1);
+
+  setS7Panel(0);
+}
+
+function setS7Panel(n) {
+  n = Math.max(0, Math.min(s7PanelCount - 1, n));
+  s7PanelIdx = n;
+  const track = document.getElementById('s7Track');
+  if (!track) return;
+  // Each panel is 80vw wide with a 24px gap. Stride = 80vw + 24px.
+  track.style.transform = 'translateX(calc(' + (-n) + ' * (80vw + 24px)))';
+
+  // Active panel class for subtle image scale-in
+  const panels = track.querySelectorAll('.s7-panel');
+  panels.forEach((p, i) => p.classList.toggle('active', i === n));
+
+  // Dots
+  const dots = document.querySelectorAll('#s7Dots .s7-dot');
+  dots.forEach((d, i) => d.classList.toggle('active', i === n));
+
+  // Counter
+  const numEl = document.getElementById('s7PanelNum');
+  if (numEl) numEl.textContent = String(n + 1).padStart(2, '0');
+
+  // Button disabled state
+  const prevBtn = document.getElementById('s7Prev');
+  const nextBtn = document.getElementById('s7Next');
+  if (prevBtn) prevBtn.disabled = (n === 0);
+  if (nextBtn) nextBtn.disabled = (n === s7PanelCount - 1);
+}
+
+function stepWhatsNext(dir) {
+  if (current !== slides.length - 1) return false;
+  const next = s7PanelIdx + dir;
+  if (next < 0 || next > s7PanelCount - 1) return false;
+  setS7Panel(next);
+  return true;
+}
+
+// Initialise the carousel once DOM is ready.
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initS7Carousel);
+} else {
+  initS7Carousel();
 }
 
 // Try to step the Year That Was scroll calendar by one moment in `dir`.
