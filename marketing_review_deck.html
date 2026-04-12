@@ -2866,7 +2866,7 @@ body.nav-wake .nav { opacity: 1; }
 
     <div>
       <div class="s3-period-label">Q3 FY26 · Jan–Mar 2026</div>
-      <div class="s3-big-num">0.00M</div>
+      <div class="s3-big-num">1.39M</div>
       <div class="s3-big-label">impressions in a single quarter</div>
       <div class="s3-yoy">↑ 495% &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">vs Q3 FY25 (234K)</span></div>
 
@@ -2974,7 +2974,7 @@ body.nav-wake .nav { opacity: 1; }
 
     <div>
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.25);margin-bottom:8px;">March 2026 · Monthly Record</div>
-      <div class="s5-big-num">0</div>
+      <div class="s5-big-num">3,964</div>
       <div class="s5-big-label">website job applications · highest ever quarter</div>
       <div class="s5-yoy">↑ 59% YoY &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">vs Q3 FY25 (2,488)</span></div>
       <div style="font-size:10px;color:rgba(255,255,255,0.28);line-height:1.55;margin-top:-16px;margin-bottom:clamp(8px,1.5vh,24px);max-width:380px;">
@@ -3317,7 +3317,7 @@ body.nav-wake .nav { opacity: 1; }
 
     <div>
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.25);margin-bottom:8px;">Q3 FY26 · Jan–Mar 2026</div>
-      <div class="s5-big-num">0</div>
+      <div class="s5-big-num">41</div>
       <div class="s5-big-label">website job briefs · highest ever quarter</div>
       <div class="s5-yoy">↑ 356% YoY &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">vs Q3 FY25 (9)</span></div>
     </div>
@@ -3730,7 +3730,7 @@ body.nav-wake .nav { opacity: 1; }
 
     <div>
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.25);margin-bottom:8px;">Q3 FY26 · Jan–Mar 2026</div>
-      <div class="s5-big-num">0</div>
+      <div class="s5-big-num">681</div>
       <div class="s5-big-label">contact-form submissions · highest ever quarter</div>
       <div class="s5-yoy">↑ 7.6% YoY &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">vs Q3 FY25 (633)</span></div>
     </div>
@@ -4490,7 +4490,7 @@ function initSocialChart() {
       }
     }
   });
-  _runCountsForSlide(2);
+  // count-up removed — static values in HTML
 }
 
 // ── Job Applications ──
@@ -4559,7 +4559,7 @@ function initJobChart() {
       }
     }
   });
-  _runCountsForSlide(3);
+  // count-up removed — static values in HTML
 }
 
 // ── Inbound Demand ──
@@ -4630,7 +4630,7 @@ function initInboundChart() {
       }
     }
   });
-  _runCountsForSlide(4);
+  // count-up removed — static values in HTML
 }
 
 // ── Contact Form ──
@@ -4698,7 +4698,7 @@ function initContactChart() {
       }
     }
   });
-  _runCountsForSlide(5);
+  // count-up removed — static values in HTML
 }
 
 // ── Salary Guide ──
@@ -5679,60 +5679,6 @@ window.addEventListener('popstate', () => _applyURLState(true));
     ls.classList.add('hidden');
   }, 1900);
 })();
-
-// ═══════════════════════════════════════════════════════
-// COUNTING NUMBERS
-// ═══════════════════════════════════════════════════════
-function animateCount(el, target, duration) {
-  if (!el || el._counting) return;
-  el._counting = true;
-  const start = performance.now();
-  function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
-  function step(now) {
-    const progress = Math.min(1, (now - start) / duration);
-    const val = Math.round(target * easeOutQuart(progress));
-    el.textContent = val.toLocaleString();
-    if (progress < 1) requestAnimationFrame(step);
-    else el.textContent = target.toLocaleString();
-  }
-  requestAnimationFrame(step);
-}
-
-// Called from chart init functions directly (no override needed)
-function _runCountsForSlide(idx) {
-  // ID-based detection — robust against slide order changes.
-  // Zero immediately to prevent flash of final value before count-up.
-  const slideId = slides[idx] ? slides[idx].id : null;
-  const _sel = {
-    'slide-3':  '#slide-3 .s3-big-num',
-    'slide-5':  '#slide-5 .s5-big-num',
-    'slide-5b': '#slide-5b .s5-big-num',
-    'slide-5c': '#slide-5c .s5-big-num'
-  };
-  const el = slideId && _sel[slideId] ? document.querySelector(_sel[slideId]) : null;
-  if (el && !el._counting) el.textContent = slideId === 'slide-3' ? '0.00M' : '0';
-
-  setTimeout(() => {
-    if (slideId === 'slide-3') {
-      // Social media: "1.39M" impressions — formatted with M suffix
-      const elM = document.querySelector('#slide-3 .s3-big-num');
-      if (!elM || elM._counting) return;
-      elM._counting = true;
-      const dur = 1800, target = 1.39, t0 = performance.now();
-      const easeOut4 = t => 1 - Math.pow(1 - t, 4);
-      const tickM = now => {
-        const p = Math.min(1, (now - t0) / dur);
-        elM.textContent = (target * easeOut4(p)).toFixed(2) + 'M';
-        if (p < 1) requestAnimationFrame(tickM);
-        else elM.textContent = '1.39M';
-      };
-      requestAnimationFrame(tickM);
-    }
-    if (slideId === 'slide-5')  animateCount(document.querySelector('#slide-5 .s5-big-num'), 3964, 1800);
-    if (slideId === 'slide-5b') animateCount(document.querySelector('#slide-5b .s5-big-num'), 41, 1400);
-    if (slideId === 'slide-5c') animateCount(document.querySelector('#slide-5c .s5-big-num'), 681, 1600);
-  }, 350);
-}
 
 // ═══════════════════════════════════════════════════════
 // WHAT'S NEXT PANEL PARALLAX
