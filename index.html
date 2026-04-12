@@ -627,8 +627,11 @@ body.nav-wake .nav { opacity: 1; }
 }
 .s3-title em {
   font-style: normal;
-  background: linear-gradient(transparent 58%, rgba(151,212,34,0.75) 58%, rgba(151,212,34,0.75) 92%, transparent 92%);
-  padding: 0 0.08em;
+  display: inline;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background: linear-gradient(transparent 52%, rgba(151,212,34,0.85) 52%, rgba(151,212,34,0.85) 96%, transparent 96%);
+  padding: 0 0.12em;
 }
 
 .s3-period-label {
@@ -1281,8 +1284,11 @@ body.nav-wake .nav { opacity: 1; }
 }
 .s5-title em {
   font-style: normal;
-  background: linear-gradient(transparent 58%, rgba(249,115,22,0.65) 58%, rgba(249,115,22,0.65) 92%, transparent 92%);
-  padding: 0 0.08em;
+  display: inline;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background: linear-gradient(transparent 52%, rgba(249,115,22,0.75) 52%, rgba(249,115,22,0.75) 96%, transparent 96%);
+  padding: 0 0.12em;
 }
 
 .s5-big-num {
@@ -1393,7 +1399,7 @@ body.nav-wake .nav { opacity: 1; }
 #slide-5b .s5-revenue-label { color: rgba(16,185,129,0.7); }
 #slide-5b .s5-revenue-num  { color: #10b981; }
 #slide-5b .s5-title em {
-  background: linear-gradient(transparent 58%, rgba(16,185,129,0.55) 58%, rgba(16,185,129,0.55) 92%, transparent 92%);
+  background: linear-gradient(transparent 52%, rgba(16,185,129,0.65) 52%, rgba(16,185,129,0.65) 96%, transparent 96%);
 }
 
 /* ─── SLIDE 5c: CONTACT FORM (mirrors slide-5 layout, cyan) ── */
@@ -1416,7 +1422,7 @@ body.nav-wake .nav { opacity: 1; }
 #slide-5c .s5-revenue-label { color: rgba(6,182,212,0.7); }
 #slide-5c .s5-revenue-num  { color: #06b6d4; }
 #slide-5c .s5-title em {
-  background: linear-gradient(transparent 58%, rgba(6,182,212,0.50) 58%, rgba(6,182,212,0.50) 92%, transparent 92%);
+  background: linear-gradient(transparent 52%, rgba(6,182,212,0.60) 52%, rgba(6,182,212,0.60) 96%, transparent 96%);
 }
 #slide-5c .s5-attrib-row {
   display:flex;
@@ -2543,9 +2549,11 @@ function triggerS4Explosion(onComplete) {
 
   s4.classList.add('s4-exploding');
 
+  // Enable free-spin so the rAF loop uses _s4RotSpeed even in moment view
+  _s4ExplodeFreeSpin = true;
+
   // Phase 1: Slow build-up — start gentle, accelerate exponentially (0-1200ms)
-  // The wheel starts barely faster than normal, then ramps into a blur
-  _s4RotSpeed = 1.5;                          // just a nudge faster than base 0.12
+  _s4RotSpeed = 1.5;
   setTimeout(() => { _s4RotSpeed = 3; }, 150);
   setTimeout(() => { _s4RotSpeed = 6; }, 300);
   setTimeout(() => { _s4RotSpeed = 12; }, 450);
@@ -2561,13 +2569,12 @@ function triggerS4Explosion(onComplete) {
 
     circles.forEach((c, i) => {
       c.classList.add('explode');
-      // Each circle flies out along its current orbit angle + random scatter
       const angle = (Math.PI * 2 * i / circles.length) + (Math.random() - 0.5) * 1.2;
       const dist = 600 + Math.random() * 900;
       const dx = Math.cos(angle) * dist;
       const dy = Math.sin(angle) * dist;
       const scale = 0.2 + Math.random() * 1.6;
-      const spin = (Math.random() - 0.5) * 720; // random rotation on scatter
+      const spin = (Math.random() - 0.5) * 720;
 
       c.style.transform = `translate(${dx.toFixed(0)}px, ${dy.toFixed(0)}px) scale(${scale.toFixed(2)}) rotate(${spin.toFixed(0)}deg)`;
       c.style.opacity = '0';
@@ -2579,10 +2586,17 @@ function triggerS4Explosion(onComplete) {
     if (flash) flash.classList.remove('active');
   }, 1600);
 
-  // Phase 4: Complete — hand off to actual slide transition
+  // Phase 4: Complete — hide slide-4 BEFORE resetting, then hand off
   setTimeout(() => {
     _s4JustExploded = true;
-    // Reset explosion state for next time
+    _s4ExplodeFreeSpin = false;
+
+    // Force slide-4 invisible before resetting scroll/circles
+    // so the intro screen doesn't flash back
+    s4.style.opacity = '0';
+    s4.style.transition = 'none';
+
+    // Now safe to reset everything
     s4.classList.remove('s4-exploding');
     circles.forEach(c => {
       c.classList.remove('explode');
@@ -2590,7 +2604,16 @@ function triggerS4Explosion(onComplete) {
       c.style.opacity = '';
     });
     _s4RotSpeed = _S4_BASE_ROT;
+
+    // Hand off to the slide transition
     onComplete();
+
+    // After the slide transition starts, restore slide-4's
+    // transition and let normal CSS handle its opacity
+    requestAnimationFrame(() => {
+      s4.style.transition = '';
+      s4.style.opacity = '';
+    });
   }, 1800);
 }
 
@@ -2848,6 +2871,15 @@ function initSocialChart() {
       responsive:true, maintainAspectRatio:false,
       layout:{ padding:{ top:80, right:20, bottom:10, left:10 } },
       interaction:{ mode:'index', intersect:false },
+      animation:{
+        x:{ type:'number', easing:'easeOutCubic', duration:1800,
+            from: NaN, delay(ctx){ return ctx.type==='data' ? ctx.dataIndex * 180 : 0; } },
+        y:{ type:'number', easing:'easeOutCubic', duration:1800,
+            from(ctx){ return ctx.type==='data' ? ctx.chart.scales.y.getPixelForValue(0) : undefined; },
+            delay(ctx){ return ctx.type==='data' ? ctx.dataIndex * 180 : 0; } },
+        opacity:{ duration:600, easing:'linear',
+            from:0, delay(ctx){ return ctx.type==='data' ? ctx.dataIndex * 180 : 0; } }
+      },
       plugins:{
         legend:{display:false},
         tooltip:{
@@ -3721,6 +3753,7 @@ const _S4_BASE_ROT  = 0.12;          // rest rate (slow)
 const _S4_BURST_ROT = 4.8;           // kick applied on scroll / click
 const _S4_DECAY = 1.6;               // rate at which burst decays
 let _s4RafActive = false;
+let _s4ExplodeFreeSpin = false;  // when true, rAF uses free-spin even in moment view
 
 function _s4Frame(t) {
   if (_s4LastFrame == null) _s4LastFrame = t;
@@ -3733,10 +3766,14 @@ function _s4Frame(t) {
   const inIntro = scrollTop < vh * 0.92;
   const N = S4_MOMENTS.length;
 
-  if (inIntro) {
-    // Gentle auto-rotation with burst/decay while on the title ring.
+  if (inIntro || _s4ExplodeFreeSpin) {
+    // Free-spin: angle accumulates at _s4RotSpeed.
+    // During explosion _s4ExplodeFreeSpin is true so this branch runs
+    // even when scrolled deep into the moments.
     _s4RotAngle += _s4RotSpeed * dt;
-    _s4RotSpeed += (_S4_BASE_ROT - _s4RotSpeed) * Math.min(1, dt * _S4_DECAY);
+    if (!_s4ExplodeFreeSpin) {
+      _s4RotSpeed += (_S4_BASE_ROT - _s4RotSpeed) * Math.min(1, dt * _S4_DECAY);
+    }
     updateSlide4();
   } else {
     // In the moment view: smoothly rotate so the active circle
