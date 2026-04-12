@@ -181,6 +181,9 @@ html, body {
 .cover-h1 .ch1-row {
   overflow: hidden;
   display: block;
+  /* Extra bottom clearance so descenders (g, y, p) aren't clipped
+     by overflow:hidden at the tight line-height of 0.86 */
+  padding-bottom: 0.14em;
 }
 .cover-h1 .ch1-word {
   display: inline-block;
@@ -3834,7 +3837,9 @@ function buildSlide4() {
     // ── Orbit circle ──
     const tile = s4MomentTile(m);
     const circle = document.createElement('div');
-    circle.className = 's4-orbit-circle';
+    // s4-unborn hides the circle (scale 0, opacity 0) from the very
+    // first render so there's no flash before triggerS4FlyIn fires.
+    circle.className = 's4-orbit-circle s4-unborn';
     circle.dataset.idx = i;
 
     let innerHtml;
@@ -4281,9 +4286,8 @@ function triggerS4FlyIn() {
   const circles = Array.from(document.querySelectorAll('#s4Orbit .s4-orbit-circle'));
   if (!circles.length) return;
 
-  // ── Phase 0: hide all circles at their correct orbit positions ──
-  // We use CSS class s4-unborn (scale 0, opacity 0) so the rAF
-  // can still update --dx/--dy every frame (positions stay correct).
+  // ── Phase 0: circles are already s4-unborn from creation ──
+  // Ensure any that somehow lost the class are re-hidden.
   circles.forEach(c => c.classList.add('s4-unborn'));
 
   // ── Phase 1: stagger each circle's birth ──
