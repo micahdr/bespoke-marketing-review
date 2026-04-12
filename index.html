@@ -63,6 +63,50 @@ html, body {
   transform: translateX(-60px);
 }
 
+/* ─── EXPLOSION TRANSITION (Big Moments → next slide) ────── */
+/* Phase 1: circles spin wildly on the ring */
+#slide-4.s4-exploding .s4-orbit {
+  transition: none;
+}
+/* Phase 2: circles scatter outward and fade */
+.s4-orbit-circle.explode {
+  transition: transform 1.1s cubic-bezier(0.22, 0.61, 0.36, 1),
+              opacity 0.9s ease 0.3s,
+              width 1s cubic-bezier(0.22, 0.61, 0.36, 1),
+              height 1s cubic-bezier(0.22, 0.61, 0.36, 1) !important;
+}
+/* Flash overlay that accompanies the explosion */
+.s4-explosion-flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 70% 50%, var(--green), transparent 70%);
+  opacity: 0;
+  z-index: 50;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.s4-explosion-flash.active {
+  opacity: 0.35;
+}
+/* While exploding, the text fades quickly */
+#slide-4.s4-exploding .s4-texts,
+#slide-4.s4-exploding .s4-hud,
+#slide-4.s4-exploding .s4-skips {
+  transition: opacity 0.3s ease;
+  opacity: 0 !important;
+}
+/* Incoming slide during explosion: scale up from center */
+.slide.s4-enter-from-explosion {
+  transform: scale(0.92) !important;
+  opacity: 0 !important;
+  transition: transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) 0.5s,
+              opacity 0.6s ease 0.5s !important;
+}
+.slide.s4-enter-from-explosion.active {
+  transform: scale(1) !important;
+  opacity: 1 !important;
+}
+
 /* ─── NAV (rethink: edge chevrons + corner dots, idle-fade) ── */
 .nav {
   position: fixed;
@@ -287,7 +331,7 @@ body.nav-wake .nav { opacity: 1; }
 .cover-h1 .ch1-row { display: block; position: relative; }
 .cover-h1 em {
   font-style: normal;
-  color: var(--c-acc);
+  color: #97d422;
   position: relative;
 }
 .cover-h1 em::after {
@@ -297,7 +341,7 @@ body.nav-wake .nav { opacity: 1; }
   right: 2%;
   bottom: -0.03em;
   height: 0.10em;
-  background: var(--c-acc);
+  background: #97d422;
   opacity: 0.18;
   border-radius: 4px;
 }
@@ -789,6 +833,8 @@ body.nav-wake .nav { opacity: 1; }
 .s4-intro-top .s4-title em {
   font-style: normal;
   color: var(--ink);
+  background: linear-gradient(transparent 58%, rgba(151,212,34,0.75) 58%, rgba(151,212,34,0.75) 92%, transparent 92%);
+  padding: 0 0.08em;
 }
 .s4-intro-bot {
   display: flex;
@@ -1203,11 +1249,12 @@ body.nav-wake .nav { opacity: 1; }
 }
 
 .s5-left {
-  padding: 64px 56px 80px;
+  padding: clamp(36px, 5vh, 64px) 56px clamp(36px, 5vh, 80px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   border-right: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
 }
 
 .s5-eyebrow {
@@ -1216,32 +1263,32 @@ body.nav-wake .nav { opacity: 1; }
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--orange);
-  margin-bottom: 10px;
+  margin-bottom: clamp(4px, 1vh, 10px);
 }
 
 .s5-title {
-  font-size: 52px;
+  font-size: clamp(36px, 5.5vh, 52px);
   font-weight: 900;
   letter-spacing: -2.5px;
   line-height: 0.95;
   color: white;
-  margin-bottom: 20px;
+  margin-bottom: clamp(8px, 1.5vh, 20px);
 }
 
 .s5-big-num {
-  font-size: 96px;
+  font-size: clamp(56px, 10vh, 96px);
   font-weight: 900;
   letter-spacing: -5px;
   line-height: 1;
   color: var(--orange);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .s5-big-label {
   font-size: 13px;
   color: rgba(255,255,255,0.45);
   font-weight: 500;
-  margin-bottom: 24px;
+  margin-bottom: clamp(10px, 2vh, 24px);
 }
 
 .s5-yoy {
@@ -1251,17 +1298,17 @@ body.nav-wake .nav { opacity: 1; }
   background: rgba(249,115,22,0.12);
   border: 1px solid rgba(249,115,22,0.25);
   color: var(--orange);
-  font-size: 20px;
+  font-size: clamp(16px, 2.2vh, 20px);
   font-weight: 800;
-  padding: 10px 20px;
+  padding: clamp(6px, 1vh, 10px) 20px;
   border-radius: 12px;
-  margin-bottom: 32px;
+  margin-bottom: clamp(12px, 2.5vh, 32px);
 }
 
 .s5-commentary {
-  font-size: 14px;
+  font-size: clamp(12px, 1.5vh, 14px);
   color: rgba(255,255,255,0.45);
-  line-height: 1.7;
+  line-height: 1.6;
 }
 
 .s5-commentary strong { color: rgba(255,255,255,0.8); }
@@ -1270,7 +1317,7 @@ body.nav-wake .nav { opacity: 1; }
   background: rgba(249,115,22,0.08);
   border: 1px solid rgba(249,115,22,0.2);
   border-radius: 12px;
-  padding: 20px 22px;
+  padding: clamp(12px, 1.8vh, 20px) 22px;
 }
 
 .s5-revenue-label {
@@ -1279,15 +1326,15 @@ body.nav-wake .nav { opacity: 1; }
   text-transform: uppercase;
   letter-spacing: 1px;
   color: rgba(249,115,22,0.7);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .s5-revenue-num {
-  font-size: 28px;
+  font-size: clamp(22px, 3vh, 28px);
   font-weight: 900;
   letter-spacing: -1px;
   color: var(--orange);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .s5-revenue-note {
@@ -1297,7 +1344,7 @@ body.nav-wake .nav { opacity: 1; }
 }
 
 .s5-right {
-  padding: 64px 48px 80px;
+  padding: clamp(36px, 5vh, 64px) 48px clamp(36px, 5vh, 80px);
   display: flex;
   flex-direction: column;
 }
@@ -1842,7 +1889,7 @@ body.nav-wake .nav { opacity: 1; }
       <span class="ch1-row">It's been</span>
       <span class="ch1-row">a <em>big</em> year.</span>
     </h1>
-    <p class="cover-sub">Here's what I've been up to, and how it's impacting <strong>business outcomes</strong>.</p>
+    <p class="cover-sub">Here's what I've been up to, how it's impacting <strong>business outcomes</strong>, and what I want to do in the next twelve months.</p>
   </main>
 
   <!-- Bottom-left meta: prepared by -->
@@ -1932,7 +1979,7 @@ body.nav-wake .nav { opacity: 1; }
         <div class="s4-intro" id="s4Intro">
           <div class="s4-intro-top">
             <div class="s4-eyebrow">Key marketing outcomes · Dec 2024 → Apr 2026</div>
-            <div class="s4-title"><em>Big</em><br>Moments</div>
+            <div class="s4-title">Big<br><em>Moments</em></div>
           </div>
           <div class="s4-intro-bot">
             <div class="s4-lead">
@@ -1955,6 +2002,7 @@ body.nav-wake .nav { opacity: 1; }
 
         <!-- Orbit ring (populated by JS) -->
         <div class="s4-orbit" id="s4Orbit"></div>
+        <div class="s4-explosion-flash" id="s4Flash"></div>
 
         <!-- Section skip controls - jump out without stepping through every moment -->
         <div class="s4-skips" id="s4Skips">
@@ -1995,7 +2043,7 @@ body.nav-wake .nav { opacity: 1; }
       <div class="s5-big-num">1,308</div>
       <div class="s5-big-label">website applications · highest ever month</div>
       <div class="s5-yoy">↑ 52% YoY &nbsp;<span style="font-size:13px;font-weight:500;opacity:0.7;">Q3 FY26 total: 3,964 (+59%)</span></div>
-      <div style="font-size:10px;color:rgba(255,255,255,0.28);line-height:1.55;margin-top:-20px;margin-bottom:24px;max-width:380px;">
+      <div style="font-size:10px;color:rgba(255,255,255,0.28);line-height:1.55;margin-top:-16px;margin-bottom:clamp(8px,1.5vh,24px);max-width:380px;">
         Clean baseline: Indeed stopped scraping Bespoke jobs in 2024, removing inflated historical traffic. Every application here is organically earned.
       </div>
     </div>
@@ -2394,7 +2442,26 @@ function syncURL() {
   } catch (e) {}
 }
 
+let _s4Exploding = false;
+
 function goTo(n, opts) {
+  opts = opts || {};
+  const targetN = Math.max(0, Math.min(n, slides.length - 1));
+
+  // ─── EXPLOSION: leaving Big Moments going forward ───
+  if (current === 1 && targetN > 1 && !_s4Exploding) {
+    _s4Exploding = true;
+    triggerS4Explosion(() => {
+      _s4Exploding = false;
+      _doGoTo(targetN, opts);
+    });
+    return;
+  }
+
+  _doGoTo(targetN, opts);
+}
+
+function _doGoTo(n, opts) {
   opts = opts || {};
   slides[current].classList.remove('active');
   slides[current].classList.add('prev');
@@ -2403,11 +2470,29 @@ function goTo(n, opts) {
   const prev = current;
   current = Math.max(0, Math.min(n, slides.length - 1));
 
+  // If coming from explosion, give incoming slide the scale-up entrance
+  const fromExplosion = prev === 1 && _s4JustExploded;
+  _s4JustExploded = false;
+
   slides.forEach((s, i) => {
-    s.classList.remove('active', 'prev');
+    s.classList.remove('active', 'prev', 's4-enter-from-explosion');
     if (i === prev && i !== current) s.classList.add('prev');
   });
+
+  if (fromExplosion) {
+    slides[current].classList.add('s4-enter-from-explosion');
+    // Force reflow so the initial transform applies before .active triggers transition
+    void slides[current].offsetHeight;
+  }
+
   slides[current].classList.add('active');
+
+  if (fromExplosion) {
+    // Clean up the class after the transition completes
+    setTimeout(() => {
+      slides[current].classList.remove('s4-enter-from-explosion');
+    }, 1600);
+  }
 
   document.querySelectorAll('.nav-dot').forEach((d, i) => {
     d.classList.toggle('active', i === current);
@@ -2429,6 +2514,65 @@ function goTo(n, opts) {
       if (typeof updateSlide4 === 'function') updateSlide4();
     }
   }
+}
+
+// ─── EXPLOSION ANIMATION ──────────────────────────────
+let _s4JustExploded = false;
+
+function triggerS4Explosion(onComplete) {
+  const s4 = document.getElementById('slide-4');
+  const flash = document.getElementById('s4Flash');
+  const circles = document.querySelectorAll('#s4Orbit .s4-orbit-circle');
+  if (!s4 || !circles.length) { onComplete(); return; }
+
+  s4.classList.add('s4-exploding');
+
+  // Phase 1: Hyper-spin the orbit ring (0-600ms)
+  // Rapidly accelerate _s4RotSpeed so the rAF loop spins them crazy fast
+  _s4RotSpeed = 28;  // insanely fast spin
+  setTimeout(() => { _s4RotSpeed = 45; }, 150);
+  setTimeout(() => { _s4RotSpeed = 60; }, 300);
+
+  // Phase 2: At 500ms, scatter circles outward (explode)
+  setTimeout(() => {
+    // Flash
+    if (flash) flash.classList.add('active');
+
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    circles.forEach((c, i) => {
+      c.classList.add('explode');
+      // Random scatter direction + distance
+      const angle = (Math.PI * 2 * i / circles.length) + (Math.random() - 0.5) * 1.2;
+      const dist = 600 + Math.random() * 800;
+      const dx = Math.cos(angle) * dist;
+      const dy = Math.sin(angle) * dist;
+      const scale = 0.3 + Math.random() * 1.4;
+
+      c.style.transform = `translate(${dx.toFixed(0)}px, ${dy.toFixed(0)}px) scale(${scale.toFixed(2)})`;
+      c.style.opacity = '0';
+    });
+  }, 500);
+
+  // Phase 3: Fade flash, trigger slide change
+  setTimeout(() => {
+    if (flash) flash.classList.remove('active');
+  }, 900);
+
+  // Phase 4: Complete — hand off to actual slide transition
+  setTimeout(() => {
+    _s4JustExploded = true;
+    // Reset explosion state for next time
+    s4.classList.remove('s4-exploding');
+    circles.forEach(c => {
+      c.classList.remove('explode');
+      c.style.transform = '';
+      c.style.opacity = '';
+    });
+    _s4RotSpeed = _S4_BASE_ROT;
+    onComplete();
+  }, 1100);
 }
 
 function changeSlide(dir) {
@@ -3299,24 +3443,6 @@ const S4_MOMENTS = [
   {
     date: 'Mar 2026',
     quarter: 'Q3 FY26',
-    kicker: 'The Proof',
-    headline: '<em>Record breaking</em> results for inbound applications, contact, and briefs',
-    body: 'The work compounds into the numbers. In Q3 FY26, Bespoke hit records across every demand metric simultaneously: <strong>3,964 job applications (+59% YoY)</strong>, <strong>681 contact-form submissions (+7.6% YoY)</strong>, and <strong>41 inbound job briefs (+356% YoY)</strong>. March alone set monthly records in all three. This is the brand working as a pipeline.',
-    stats: [
-      { num: '3,964', label: 'Applications · Q3 FY26 · ↑59% YoY' },
-      { num: '↑356%', label: 'Inbound job briefs YoY' }
-    ],
-    accent: '#97d422',
-    bignum: '13',
-    images: [
-      { type:'img', src:'jobs.jpg', label:'3,964 Applications · Q3 FY26', x:'2%', y:'8%', w:'31%', h:'64%', rot:-4, objectPosition:'center center' },
-      { type:'placeholder', initial:'681',   name:'Contact Forms',   role:'Q3 FY26 · ↑7.6% YoY', x:'34%', y:'16%', w:'31%', h:'64%', rot:2  },
-      { type:'placeholder', initial:'41',    name:'Job Briefs',      role:'Q3 FY26 · ↑356% YoY', x:'66%', y:'8%',  w:'31%', h:'64%', rot:-2 }
-    ]
-  },
-  {
-    date: 'Mar 2026',
-    quarter: 'Q3 FY26',
     kicker: 'The Data',
     headline: '2026 AUS/NZ Market Report &amp; Webinar <em>published</em>',
     body: 'The <strong>2026 AUS/NZ Architecture &amp; Design Market Report</strong> goes live, the most comprehensive edition to date. Demand for the data is only growing: <strong>UK and US editions are in the pipeline</strong>. Bespoke\'s market intelligence is becoming a category-defining asset across three continents.',
@@ -3361,6 +3487,24 @@ const S4_MOMENTS = [
     images: [
       { type:'img', src:'https://cdn-01.cms-eu-v2i.applyflow.com/bespoke/wp-content/uploads/2026/04/seo.jpg', label:'Non-branded clicks · highest day ever', x:'2%', y:'14%', w:'96%', h:'58%', rot:-1, objectPosition:'center center' },
       { type:'placeholder', initial:'SEO', name:'Dynamic H1s live', role:'First building block', x:'52%', y:'52%', w:'44%', h:'36%', rot:3 }
+    ]
+  },
+  {
+    date: 'Jan\u2013March 2026',
+    quarter: 'Q3 FY26',
+    kicker: 'The Proof',
+    headline: '<em>Record breaking</em> results for inbound applications, contact, and briefs',
+    body: 'The work compounds into the numbers. In Q3 FY26, Bespoke hit records across every demand metric simultaneously: <strong>3,964 job applications (+59% YoY)</strong>, <strong>681 contact-form submissions (+7.6% YoY)</strong>, and <strong>41 inbound job briefs (+356% YoY)</strong>. March alone set monthly records in all three. This is the brand working as a pipeline.',
+    stats: [
+      { num: '3,964', label: 'Applications \xb7 Q3 FY26 \xb7 \u219159% YoY' },
+      { num: '\u2191356%', label: 'Inbound job briefs YoY' }
+    ],
+    accent: '#97d422',
+    bignum: '13',
+    images: [
+      { type:'img', src:'jobs.jpg', label:'3,964 Applications \xb7 Q3 FY26', x:'2%', y:'8%', w:'31%', h:'64%', rot:-4, objectPosition:'center center' },
+      { type:'placeholder', initial:'681',   name:'Contact Forms',   role:'Q3 FY26 \xb7 \u21917.6% YoY', x:'34%', y:'16%', w:'31%', h:'64%', rot:2  },
+      { type:'placeholder', initial:'41',    name:'Job Briefs',      role:'Q3 FY26 \xb7 \u2191356% YoY', x:'66%', y:'8%',  w:'31%', h:'64%', rot:-2 }
     ]
   }
 ];
