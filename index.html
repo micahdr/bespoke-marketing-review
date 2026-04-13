@@ -1685,6 +1685,145 @@ body.nav-wake .nav { opacity: 1; }
 }
 
 .page-tag.dark { color: rgba(0,0,0,0.2); }
+
+/* ─── SLIDE 6: SALARY GUIDE ─────────────────────── */
+#slide-6 {
+  background: var(--light);
+  padding: 60px 80px 80px;
+  display: flex;
+  flex-direction: column;
+}
+
+.s6-top {
+  display: grid;
+  grid-template-columns: 1.2fr 2fr;
+  gap: 48px;
+  align-items: end;
+  margin-bottom: 36px;
+}
+
+.s6-title {
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: -2.5px;
+  line-height: 0.95;
+  color: #111827;
+}
+
+.s6-title span { color: var(--purple); }
+
+.s6-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+
+.s6-stat {
+  background: white;
+  padding: 20px 22px;
+}
+
+.s6-stat:first-child { border-radius: 12px 0 0 12px; }
+.s6-stat:last-child  { border-radius: 0 12px 12px 0; }
+
+.s6-stat-year {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #9ca3af;
+  margin-bottom: 6px;
+}
+
+.s6-stat-num {
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  color: var(--purple);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.s6-stat-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+  background: rgba(124,58,237,0.1);
+  color: var(--purple);
+  margin-top: 4px;
+}
+
+.s6-chart-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  flex: 1;
+}
+
+.s6-chart-card {
+  background: white;
+  border-radius: 16px;
+  padding: 28px 28px 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  min-height: 0;
+}
+
+.chart-wrap {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+}
+
+.s6-callout-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.s6-callout {
+  background: white;
+  border-radius: 12px;
+  padding: 20px 22px;
+  border-left: 4px solid var(--purple);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.s6-callout-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.s6-callout-body {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.s6-callout.highlight {
+  background: var(--purple);
+  border-left: none;
+  color: white;
+}
+
+.s6-callout.highlight .s6-callout-title { color: white; }
+.s6-callout.highlight .s6-callout-body { color: rgba(255,255,255,0.7); }
+
+.s6-callout-big {
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  color: white;
+  margin-bottom: 4px;
+}
+
 </style>
 </head>
 <body>
@@ -2771,9 +2910,9 @@ body.nav-wake .nav { opacity: 1; }
         <div class="s6-callout-body">From 950 downloads at launch to ~10,000 projected in 2026.</div>
       </div>
       <div class="s6-callout highlight">
-        <div class="s6-callout-big">£650K+</div>
-        <div class="s6-callout-title">Estimated influenced revenue</div>
-        <div class="s6-callout-body"><strong>88 placements</strong> directly linked to guide downloads. 1 in 3 of every client placed with since launch had downloaded the guide.</div>
+        <div class="s6-callout-big">88</div>
+        <div class="s6-callout-title">Placements attributed</div>
+        <div class="s6-callout-body">Directly linked to guide downloads. 1 in 3 of every client placed with since launch had downloaded the guide.</div>
       </div>
     </div>
   </div>
